@@ -254,6 +254,37 @@ def compute_pratyantar(dashas: list[dict]) -> list[dict]:
     return dashas
 
 
+YOGINI_NAMES = ["Mangala", "Pingala", "Dhanya", "Bhramari", "Bhadrika", "Ulka", "Siddha", "Sankata"]
+YOGINI_YEARS = [1, 2, 3, 4, 5, 6, 7, 8]
+YOGINI_TOTAL = 36
+
+
+def compute_yogini_dasha(moon_longitude: float, birth_dt) -> list[dict]:
+    """Compute Yogini Dasha — 36-year cycle, 8 yoginis."""
+    nak_index = int(moon_longitude // (360 / 27))
+    start_idx = (nak_index + 3) % 8
+    nak_span = 360 / 27
+    elapsed_frac = (moon_longitude % nak_span) / nak_span
+    remaining_years = YOGINI_YEARS[start_idx] * (1 - elapsed_frac)
+
+    dashas = []
+    current = birth_dt
+
+    # First (partial) period
+    end = current + timedelta(days=remaining_years * 365.25)
+    dashas.append({"lord": YOGINI_NAMES[start_idx], "start": current, "end": end, "years": round(remaining_years, 2)})
+    current = end
+
+    # Subsequent full periods, cycling through all 8 yoginis repeatedly
+    i = (start_idx + 1) % 8
+    while len(dashas) < 40:
+        years = YOGINI_YEARS[i]
+        end = current + timedelta(days=years * 365.25)
+        dashas.append({"lord": YOGINI_NAMES[i], "start": current, "end": end, "years": years})
+        current = end
+        i = (i + 1) % 8
+    return dashas
+
 
 DIVISIONAL_CHARTS = {
     "D-1": {"name": "Rashi", "div": 1, "desc": "Birth chart. Overall life."},
