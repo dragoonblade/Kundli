@@ -254,7 +254,7 @@ def _generate_chart(date_str, time_str, location, tz_str):
     dashas = compute_antardasha(dashas)
     dashas = compute_pratyantar(dashas)
     aspects = compute_aspects(planets)
-    yogas = check_yogas(planets, houses)
+    yogas = check_yogas(planets, houses, planet_house_map)
     # Current transit positions for Sade Sati + Gochar
     current_jd = to_julian(now, 0)
     current_planets = compute_planets(current_jd)

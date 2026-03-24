@@ -153,7 +153,7 @@ def main():
 
     # Yogas
     print_section("Yogas")
-    yogas = check_yogas(planets, houses)
+    yogas = check_yogas(planets, houses, planet_house_map)
     if yogas:
         for y in yogas:
             print(f"  * {y['name']}: {y['desc']}")

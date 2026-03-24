@@ -42,6 +42,12 @@ OWN_SIGNS = {
     "Guru": ["Dhanu", "Meena"], "Shukra": ["Vrishabha", "Tula"],
     "Shani": ["Makara", "Kumbha"],
 }
+SIGN_LORDS_CALC = {
+    "Mesha": "Mangal", "Vrishabha": "Shukra", "Mithuna": "Budh", "Karka": "Chandra",
+    "Simha": "Surya", "Kanya": "Budh", "Tula": "Shukra", "Vrishchika": "Mangal",
+    "Dhanu": "Guru", "Makara": "Shani", "Kumbha": "Shani", "Meena": "Guru",
+}
+
 YOGAS = [
     {"name": "Gajakesari", "desc": "Guru in kendra from Chandra",
      "check": lambda p: _in_kendra(p, "Guru", "Chandra")},
@@ -377,7 +383,7 @@ def check_doshas(planets: list, planet_house_map: dict, current_saturn_sign: str
     return doshas
 
 
-def check_yogas(planets: list, houses: list | None = None) -> list:
+def check_yogas(planets: list, houses: list | None = None, planet_house_map: dict | None = None) -> list:
     """Detect Vedic yogas from planetary positions."""
     results = [{"name": y["name"], "desc": y["desc"]} for y in YOGAS if y["check"](planets)]
 
@@ -398,5 +404,43 @@ def check_yogas(planets: list, houses: list | None = None) -> list:
             if (sign in OWN_SIGNS.get(planet, []) or sign == EXALTATION.get(planet)) \
                     and _in_kendra_from_sign(sign, lagna_sign):
                 results.append({"name": name, "desc": desc})
+
+    # House-based yogas (need planet_house_map)
+    if planet_house_map and houses:
+        def _lord_of_house(h_num):
+            return SIGN_LORDS_CALC[houses[h_num - 1]["sign"]]
+
+        def _house_of(planet_name):
+            return planet_house_map.get(planet_name)
+
+        # Dhana Yoga: lords of 2nd and 11th in kendra or trikona from each other
+        lord2 = _lord_of_house(2)
+        lord11 = _lord_of_house(11)
+        h2, h11 = _house_of(lord2), _house_of(lord11)
+        if h2 and h11:
+            diff = (h11 - h2) % 12
+            if diff in (0, 3, 4, 6, 8, 9):  # kendra or trikona
+                results.append({"name": "Dhana", "desc": f"Lords of 2nd ({lord2}) and 11th ({lord11}) in mutual kendra/trikona — wealth and prosperity"})
+
+        # Raja Yoga: lord of trikona (1,5,9) conjunct lord of kendra (1,4,7,10)
+        trikona_lords = {_lord_of_house(h) for h in (1, 5, 9)}
+        kendra_lords = {_lord_of_house(h) for h in (1, 4, 7, 10)}
+        for tl in trikona_lords:
+            for kl in kendra_lords:
+                if tl != kl and _house_of(tl) == _house_of(kl) and _house_of(tl) is not None:
+                    results.append({"name": "Raja", "desc": f"{tl} (trikona lord) conjunct {kl} (kendra lord) in House {_house_of(tl)} — power and authority"})
+                    break
+            else:
+                continue
+            break
+
+        # Viparita Raja: lords of 6th, 8th, or 12th in each other's houses
+        dusthana = {6, 8, 12}
+        for h in dusthana:
+            lord = _lord_of_house(h)
+            lord_h = _house_of(lord)
+            if lord_h in dusthana and lord_h != h:
+                results.append({"name": "Viparita Raja", "desc": f"Lord of {h}th ({lord}) in {lord_h}th house — success through adversity"})
+                break
 
     return results
