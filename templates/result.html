@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kundli. {{ birth_dt.strftime('%d %B %Y') }}</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#f0a030">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="/static/icon-192.png">
+</head>
+<body>
+    <div class="container result-page">
+        <header>
+            <a href="/" class="back-link">← New Chart</a>
+            <h1>🕉 Kundli</h1>
+            <!-- Language Toggle -->
+            <div class="lang-toggle">
+                <button id="btn-hindu" class="lang-btn active" onclick="setLang('hindu')">संस्कृत</button>
+                <button id="btn-english" class="lang-btn" onclick="setLang('english')">English</button>
+            </div>
+        </header>
+
+        <!-- Birth Info -->
+        <section class="card info-card">
+            <div class="info-grid">
+                <div><span class="label">Date</span><span class="value">{{ birth_dt.strftime('%d %B %Y, %I:%M %p') }}</span></div>
+                <div><span class="label">Place</span><span class="value">{{ location }} ({{ "%.4f"|format(lat) }}°, {{ "%.4f"|format(lon) }}°)</span></div>
+                <div><span class="label">Lagna</span><span class="value lagna"><span class="t" data-h="{{ lagna.sign }}" data-e="{{ sign_names[lagna.sign] }}">{{ lagna.sign }}</span> {{ "%.2f"|format(lagna.degree) }}°</span></div>
+                {% if current_dasha %}
+                <div><span class="label">Dasha</span><span class="value dasha-active"><span class="t" data-h="{{ current_dasha }}" data-e="{{ planet_names[current_dasha] }}">{{ current_dasha }}</span> Mahadasha</span></div>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- Charts Side by Side -->
+        <section class="card">
+            <h2>Birth Charts</h2>
+            <div class="charts-row">
+                <!-- North Indian -->
+                <div class="chart-box">
+                    <h3>North Indian</h3>
+                    <svg viewBox="0 0 360 360" class="chart-svg">
+                        <rect x="5" y="5" width="350" height="350" fill="none" stroke="var(--border)" stroke-width="1.5" rx="4"/>
+                        <line x1="5" y1="5" x2="180" y2="180" stroke="var(--border)" stroke-width="1"/>
+                        <line x1="355" y1="5" x2="180" y2="180" stroke="var(--border)" stroke-width="1"/>
+                        <line x1="5" y1="355" x2="180" y2="180" stroke="var(--border)" stroke-width="1"/>
+                        <line x1="355" y1="355" x2="180" y2="180" stroke="var(--border)" stroke-width="1"/>
+                        <line x1="180" y1="5" x2="180" y2="355" stroke="var(--border)" stroke-width="1"/>
+                        <line x1="5" y1="180" x2="355" y2="180" stroke="var(--border)" stroke-width="1"/>
+                        {% set positions = {1:(180,50), 2:(290,50), 3:(310,140), 4:(310,230), 5:(290,310), 6:(180,310), 7:(70,310), 8:(50,230), 9:(50,140), 10:(70,50), 11:(50,50), 12:(130,100)} %}
+                        {% for h in range(1,13) %}
+                        {% set x, y = positions[h] %}
+                        <text x="{{ x }}" y="{{ y }}" class="chart-sign t" data-h="{{ chart[h].sign_h }}" data-e="{{ chart[h].sign_e }}">{{ chart[h].sign_h }}</text>
+                        <text x="{{ x }}" y="{{ y + 20 }}" class="chart-planets t" data-h="{{ chart[h].planets_h }}" data-e="{{ chart[h].planets_e }}">{{ chart[h].planets_h }}</text>
+                        {% endfor %}
+                        <text x="180" y="185" class="chart-asc">Asc</text>
+                    </svg>
+                </div>
+
+                <!-- South Indian -->
+                <div class="chart-box">
+                    <h3>South Indian</h3>
+                    {% set si_layout = [[11,0,1,2],[10,-1,-1,3],[9,-1,-1,4],[8,7,6,5]] %}
+                    <svg viewBox="0 0 360 360" class="chart-svg">
+                        {% for r in range(4) %}
+                        {% for c in range(4) %}
+                        {% set si = si_layout[r][c] %}
+                        {% set x = 5 + c * 87.5 %}
+                        {% set y = 5 + r * 87.5 %}
+                        <rect x="{{ x }}" y="{{ y }}" width="87.5" height="87.5"
+                              fill="{% if si == -1 %}var(--bg){% else %}none{% endif %}"
+                              stroke="{% if si != -1 %}var(--border){% else %}none{% endif %}" stroke-width="1"/>
+                        {% if si != -1 %}
+                        {% set sign = chart[(si - (chart|length) + 13) | int] if false else none %}
+                        {# Build sign/planet data from planets list #}
+                        {% set sign_h = [] %}{% set sign_e = [] %}{% set pl_h = [] %}{% set pl_e = [] %}
+                        {% for ch_key in range(1,13) %}
+                            {% set ch = chart[ch_key] %}
+                        {% endfor %}
+                        {# Direct lookup: si is the sign index (0-11) in SIGNS order #}
+                        {% set abbr_h = {'Surya':'Su','Chandra':'Ch','Mangal':'Ma','Budh':'Bu','Guru':'Gu','Shukra':'Sk','Shani':'Sa','Rahu':'Ra','Ketu':'Ke'} %}
+                        {% set abbr_e = {'Surya':'Su','Chandra':'Mo','Mangal':'Ma','Budh':'Me','Guru':'Ju','Shukra':'Ve','Shani':'Sa','Rahu':'Ra','Ketu':'Ke'} %}
+                        {% set signs_h = ['Mes','Vri','Mit','Kar','Sim','Kan','Tul','Vrs','Dha','Mak','Kum','Mee'] %}
+                        {% set signs_e = ['Ari','Tau','Gem','Can','Leo','Vir','Lib','Sco','Sag','Cap','Aqu','Pis'] %}
+                        {% set signs_full_h = ['Mesha','Vrishabha','Mithuna','Karka','Simha','Kanya','Tula','Vrishchika','Dhanu','Makara','Kumbha','Meena'] %}
+                        {% set pls_h = [] %}{% set pls_e = [] %}
+                        {% for p in planets %}
+                            {% if p.sign == signs_full_h[si] %}
+                                {% if pls_h.append(abbr_h[p.planet]) %}{% endif %}
+                                {% if pls_e.append(abbr_e[p.planet]) %}{% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        <text x="{{ x + 43.75 }}" y="{{ y + 30 }}" class="chart-sign t" data-h="{{ signs_h[si] }}" data-e="{{ signs_e[si] }}">{{ signs_h[si] }}</text>
+                        <text x="{{ x + 43.75 }}" y="{{ y + 55 }}" class="chart-planets t" data-h="{{ pls_h|join(' ') }}" data-e="{{ pls_e|join(' ') }}">{{ pls_h|join(' ') }}</text>
+                        {% endif %}
+                        {% endfor %}
+                        {% endfor %}
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- Planetary Positions -->
+        <section class="card">
+            <h2>Planetary Positions</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>Planet</th><th>Sign</th><th>Degree</th><th>Nakshatra</th><th>Pada</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for p in planets %}
+                        <tr>
+                            <td class="planet-name"><span class="t" data-h="{{ p.planet }}" data-e="{{ planet_names[p.planet] }}">{{ p.planet }}</span></td>
+                            <td><span class="t" data-h="{{ p.sign }}" data-e="{{ sign_names[p.sign] }}">{{ p.sign }}</span></td>
+                            <td>{{ "%.2f"|format(p.degree) }}°</td>
+                            <td>{{ p.nakshatra }}</td>
+                            <td>{{ p.pada }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- House Cusps -->
+        <section class="card">
+            <h2>House Cusps</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>House</th><th>Sign</th><th>Degree</th></tr></thead>
+                    <tbody>
+                        {% for h in houses %}
+                        <tr class="{% if h.house == 1 %}highlight{% endif %}">
+                            <td>{{ h.house }}{% if h.house == 1 %} <span class="badge">Asc</span>{% endif %}</td>
+                            <td><span class="t" data-h="{{ h.sign }}" data-e="{{ sign_names[h.sign] }}">{{ h.sign }}</span></td>
+                            <td>{{ "%.2f"|format(h.degree) }}°</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Aspects -->
+        <section class="card">
+            <h2>Planetary Aspects</h2>
+            {% if aspects %}
+            <div class="aspects-grid">
+                {% for a in aspects %}
+                <div class="aspect-item">
+                    <span class="planet-name t" data-h="{{ a.from }}" data-e="{{ planet_names[a.from] }}">{{ a.from }}</span>
+                    <span class="arrow">→</span>
+                    <span>{% for t in a.to %}<span class="t" data-h="{{ t }}" data-e="{{ planet_names[t] }}">{{ t }}</span>{% if not loop.last %}, {% endif %}{% endfor %}</span>
+                    <span class="muted">(in <span class="t" data-h="{{ a.target_sign }}" data-e="{{ sign_names[a.target_sign] }}">{{ a.target_sign }}</span>)</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="muted">No direct planetary aspects found.</p>
+            {% endif %}
+        </section>
+
+        <!-- Yogas -->
+        <section class="card">
+            <h2>Yogas</h2>
+            {% if yogas %}
+            {% for y in yogas %}
+            <div class="yoga-item">
+                <span class="yoga-name">✦ {{ y.name }}</span>
+                <span class="yoga-desc">{{ y.desc }}</span>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p class="muted">No major yogas detected.</p>
+            {% endif %}
+        </section>
+
+        <!-- Vimshottari Dasha -->
+        <section class="card">
+            <h2>Vimshottari Dasha</h2>
+            <div class="dasha-timeline">
+                {% for d in dashas %}
+                {% set is_current = d.start <= now and now <= d.end %}
+                <div class="dasha-item {% if is_current %}dasha-current{% endif %}">
+                    <div class="dasha-lord"><span class="t" data-h="{{ d.lord }}" data-e="{{ planet_names[d.lord] }}">{{ d.lord }}</span></div>
+                    <div class="dasha-dates">{{ d.start.strftime('%d %b %Y') }} → {{ d.end.strftime('%d %b %Y') }}</div>
+                    <div class="dasha-years">{{ d.years }} yrs</div>
+                    {% if is_current %}
+                    {% set elapsed = (now - d.start).days %}
+                    {% set total = (d.end - d.start).days %}
+                    <div class="dasha-bar"><div class="dasha-fill" style="width: {{ (elapsed/total*100)|int }}%"></div></div>
+                    <div class="dasha-badge">◄ CURRENT</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Life Areas Deep Dive -->
+        <section class="card">
+            <h2>Life Areas</h2>
+            <p class="muted" style="margin-bottom:1rem">Tap any area to see a detailed reading based on your chart</p>
+            <div class="life-areas-grid">
+                {% for la in life_areas %}
+                <div class="la-card" onclick="this.classList.toggle('la-open')">
+                    <div class="la-header">
+                        <span class="la-icon">{{ la.icon }}</span>
+                        <div>
+                            <h3>{{ la.title }}</h3>
+                            <p class="la-desc">{{ la.desc }}</p>
+                        </div>
+                        <span class="la-chevron">▾</span>
+                    </div>
+                    <div class="la-body">
+                        {% for s in la.sections %}
+                        <div class="la-section">
+                            <span class="la-label">{{ s.label }}</span>
+                            {% if s.text is defined %}
+                            <p>{{ s.text }}</p>
+                            {% endif %}
+                            {% if s.bullets is defined %}
+                            {% for item in s.bullets %}
+                            <div class="la-item">{{ item }}</div>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- House Readings -->
+        <section class="card">
+            <div class="readings-header-row">
+                <h2>House Readings</h2>
+                <div class="mode-toggle">
+                    <button id="btn-general" class="mode-btn active" onclick="setMode('general')">🌙 General</button>
+                    <button id="btn-advanced" class="mode-btn" onclick="setMode('advanced')">🔬 Advanced</button>
+                </div>
+            </div>
+            {% if current_dasha %}
+            <p class="dasha-note" id="dasha-note-general">You're currently in the <strong><span class="t" data-h="{{ current_dasha }}" data-e="{{ planet_names[current_dasha] }}">{{ current_dasha }}</span></strong> period. Houses affected by this are marked with ★</p>
+            <p class="dasha-note" id="dasha-note-advanced" style="display:none">Current Mahadasha: <strong><span class="t" data-h="{{ current_dasha }}" data-e="{{ planet_names[current_dasha] }}">{{ current_dasha }}</span></strong>, houses connected are marked with ★</p>
+            {% endif %}
+
+            <div class="readings-grid">
+                {% for r in house_readings %}
+                <div class="reading-card {% if r.dasha_note %}reading-active{% endif %}">
+                    <div class="reading-header">
+                        <span class="house-num">{{ r.num }}</span>
+                        <div>
+                            <h3>{{ r.theme }}</h3>
+                            <span class="reading-sign adv-only"><span class="t" data-h="{{ r.sign }}" data-e="{{ sign_names[r.sign] }}">{{ r.sign }}</span> · Lord: <span class="t" data-h="{{ r.lord }}" data-e="{{ planet_names[r.lord] }}">{{ r.lord }}</span></span>
+                        </div>
+                    </div>
+
+                    <!-- General mode content -->
+                    <div class="gen-only">
+                        <p class="reading-simple">{{ r.simple_summary }}</p>
+                        {% if r.current_influence %}
+                        <div class="current-influence">
+                            <span class="influence-label">🔮 What this means for you now:</span>
+                            <p>{{ r.current_influence }}</p>
+                        </div>
+                        {% endif %}
+                        {% if r.simple_dasha_note %}
+                        <div class="reading-dasha">★ {{ r.simple_dasha_note }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Advanced mode content -->
+                    <div class="adv-only">
+                        <p class="reading-keywords">{{ r.keywords }}</p>
+
+                        {% if r.occupants %}
+                        <div class="reading-section">
+                            <span class="reading-label">Planets here:</span>
+                            <span class="planet-tags">
+                                {% for o in r.occupants %}<span class="tag t" data-h="{{ o }}" data-e="{{ planet_names[o] }}">{{ o }}</span>{% endfor %}
+                            </span>
+                        </div>
+                        {% for pr in r.planet_readings %}
+                        {% if pr.reading %}
+                        <div class="planet-reading">
+                            <span class="planet-name t" data-h="{{ pr.name }}" data-e="{{ planet_names[pr.name] }}">{{ pr.name }}</span>: {{ pr.reading }}
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                        {% else %}
+                        <p class="muted small">No planets, results depend on lord <span class="t" data-h="{{ r.lord }}" data-e="{{ planet_names[r.lord] }}">{{ r.lord }}</span>'s placement in House {{ r.lord_house }}</p>
+                        {% endif %}
+
+                        {% if r.aspectors %}
+                        <div class="reading-section">
+                            <span class="reading-label">Aspected by:</span>
+                            <span class="planet-tags">
+                                {% for a in r.aspectors %}<span class="tag tag-aspect t" data-h="{{ a }}" data-e="{{ planet_names[a] }}">{{ a }}</span>{% endfor %}
+                            </span>
+                        </div>
+                        {% endif %}
+
+                        {% if r.lord_note %}
+                        <div class="reading-note">→ Lord <span class="t" data-h="{{ r.lord }}" data-e="{{ planet_names[r.lord] }}">{{ r.lord }}</span> {{ r.lord_note }}</div>
+                        {% endif %}
+
+                        {% if r.current_influence %}
+                        <div class="current-influence">
+                            <span class="influence-label">🔮 Current Influence:</span>
+                            <p>{{ r.current_influence }}</p>
+                        </div>
+                        {% endif %}
+
+                        {% if r.dasha_note %}
+                        <div class="reading-dasha">★ <span class="t" data-h="{{ current_dasha }}" data-e="{{ planet_names[current_dasha] }}">{{ current_dasha }}</span> {{ r.dasha_note }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <footer>
+            <p>Calculations powered by Swiss Ephemeris · For educational purposes only</p>
+        </footer>
+    </div>
+
+    <!-- Chat Widget -->
+    <div id="chat-toggle" onclick="toggleChat()">💬</div>
+    <div id="chat-widget" style="display:none">
+        <div class="chat-header">
+            <span>🕉 Ask about your chart</span>
+            <button onclick="toggleChat()" class="chat-close">✕</button>
+        </div>
+        <div id="chat-messages">
+            <div class="chat-msg bot">Hi! I can answer questions about your birth chart. Try asking about your career, marriage, health, current dasha, or anything else! 🙏</div>
+        </div>
+        <div class="chat-input-row">
+            <input type="text" id="chat-input" placeholder="e.g. Tell me about my career.." onkeydown="if(event.key==='Enter')sendChat()">
+            <button onclick="sendChat()">→</button>
+        </div>
+        <div class="chat-suggestions">
+            <button onclick="askSuggestion(this)">📊 Chart summary</button>
+            <button onclick="askSuggestion(this)">💼 Career</button>
+            <button onclick="askSuggestion(this)">💑 Marriage</button>
+            <button onclick="askSuggestion(this)">🔮 Current dasha</button>
+            <button onclick="askSuggestion(this)">💪 Strengths</button>
+            <button onclick="askSuggestion(this)">⚠️ Challenges</button>
+        </div>
+    </div>
+
+    <script>
+    function setLang(lang) {
+        document.querySelectorAll('.t').forEach(el => {
+            const val = el.getAttribute('data-' + (lang === 'hindu' ? 'h' : 'e'));
+            if (val !== null) el.textContent = val;
+        });
+        document.getElementById('btn-hindu').classList.toggle('active', lang === 'hindu');
+        document.getElementById('btn-english').classList.toggle('active', lang === 'english');
+        localStorage.setItem('kundli-lang', lang);
+    }
+
+    function setMode(mode) {
+        document.querySelectorAll('.gen-only').forEach(el => el.style.display = mode === 'general' ? '' : 'none');
+        document.querySelectorAll('.adv-only').forEach(el => el.style.display = mode === 'advanced' ? '' : 'none');
+        var gn = document.getElementById('dasha-note-general');
+        var an = document.getElementById('dasha-note-advanced');
+        if (gn) gn.style.display = mode === 'general' ? '' : 'none';
+        if (an) an.style.display = mode === 'advanced' ? '' : 'none';
+        document.getElementById('btn-general').classList.toggle('active', mode === 'general');
+        document.getElementById('btn-advanced').classList.toggle('active', mode === 'advanced');
+        localStorage.setItem('kundli-mode', mode);
+    }
+
+    // Restore preferences
+    var savedLang = localStorage.getItem('kundli-lang');
+    if (savedLang) setLang(savedLang);
+    var savedMode = localStorage.getItem('kundli-mode') || 'general';
+    setMode(savedMode);
+
+    // Render markdown bold in life area sections
+    document.querySelectorAll('.la-section p, .la-item').forEach(function(el) {
+        el.innerHTML = el.innerHTML.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    });
+
+    function toggleChat() {
+        var w = document.getElementById('chat-widget');
+        var t = document.getElementById('chat-toggle');
+        if (w.style.display === 'none') { w.style.display = 'flex'; t.style.display = 'none'; }
+        else { w.style.display = 'none'; t.style.display = 'flex'; }
+    }
+
+    function addMsg(text, cls) {
+        var div = document.createElement('div');
+        div.className = 'chat-msg ' + cls;
+        div.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                             .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                             .replace(/\n/g, '<br>');
+        var msgs = document.getElementById('chat-messages');
+        msgs.appendChild(div);
+        msgs.scrollTop = msgs.scrollHeight;
+    }
+
+    function sendChat() {
+        var input = document.getElementById('chat-input');
+        var q = input.value.trim();
+        if (!q) return;
+        input.value = '';
+        addMsg(q, 'user');
+        addMsg('Thinking..', 'bot typing');
+
+        fetch('/chat', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({question: q})
+        })
+        .then(r => r.json())
+        .then(data => {
+            var msgs = document.getElementById('chat-messages');
+            msgs.removeChild(msgs.lastChild);
+            addMsg(data.answer, 'bot');
+        })
+        .catch(() => {
+            var msgs = document.getElementById('chat-messages');
+            msgs.removeChild(msgs.lastChild);
+            addMsg('Sorry, something went wrong. Please try again.', 'bot');
+        });
+    }
+
+    function askSuggestion(btn) {
+        var map = {
+            '📊 Chart summary': 'Give me an overall summary of my chart',
+            '💼 Career': 'What does my chart say about my career?',
+            '💑 Marriage': 'Tell me about my marriage and relationships',
+            '🔮 Current dasha': 'What is my current dasha period and what does it mean?',
+            '💪 Strengths': 'What are the strengths in my chart?',
+            '⚠️ Challenges': 'What challenges does my chart show?'
+        };
+        document.getElementById('chat-input').value = map[btn.textContent] || btn.textContent;
+        sendChat();
+    }
+    if('serviceWorker' in navigator) navigator.serviceWorker.register('/static/sw.js');
+    </script>
+</body>
+</html>

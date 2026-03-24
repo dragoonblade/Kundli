@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kundli. Vedic Birth Chart</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#f0a030">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="/static/icon-192.png">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🕉 Kundli</h1>
+            <p class="subtitle">Vedic Birth Chart Generator</p>
+        </header>
+
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST" action="/" class="form-card">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="date">Birth Date</label>
+                    <input type="date" id="date" name="date" required value="1996-09-23">
+                </div>
+                <div class="form-group">
+                    <label for="time">Birth Time</label>
+                    <input type="time" id="time" name="time" required value="22:17">
+                </div>
+                <div class="form-group">
+                    <label for="location">Birth Place</label>
+                    <input type="text" id="location" name="location" required
+                           placeholder="e.g. Chandigarh, India" value="">
+                </div>
+                <div class="form-group">
+                    <label for="tz">Timezone (UTC offset)</label>
+                    <select id="tz" name="tz">
+                        <option value="-12">UTC-12:00</option>
+                        <option value="-11">UTC-11:00</option>
+                        <option value="-10">UTC-10:00</option>
+                        <option value="-9.5">UTC-09:30</option>
+                        <option value="-9">UTC-09:00</option>
+                        <option value="-8">UTC-08:00</option>
+                        <option value="-7">UTC-07:00</option>
+                        <option value="-6">UTC-06:00</option>
+                        <option value="-5">UTC-05:00</option>
+                        <option value="-4">UTC-04:00</option>
+                        <option value="-3.5">UTC-03:30</option>
+                        <option value="-3">UTC-03:00</option>
+                        <option value="-2">UTC-02:00</option>
+                        <option value="-1">UTC-01:00</option>
+                        <option value="0">UTC+00:00</option>
+                        <option value="1">UTC+01:00</option>
+                        <option value="2">UTC+02:00</option>
+                        <option value="3">UTC+03:00</option>
+                        <option value="3.5">UTC+03:30</option>
+                        <option value="4">UTC+04:00</option>
+                        <option value="4.5">UTC+04:30</option>
+                        <option value="5">UTC+05:00</option>
+                        <option value="5.5" selected>UTC+05:30 (IST)</option>
+                        <option value="5.75">UTC+05:45</option>
+                        <option value="6">UTC+06:00</option>
+                        <option value="6.5">UTC+06:30</option>
+                        <option value="7">UTC+07:00</option>
+                        <option value="8">UTC+08:00</option>
+                        <option value="8.75">UTC+08:45</option>
+                        <option value="9">UTC+09:00</option>
+                        <option value="9.5">UTC+09:30</option>
+                        <option value="10">UTC+10:00</option>
+                        <option value="10.5">UTC+10:30</option>
+                        <option value="11">UTC+11:00</option>
+                        <option value="12">UTC+12:00</option>
+                        <option value="12.75">UTC+12:45</option>
+                        <option value="13">UTC+13:00</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit">Generate Kundli</button>
+        </form>
+    </div>
+<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/static/sw.js');</script>
+</body>
+</html>
