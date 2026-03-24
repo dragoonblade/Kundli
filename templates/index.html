@@ -169,6 +169,7 @@ function switchTab(tab) {
 {% if tab == 'match' %}
 switchTab('match');
 {% endif %}
+if(new URLSearchParams(location.search).get('tab') === 'match') switchTab('match');
 if('serviceWorker' in navigator) navigator.serviceWorker.register('/static/sw.js');
 </script>
 </body>

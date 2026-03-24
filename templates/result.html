@@ -16,6 +16,7 @@
         <header>
             <a href="/" class="back-link">← New Chart</a>
             <h1>🕉 Kundli</h1>
+            <a href="javascript:void(0)" class="back-link" onclick="window.location='/?tab=match'">Match ↗</a>
             <!-- Language Toggle -->
             <div class="lang-toggle">
                 <button id="btn-hindu" class="lang-btn active" onclick="setLang('hindu')">संस्कृत</button>
@@ -23,8 +24,21 @@
             </div>
         </header>
 
+        <nav class="section-nav" id="section-nav">
+            <a href="#sec-info">Info</a>
+            <a href="#sec-charts">Charts</a>
+            <a href="#sec-planets">Planets</a>
+            <a href="#sec-houses">Houses</a>
+            <a href="#sec-aspects">Aspects</a>
+            <a href="#sec-yogas">Yogas</a>
+            <a href="#sec-dasha">Dasha</a>
+            <a href="#sec-life">Life Areas</a>
+            <a href="#sec-readings">Readings</a>
+            <a href="#sec-varga">Varga</a>
+        </nav>
+
         <!-- Birth Info -->
-        <section class="card info-card">
+        <section class="card info-card" id="sec-info">
             <div class="info-grid">
                 <div><span class="label">Date</span><span class="value">{{ birth_dt.strftime('%d %B %Y, %I:%M %p') }}</span></div>
                 <div><span class="label">Place</span><span class="value">{{ location }} ({{ "%.4f"|format(lat) }}°, {{ "%.4f"|format(lon) }}°)</span></div>
@@ -36,7 +50,7 @@
         </section>
 
         <!-- Charts Side by Side -->
-        <section class="card">
+        <section class="card" id="sec-charts">
             <h2>Birth Charts</h2>
             <div class="charts-row">
                 <!-- North Indian -->
@@ -104,7 +118,7 @@
         </section>
 
         <!-- Planetary Positions -->
-        <section class="card">
+        <section class="card" id="sec-planets">
             <h2>Planetary Positions</h2>
             <div class="table-wrap">
                 <table>
@@ -127,7 +141,7 @@
         </section>
 
         <!-- House Cusps -->
-        <section class="card">
+        <section class="card" id="sec-houses">
             <h2>House Cusps</h2>
             <div class="table-wrap">
                 <table>
@@ -146,7 +160,7 @@
         </section>
 
         <!-- Aspects -->
-        <section class="card">
+        <section class="card" id="sec-aspects">
             <h2>Planetary Aspects</h2>
             {% if aspects %}
             <div class="aspects-grid">
@@ -165,7 +179,7 @@
         </section>
 
         <!-- Yogas -->
-        <section class="card">
+        <section class="card" id="sec-yogas">
             <h2>Yogas</h2>
             {% if yogas %}
             {% for y in yogas %}
@@ -180,7 +194,7 @@
         </section>
 
         <!-- Vimshottari Dasha -->
-        <section class="card">
+        <section class="card" id="sec-dasha">
             <h2>Vimshottari Dasha</h2>
             <div class="dasha-timeline">
                 {% for d in dashas %}
@@ -231,7 +245,7 @@
         </section>
 
         <!-- Life Areas Deep Dive -->
-        <section class="card">
+        <section class="card" id="sec-life">
             <h2>Life Areas</h2>
             <p class="muted" style="margin-bottom:1rem">Tap any area to see a detailed reading based on your chart</p>
             <div class="life-areas-grid">
@@ -265,8 +279,7 @@
             </div>
         </section>
 
-        <!-- House Readings -->
-        <section class="card">
+        <section class="card" id="sec-readings">
             <div class="readings-header-row">
                 <h2>House Readings</h2>
                 <div class="mode-toggle">
@@ -357,7 +370,7 @@
         </section>
 
         <!-- Divisional Charts (Varga) -->
-        <section class="card">
+        <section class="card" id="sec-varga">
             <h2>Divisional Charts (Varga)</h2>
             <p class="muted" style="margin-bottom:1rem">Divisional charts reveal deeper layers of your birth chart. Tap any chart to expand.</p>
             <div class="varga-grid">
@@ -441,6 +454,8 @@
             <button onclick="askSuggestion(this)">⚠️ Challenges</button>
         </div>
     </div>
+
+    <button class="back-to-top" id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">↑</button>
 
     <script>
     function setLang(lang) {
@@ -533,6 +548,27 @@
         sendChat();
     }
     if('serviceWorker' in navigator) navigator.serviceWorker.register('/static/sw.js');
+
+    // Back-to-top visibility
+    const btt = document.getElementById('btt');
+    window.addEventListener('scroll', function() {
+        btt.classList.toggle('visible', window.scrollY > 400);
+    });
+
+    // Section nav scroll-spy
+    const navLinks = document.querySelectorAll('.section-nav a');
+    const sections = Array.from(navLinks).map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+    const navBar = document.getElementById('section-nav');
+    function updateNav() {
+        let current = '';
+        const offset = navBar ? navBar.offsetHeight + 80 : 80;
+        for (const sec of sections) {
+            if (sec.getBoundingClientRect().top <= offset) current = sec.id;
+        }
+        navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+    }
+    window.addEventListener('scroll', updateNav);
+    updateNav();
     </script>
 </body>
 </html>
