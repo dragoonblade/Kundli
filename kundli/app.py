@@ -162,7 +162,10 @@ def main():
 
     # Doshas
     print_section("Doshas")
-    doshas = check_doshas(planets, planet_house_map)
+    current_jd = to_julian(now, 0)
+    current_planets = compute_planets(current_jd)
+    current_saturn_sign = next(p["sign"] for p in current_planets if p["planet"] == "Shani")
+    doshas = check_doshas(planets, planet_house_map, current_saturn_sign)
     for d in doshas:
         status = "⚠ YES" if d["present"] else "✓ No"
         print(f"  {d['name']:<20} {status}")

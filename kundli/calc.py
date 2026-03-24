@@ -324,7 +324,7 @@ def compute_aspects(planets):
     return results
 
 
-def check_doshas(planets: list, planet_house_map: dict) -> list:
+def check_doshas(planets: list, planet_house_map: dict, current_saturn_sign: str | None = None) -> list:
     """Detect doshas (afflictions) from planetary positions and house placements."""
     doshas = []
 
@@ -358,6 +358,21 @@ def check_doshas(planets: list, planet_house_map: dict) -> list:
         })
     else:
         doshas.append({"name": "Kalsarpa Dosha", "present": False, "detail": "Planets are not confined to the Rahu-Ketu axis."})
+
+    # Sade Sati: Saturn transiting 12th, 1st, or 2nd sign from natal Moon
+    if current_saturn_sign:
+        moon_sign_idx = SIGNS.index(_get(planets, "Chandra")["sign"])
+        saturn_sign_idx = SIGNS.index(current_saturn_sign)
+        diff = (saturn_sign_idx - moon_sign_idx) % 12
+        if diff in (11, 0, 1):  # 12th, 1st, 2nd from Moon
+            phase = {11: "Rising (12th from Moon)", 0: "Peak (over Moon)", 1: "Setting (2nd from Moon)"}[diff]
+            doshas.append({
+                "name": "Sade Sati",
+                "present": True,
+                "detail": f"Saturn is transiting {current_saturn_sign} — {phase}. A 7.5-year period of challenges and transformation.",
+            })
+        else:
+            doshas.append({"name": "Sade Sati", "present": False, "detail": f"Saturn is in {current_saturn_sign}, not adjacent to your Moon sign."})
 
     return doshas
 

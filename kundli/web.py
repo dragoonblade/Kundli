@@ -244,7 +244,11 @@ def index():
     dashas = compute_pratyantar(dashas)
     aspects = compute_aspects(planets)
     yogas = check_yogas(planets, houses)
-    doshas = check_doshas(planets, planet_house_map)
+    # Current Saturn sign for Sade Sati
+    current_jd = to_julian(now, 0)  # now is already in user's tz, treat as UTC for current sky
+    current_planets = compute_planets(current_jd)
+    current_saturn_sign = next(p["sign"] for p in current_planets if p["planet"] == "Shani")
+    doshas = check_doshas(planets, planet_house_map, current_saturn_sign)
     chart_data = build_chart_data(planets, houses)
     house_readings, current_dasha = build_house_readings(planets, houses, dashas, now, planet_house_map)
     life_areas = generate_life_areas(planets, houses, dashas, current_dasha, planet_house_map)
