@@ -61,6 +61,12 @@ YOGAS = [
      "check": lambda p: _has_planet_offset_from_moon(p, 11)},
     {"name": "Durudhura", "desc": "Planets on both sides of Chandra — wealth, fame, generous nature",
      "check": lambda p: _has_planet_offset_from_moon(p, 1) and _has_planet_offset_from_moon(p, 11)},
+    {"name": "Voshi", "desc": "Planet (not Moon/Rahu/Ketu) in 12th from Surya — charitable, learned",
+     "check": lambda p: _has_planet_offset_from_sun(p, 11)},
+    {"name": "Veshi", "desc": "Planet (not Moon/Rahu/Ketu) in 2nd from Surya — eloquent, prosperous",
+     "check": lambda p: _has_planet_offset_from_sun(p, 1)},
+    {"name": "Obhayachari", "desc": "Planets on both sides of Surya — influential, strong personality",
+     "check": lambda p: _has_planet_offset_from_sun(p, 1) and _has_planet_offset_from_sun(p, 11)},
 ]
 
 
@@ -86,6 +92,14 @@ def _has_planet_offset_from_moon(planets, offset):
     moon_idx = _sign_index(planets, "Chandra")
     target = (moon_idx + offset) % 12
     excluded = {"Surya", "Rahu", "Ketu", "Chandra"}
+    return any(SIGNS.index(p["sign"]) == target for p in planets if p["planet"] not in excluded)
+
+
+def _has_planet_offset_from_sun(planets, offset):
+    """Check if any planet (not Moon/Rahu/Ketu) is `offset` signs from Sun."""
+    sun_idx = _sign_index(planets, "Surya")
+    target = (sun_idx + offset) % 12
+    excluded = {"Chandra", "Rahu", "Ketu", "Surya"}
     return any(SIGNS.index(p["sign"]) == target for p in planets if p["planet"] not in excluded)
 
 

@@ -24,6 +24,7 @@
                 <button id="btn-hindu" class="lang-btn active" onclick="setLang('hindu')">संस्कृत</button>
                 <button id="btn-english" class="lang-btn" onclick="setLang('english')">English</button>
             </div>
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode">🌓</button>
         </header>
 
         <nav class="section-nav" id="section-nav">
@@ -636,6 +637,12 @@
                    .replace(/var\(--bg\)/g, '#0c0c11')
         )));
     }
+
+    function toggleTheme() {
+        document.documentElement.classList.toggle('light');
+        localStorage.setItem('kundli-theme', document.documentElement.classList.contains('light') ? 'light' : 'dark');
+    }
+    if(localStorage.getItem('kundli-theme') === 'light') document.documentElement.classList.add('light');
     </script>
 </body>
 </html>

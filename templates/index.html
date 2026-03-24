@@ -18,6 +18,7 @@
         <header>
             <h1>🕉 Kundli</h1>
             <p class="subtitle">Vedic Birth Chart Generator</p>
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode">🌓</button>
         </header>
 
         <div class="tab-bar">
@@ -125,6 +126,11 @@ document.querySelectorAll('form').forEach(function(f) {
     });
 });
 if('serviceWorker' in navigator) navigator.serviceWorker.register('/static/sw.js');
+function toggleTheme() {
+    document.documentElement.classList.toggle('light');
+    localStorage.setItem('kundli-theme', document.documentElement.classList.contains('light') ? 'light' : 'dark');
+}
+if(localStorage.getItem('kundli-theme') === 'light') document.documentElement.classList.add('light');
 </script>
 </body>
 </html>

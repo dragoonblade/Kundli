@@ -26,6 +26,24 @@
     --space-xl: 2rem;
 }
 
+:root.light {
+    --bg: #f5f5f8;
+    --card: #ffffff;
+    --card-hover: #f0f0f5;
+    --border: #d8d8e0;
+    --text: #1a1a2e;
+    --text-secondary: #5a5a70;
+    --accent: #c07010;
+    --accent-dim: rgba(192, 112, 16, 0.1);
+    --accent-hover: #a86010;
+    --active: #e8f5ee;
+    --active-border: #2d8a50;
+    --active-dim: rgba(45, 138, 80, 0.08);
+    --planet: #2060b0;
+    --tag-bg: #eeeef4;
+    --danger: #c03030;
+}
+
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
@@ -1082,3 +1100,15 @@ footer {
 .strength-fill.strength-moderate { background: var(--accent); }
 .strength-fill.strength-weak { background: var(--danger); }
 .strength-val { font-size: 0.75rem; color: var(--text-secondary); text-align: right; }
+
+/* Theme Toggle */
+.theme-toggle {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    line-height: 1;
+}
+.theme-toggle:hover { border-color: var(--accent); }

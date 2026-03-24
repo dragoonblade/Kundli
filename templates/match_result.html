@@ -18,6 +18,7 @@
             <a href="/?tab=match" class="back-link">← New Match</a>
             <h1>🕉 Kundli Match</h1>
             <a href="/" class="back-link">Kundli ↗</a>
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode">🌓</button>
         </header>
 
         <nav class="section-nav" id="section-nav">
@@ -113,6 +114,11 @@
         navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
     }
     window.addEventListener('scroll', updateNav);
+    function toggleTheme() {
+        document.documentElement.classList.toggle('light');
+        localStorage.setItem('kundli-theme', document.documentElement.classList.contains('light') ? 'light' : 'dark');
+    }
+    if(localStorage.getItem('kundli-theme') === 'light') document.documentElement.classList.add('light');
     </script>
 </body>
 </html>
