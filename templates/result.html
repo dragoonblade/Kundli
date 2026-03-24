@@ -33,6 +33,7 @@
             <a href="#sec-aspects">Aspects</a>
             <a href="#sec-yogas">Yogas</a>
             <a href="#sec-doshas">Doshas</a>
+            <a href="#sec-transits">Transits</a>
             <a href="#sec-dasha">Dasha</a>
             <a href="#sec-life">Life Areas</a>
             <a href="#sec-readings">Readings</a>
@@ -216,6 +217,29 @@
                 </div>
             </div>
             {% endfor %}
+        </section>
+        {% endif %}
+
+        <!-- Current Transits (Gochar) -->
+        {% if transits %}
+        <section class="card" id="sec-transits">
+            <h2>Current Transits (Gochar)</h2>
+            <p class="muted" style="margin-bottom:0.75rem">Where the planets are right now, mapped to your birth chart houses</p>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Planet</th><th>Current Sign</th><th>Degree</th><th>Your House</th></tr></thead>
+                    <tbody>
+                        {% for t in transits %}
+                        <tr>
+                            <td class="planet-name"><span class="t" data-h="{{ t.planet }}" data-e="{{ planet_names[t.planet] }}">{{ t.planet }}</span></td>
+                            <td><span class="t" data-h="{{ t.sign }}" data-e="{{ sign_names[t.sign] }}">{{ t.sign }}</span></td>
+                            <td>{{ "%.2f"|format(t.degree) }}°</td>
+                            <td>House {{ t.house }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </section>
         {% endif %}
 

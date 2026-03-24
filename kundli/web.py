@@ -255,11 +255,18 @@ def _generate_chart(date_str, time_str, location, tz_str):
     dashas = compute_pratyantar(dashas)
     aspects = compute_aspects(planets)
     yogas = check_yogas(planets, houses)
-    # Current Saturn sign for Sade Sati
-    current_jd = to_julian(now, 0)  # now is already in user's tz, treat as UTC for current sky
+    # Current transit positions for Sade Sati + Gochar
+    current_jd = to_julian(now, 0)
     current_planets = compute_planets(current_jd)
     current_saturn_sign = next(p["sign"] for p in current_planets if p["planet"] == "Shani")
     doshas = check_doshas(planets, planet_house_map, current_saturn_sign)
+    # Transit: which natal house each transit planet is activating
+    transits = []
+    natal_asc_idx = SIGNS.index(houses[0]["sign"])
+    for tp in current_planets:
+        tp_sign_idx = SIGNS.index(tp["sign"])
+        transit_house = (tp_sign_idx - natal_asc_idx) % 12 + 1
+        transits.append({"planet": tp["planet"], "sign": tp["sign"], "degree": tp["degree"], "house": transit_house})
     chart_data = build_chart_data(planets, houses)
     house_readings, current_dasha = build_house_readings(planets, houses, dashas, now, planet_house_map)
     life_areas = generate_life_areas(planets, houses, dashas, current_dasha, planet_house_map)
@@ -315,6 +322,7 @@ def _generate_chart(date_str, time_str, location, tz_str):
         varga_charts=varga_charts,
         dosha_remedies=DOSHA_REMEDIES, planet_remedies=PLANET_REMEDIES,
         share_url=f"/?d={date_str}&t={time_str}&l={location}&z={tz_str}",
+        transits=transits,
     )
 
 
