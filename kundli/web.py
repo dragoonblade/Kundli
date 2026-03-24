@@ -27,8 +27,13 @@ from kundli.pdf import generate_kundli_pdf, generate_match_pdf
 from kundli.remedies import DOSHA_REMEDIES, PLANET_REMEDIES
 from kundli.ashtakavarga import compute_ashtakavarga
 
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+
 app = Flask(__name__, template_folder="../templates", static_folder="../static")
 app.secret_key = os.environ.get("KUNDLI_SECRET_KEY", "change-me-in-production")
+
+limiter = Limiter(get_remote_address, app=app, default_limits=["60 per minute"], storage_uri="memory://")
 
 
 @app.before_request
@@ -50,16 +55,37 @@ _CHART_TTL = 3600  # 1 hour
 
 
 class ChartStore:
-    """File-based TTL cache for chart contexts. Works across workers."""
+    """TTL cache for chart contexts. Uses Redis if REDIS_URL is set, else file-based."""
+
+    def __init__(self):
+        self._redis = None
+        redis_url = os.environ.get("REDIS_URL")
+        if redis_url:
+            try:
+                import redis
+                self._redis = redis.from_url(redis_url)
+                self._redis.ping()
+                logging.info("ChartStore: using Redis")
+            except Exception:
+                logging.warning("ChartStore: Redis unavailable, falling back to file-based")
+                self._redis = None
 
     def set(self, key, value):
+        payload = json.dumps({"data": self._serialize(value)})
+        if self._redis:
+            self._redis.setex(f"kundli:{key}", _CHART_TTL, payload)
+            return
         self._evict()
         path = os.path.join(_CHART_DIR, f"{key}.json")
-        payload = {"data": self._serialize(value), "ts": _time.time()}
         with open(path, "w") as f:
-            json.dump(payload, f)
+            json.dump({"data": self._serialize(value), "ts": _time.time()}, f)
 
     def get(self, key):
+        if self._redis:
+            raw = self._redis.get(f"kundli:{key}")
+            if not raw:
+                return None
+            return self._deserialize(json.loads(raw)["data"])
         path = os.path.join(_CHART_DIR, f"{key}.json")
         if not os.path.exists(path):
             return None
@@ -68,7 +94,7 @@ class ChartStore:
                 payload = json.load(f)
         except (json.JSONDecodeError, OSError):
             return None
-        if _time.time() - payload["ts"] > _CHART_TTL:
+        if _time.time() - payload.get("ts", 0) > _CHART_TTL:
             os.remove(path)
             return None
         return self._deserialize(payload["data"])
@@ -331,6 +357,7 @@ def _generate_chart(date_str, time_str, location, tz_str):
 
 
 @app.route("/match", methods=["POST"])
+@limiter.limit("10 per minute")
 def match():
     errors = []
     people = []
@@ -406,6 +433,7 @@ def match_pdf_download():
 
 
 @app.route("/api/chart", methods=["POST"])
+@limiter.limit("20 per minute")
 def api_chart():
     """REST API: generate chart from JSON input, return JSON output."""
     data = request.get_json()
