@@ -2,7 +2,10 @@
 from flask import Flask, render_template, request, jsonify, session as flask_session
 from datetime import datetime
 from geopy.geocoders import Nominatim
+import json
 import os
+import tempfile
+import time as _time
 import uuid
 import logging
 
@@ -13,58 +16,121 @@ from kundli.calc import (
     compute_dasha, compute_aspects, check_yogas, SIGNS,
     build_planet_house_map, compute_divisional_chart, DIVISIONAL_CHARTS,
 )
-from kundli.readings import (
-    HOUSE_THEMES, build_house_readings,
-)
-from kundli.names import PLANET_NAMES, SIGN_NAMES, PLANET_ABBR, SIGN_ABBR, SIGN_LORDS
+from kundli.readings import build_house_readings
+from kundli.names import PLANET_NAMES, SIGN_NAMES, PLANET_ABBR
 from kundli.chatbot import chat as chatbot_chat
 from kundli.lifeareas import generate_life_areas
 
 app = Flask(__name__, template_folder="../templates", static_folder="../static")
-app.secret_key = os.environ.get("KUNDLI_SECRET_KEY", os.urandom(24).hex())
+app.secret_key = os.environ.get("KUNDLI_SECRET_KEY", "change-me-in-production")
 
-# Server-side chart context with TTL eviction (max 100 entries)
-import time as _time
+
+@app.before_request
+def _log_request_start():
+    request._start_time = _time.time()
+
+
+@app.after_request
+def _log_request_end(response):
+    duration = _time.time() - getattr(request, "_start_time", _time.time())
+    if request.path != "/health":
+        logging.info(f"{request.method} {request.path} {response.status_code} {duration:.3f}s")
+    return response
+
+# File-based chart store so it works across multiple gunicorn workers
+_CHART_DIR = os.path.join(tempfile.gettempdir(), "kundli_charts")
+os.makedirs(_CHART_DIR, exist_ok=True)
+_CHART_TTL = 3600  # 1 hour
+
 
 class ChartStore:
-    """Simple TTL cache for chart contexts. Evicts oldest when full."""
-    def __init__(self, max_size=100, ttl=3600):
-        self._store = {}
-        self._max_size = max_size
-        self._ttl = ttl
+    """File-based TTL cache for chart contexts. Works across workers."""
 
     def set(self, key, value):
         self._evict()
-        self._store[key] = {"data": value, "ts": _time.time()}
+        path = os.path.join(_CHART_DIR, f"{key}.json")
+        payload = {"data": self._serialize(value), "ts": _time.time()}
+        with open(path, "w") as f:
+            json.dump(payload, f)
 
     def get(self, key):
-        entry = self._store.get(key)
-        if not entry:
+        path = os.path.join(_CHART_DIR, f"{key}.json")
+        if not os.path.exists(path):
             return None
-        if _time.time() - entry["ts"] > self._ttl:
-            del self._store[key]
+        try:
+            with open(path) as f:
+                payload = json.load(f)
+        except (json.JSONDecodeError, OSError):
             return None
-        return entry["data"]
+        if _time.time() - payload["ts"] > _CHART_TTL:
+            os.remove(path)
+            return None
+        return self._deserialize(payload["data"])
 
     def _evict(self):
         now = _time.time()
-        expired = [k for k, v in self._store.items() if now - v["ts"] > self._ttl]
-        for k in expired:
-            del self._store[k]
-        while len(self._store) >= self._max_size:
-            oldest = min(self._store, key=lambda k: self._store[k]["ts"])
-            del self._store[oldest]
+        try:
+            entries = sorted(
+                ((f, os.path.join(_CHART_DIR, f)) for f in os.listdir(_CHART_DIR) if f.endswith(".json")),
+                key=lambda x: os.path.getmtime(x[1]),
+            )
+        except OSError:
+            return
+        for name, path in entries:
+            try:
+                if now - os.path.getmtime(path) > _CHART_TTL:
+                    os.remove(path)
+            except OSError:
+                pass
+        # Cap at 100 entries
+        remaining = [p for _, p in entries if os.path.exists(p)]
+        while len(remaining) > 100:
+            try:
+                os.remove(remaining.pop(0))
+            except OSError:
+                pass
+
+    @staticmethod
+    def _serialize(ctx):
+        """Convert chart context to JSON-safe dict (datetimes → ISO strings)."""
+        out = dict(ctx)
+        out["planets"] = ctx["planets"]
+        out["houses"] = ctx["houses"]
+        out["dashas"] = [
+            {**d, "start": d["start"].isoformat(), "end": d["end"].isoformat()}
+            for d in ctx["dashas"]
+        ]
+        # house_readings contain no datetimes, safe as-is
+        return out
+
+    @staticmethod
+    def _deserialize(data):
+        """Restore chart context from JSON (ISO strings → datetimes)."""
+        data["dashas"] = [
+            {**d, "start": datetime.fromisoformat(d["start"]), "end": datetime.fromisoformat(d["end"])}
+            for d in data["dashas"]
+        ]
+        return data
+
 
 _chart_store = ChartStore()
 
 
+_geo_cache = {}
+
+
 def get_coordinates(location):
+    normalized = location.strip().lower()
+    if normalized in _geo_cache:
+        return _geo_cache[normalized]
     try:
         geo = Nominatim(user_agent="kundli_app", timeout=10)
         loc = geo.geocode(location)
         if not loc:
             return None, None
-        return loc.latitude, loc.longitude
+        result = (loc.latitude, loc.longitude)
+        _geo_cache[normalized] = result
+        return result
     except Exception:
         return None, None
 
@@ -87,7 +153,28 @@ def build_chart_data(planets, houses):
 
 @app.route("/health")
 def health():
-    return jsonify({"status": "ok"})
+    checks = {"status": "ok"}
+    # Verify Swiss Ephemeris is functional
+    try:
+        import swisseph as swe
+        test_jd = swe.julday(2000, 1, 1, 12.0)
+        swe.calc_ut(test_jd, swe.SUN)
+        checks["ephemeris"] = "ok"
+    except Exception as e:
+        checks["ephemeris"] = str(e)
+        checks["status"] = "degraded"
+    # Check chart store is writable
+    try:
+        test_path = os.path.join(_CHART_DIR, ".healthcheck")
+        with open(test_path, "w") as f:
+            f.write("ok")
+        os.remove(test_path)
+        checks["chart_store"] = "ok"
+    except Exception as e:
+        checks["chart_store"] = str(e)
+        checks["status"] = "degraded"
+    status_code = 200 if checks["status"] == "ok" else 503
+    return jsonify(checks), status_code
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -107,8 +194,10 @@ def index():
         year, month, day = map(int, date_str.split("-"))
         hour, minute = map(int, time_str.split(":"))
         birth_dt = datetime(year, month, day, hour, minute)
-    except (ValueError, TypeError):
-        return render_template("index.html", error="Invalid date or time format.")
+        if not (1 <= year <= 2100):
+            raise ValueError("Year out of supported range (1-2100)")
+    except (ValueError, TypeError) as e:
+        return render_template("index.html", error=f"Invalid date or time: {e}")
 
     try:
         tz = float(tz_str)
@@ -122,9 +211,14 @@ def index():
         return render_template("index.html", error=f"Could not find location: {location}")
 
     logging.info(f"Generating chart: {birth_dt.isoformat()} at {location} ({tz})")
-    jd = to_julian(birth_dt, tz)
-    planets = compute_planets(jd)
-    houses = compute_houses(jd, lat, lon)
+    try:
+        jd = to_julian(birth_dt, tz)
+        planets = compute_planets(jd)
+        houses = compute_houses(jd, lat, lon)
+    except Exception as e:
+        logging.exception("Chart computation failed")
+        return render_template("index.html", error=f"Could not compute chart: {e}")
+
     now = datetime.now()
 
     # Precompute shared data once
@@ -195,7 +289,9 @@ def chat_endpoint():
 
     chart_id = flask_session.get("chart_id")
     ctx = _chart_store.get(chart_id) if chart_id else None
+    has_ctx = ctx is not None
 
+    logging.info(f"Chat: chart_id={chart_id} has_ctx={has_ctx} q={question!r}")
     answer = chatbot_chat(question, ctx)
     return jsonify({"answer": answer})
 

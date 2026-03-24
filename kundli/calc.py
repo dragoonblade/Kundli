@@ -85,7 +85,8 @@ def compute_planets(jd):
     ayanamsa = swe.get_ayanamsa_ut(jd)
     results = []
     for pid, name in PLANETS.items():
-        calc_result = swe.calc_ut(jd, pid)[0]
+        flags = swe.FLG_SWIEPH | swe.FLG_SPEED
+        calc_result, ret_flags = swe.calc_ut(jd, pid, flags)
         lon = calc_result[0]
         lon_speed = calc_result[3]
         sid_lon = (lon - ayanamsa) % 360
