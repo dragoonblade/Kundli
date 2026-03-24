@@ -196,13 +196,23 @@ def health():
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "GET":
+        # Handle shareable link: /?d=DATE&t=TIME&l=LOCATION&z=TZ
+        if request.args.get("d"):
+            return _generate_chart(
+                request.args.get("d"), request.args.get("t", ""),
+                request.args.get("l", ""), request.args.get("z", "5.5"),
+            )
         return render_template("index.html")
 
-    date_str = request.form.get("date", "").strip()
-    time_str = request.form.get("time", "").strip()
-    location = request.form.get("location", "").strip()
-    tz_str = request.form.get("tz", "5.5").strip()
+    return _generate_chart(
+        request.form.get("date", "").strip(),
+        request.form.get("time", "").strip(),
+        request.form.get("location", "").strip(),
+        request.form.get("tz", "5.5").strip(),
+    )
 
+
+def _generate_chart(date_str, time_str, location, tz_str):
     if not date_str or not time_str or not location:
         return render_template("index.html", error="All fields are required.")
 
@@ -304,6 +314,7 @@ def index():
         life_areas=life_areas,
         varga_charts=varga_charts,
         dosha_remedies=DOSHA_REMEDIES, planet_remedies=PLANET_REMEDIES,
+        share_url=f"/?d={date_str}&t={time_str}&l={location}&z={tz_str}",
     )
 
 

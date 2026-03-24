@@ -1,0 +1,41 @@
+{% macro tz_select(id, name, selected='5.5') %}
+<select id="{{ id }}" name="{{ name }}">
+    <option value="-12" {% if selected == '-12' %}selected{% endif %}>UTC-12:00</option>
+    <option value="-11" {% if selected == '-11' %}selected{% endif %}>UTC-11:00</option>
+    <option value="-10" {% if selected == '-10' %}selected{% endif %}>UTC-10:00</option>
+    <option value="-9.5" {% if selected == '-9.5' %}selected{% endif %}>UTC-09:30</option>
+    <option value="-9" {% if selected == '-9' %}selected{% endif %}>UTC-09:00</option>
+    <option value="-8" {% if selected == '-8' %}selected{% endif %}>UTC-08:00</option>
+    <option value="-7" {% if selected == '-7' %}selected{% endif %}>UTC-07:00</option>
+    <option value="-6" {% if selected == '-6' %}selected{% endif %}>UTC-06:00</option>
+    <option value="-5" {% if selected == '-5' %}selected{% endif %}>UTC-05:00</option>
+    <option value="-4" {% if selected == '-4' %}selected{% endif %}>UTC-04:00</option>
+    <option value="-3.5" {% if selected == '-3.5' %}selected{% endif %}>UTC-03:30</option>
+    <option value="-3" {% if selected == '-3' %}selected{% endif %}>UTC-03:00</option>
+    <option value="-2" {% if selected == '-2' %}selected{% endif %}>UTC-02:00</option>
+    <option value="-1" {% if selected == '-1' %}selected{% endif %}>UTC-01:00</option>
+    <option value="0" {% if selected == '0' %}selected{% endif %}>UTC+00:00</option>
+    <option value="1" {% if selected == '1' %}selected{% endif %}>UTC+01:00</option>
+    <option value="2" {% if selected == '2' %}selected{% endif %}>UTC+02:00</option>
+    <option value="3" {% if selected == '3' %}selected{% endif %}>UTC+03:00</option>
+    <option value="3.5" {% if selected == '3.5' %}selected{% endif %}>UTC+03:30</option>
+    <option value="4" {% if selected == '4' %}selected{% endif %}>UTC+04:00</option>
+    <option value="4.5" {% if selected == '4.5' %}selected{% endif %}>UTC+04:30</option>
+    <option value="5" {% if selected == '5' %}selected{% endif %}>UTC+05:00</option>
+    <option value="5.5" {% if selected == '5.5' %}selected{% endif %}>UTC+05:30 (IST)</option>
+    <option value="5.75" {% if selected == '5.75' %}selected{% endif %}>UTC+05:45</option>
+    <option value="6" {% if selected == '6' %}selected{% endif %}>UTC+06:00</option>
+    <option value="6.5" {% if selected == '6.5' %}selected{% endif %}>UTC+06:30</option>
+    <option value="7" {% if selected == '7' %}selected{% endif %}>UTC+07:00</option>
+    <option value="8" {% if selected == '8' %}selected{% endif %}>UTC+08:00</option>
+    <option value="8.75" {% if selected == '8.75' %}selected{% endif %}>UTC+08:45</option>
+    <option value="9" {% if selected == '9' %}selected{% endif %}>UTC+09:00</option>
+    <option value="9.5" {% if selected == '9.5' %}selected{% endif %}>UTC+09:30</option>
+    <option value="10" {% if selected == '10' %}selected{% endif %}>UTC+10:00</option>
+    <option value="10.5" {% if selected == '10.5' %}selected{% endif %}>UTC+10:30</option>
+    <option value="11" {% if selected == '11' %}selected{% endif %}>UTC+11:00</option>
+    <option value="12" {% if selected == '12' %}selected{% endif %}>UTC+12:00</option>
+    <option value="12.75" {% if selected == '12.75' %}selected{% endif %}>UTC+12:45</option>
+    <option value="13" {% if selected == '13' %}selected{% endif %}>UTC+13:00</option>
+</select>
+{% endmacro %}

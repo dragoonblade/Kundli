@@ -1053,3 +1053,17 @@ footer {
 .dosha-remedies { margin-top: var(--space-sm); padding-top: var(--space-sm); border-top: 1px solid var(--border); }
 .remedy-label { font-size: 0.72rem; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.04em; }
 .remedy-item { font-size: 0.82rem; color: var(--text); line-height: 1.6; margin-top: 2px; }
+
+/* Share Button */
+.btn-share {
+    padding: var(--space-sm) var(--space-md);
+    background: var(--tag-bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 0.85rem;
+    cursor: pointer;
+    margin-bottom: var(--space-md);
+    margin-left: var(--space-sm);
+}
+.btn-share:hover { border-color: var(--accent); }
