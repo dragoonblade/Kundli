@@ -18,11 +18,19 @@
             <p class="subtitle">Vedic Birth Chart Generator</p>
         </header>
 
+        <div class="tab-bar">
+            <button class="tab-btn active" id="tab-kundli" onclick="switchTab('kundli')">🪐 Kundli</button>
+            <button class="tab-btn" id="tab-match" onclick="switchTab('match')">💑 Match</button>
+        </div>
+
         {% if error %}
         <div class="error">{{ error }}</div>
         {% endif %}
+        {% if match_error %}
+        <div class="error">{{ match_error }}</div>
+        {% endif %}
 
-        <form method="POST" action="/" class="form-card">
+        <form method="POST" action="/" class="form-card" id="form-kundli">
             <div class="form-grid">
                 <div class="form-group">
                     <label for="date">Birth Date</label>
@@ -82,7 +90,86 @@
             </div>
             <button type="submit">Generate Kundli</button>
         </form>
+
+        <form method="POST" action="/match" class="form-card" id="form-match" style="display:none">
+            <div class="match-grid">
+                <fieldset class="person-fields">
+                    <legend>Person 1</legend>
+                    <div class="form-group">
+                        <label for="name1">Name (optional)</label>
+                        <input type="text" id="name1" name="name1" placeholder="e.g. Rahul">
+                    </div>
+                    <div class="form-group">
+                        <label for="date1">Birth Date</label>
+                        <input type="date" id="date1" name="date1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="time1">Birth Time</label>
+                        <input type="time" id="time1" name="time1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="location1">Birth Place</label>
+                        <input type="text" id="location1" name="location1" required placeholder="e.g. Chandigarh, India">
+                    </div>
+                    <div class="form-group">
+                        <label for="tz1">Timezone</label>
+                        <select id="tz1" name="tz1">
+                            <option value="5.5" selected>UTC+05:30 (IST)</option>
+                            <option value="0">UTC+00:00</option>
+                            <option value="-5">UTC-05:00</option>
+                            <option value="-8">UTC-08:00</option>
+                            <option value="1">UTC+01:00</option>
+                            <option value="8">UTC+08:00</option>
+                            <option value="9">UTC+09:00</option>
+                        </select>
+                    </div>
+                </fieldset>
+                <fieldset class="person-fields">
+                    <legend>Person 2</legend>
+                    <div class="form-group">
+                        <label for="name2">Name (optional)</label>
+                        <input type="text" id="name2" name="name2" placeholder="e.g. Priya">
+                    </div>
+                    <div class="form-group">
+                        <label for="date2">Birth Date</label>
+                        <input type="date" id="date2" name="date2" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="time2">Birth Time</label>
+                        <input type="time" id="time2" name="time2" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="location2">Birth Place</label>
+                        <input type="text" id="location2" name="location2" required placeholder="e.g. Delhi, India">
+                    </div>
+                    <div class="form-group">
+                        <label for="tz2">Timezone</label>
+                        <select id="tz2" name="tz2">
+                            <option value="5.5" selected>UTC+05:30 (IST)</option>
+                            <option value="0">UTC+00:00</option>
+                            <option value="-5">UTC-05:00</option>
+                            <option value="-8">UTC-08:00</option>
+                            <option value="1">UTC+01:00</option>
+                            <option value="8">UTC+08:00</option>
+                            <option value="9">UTC+09:00</option>
+                        </select>
+                    </div>
+                </fieldset>
+            </div>
+            <button type="submit">Check Compatibility</button>
+        </form>
     </div>
-<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/static/sw.js');</script>
+<script>
+function switchTab(tab) {
+    document.getElementById('form-kundli').style.display = tab === 'kundli' ? '' : 'none';
+    document.getElementById('form-match').style.display = tab === 'match' ? '' : 'none';
+    document.getElementById('tab-kundli').classList.toggle('active', tab === 'kundli');
+    document.getElementById('tab-match').classList.toggle('active', tab === 'match');
+}
+{% if tab == 'match' %}
+switchTab('match');
+{% endif %}
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/static/sw.js');
+</script>
 </body>
 </html>

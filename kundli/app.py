@@ -11,6 +11,7 @@ from kundli.calc import (
 )
 from kundli.chart import draw_north_indian, draw_south_indian
 from kundli.readings import build_house_readings
+from kundli.match import compute_ashtakoota
 
 
 def get_coordinates(location):
@@ -25,6 +26,57 @@ def print_section(title):
     print(f"\n  -- {title} {'─' * (50 - len(title))}")
 
 
+def _get_moon_info(date_str, time_str, location, tz):
+    """Parse inputs and return moon nakshatra info."""
+    day, month, year = map(int, date_str.split("-"))
+    hour, minute = map(int, time_str.split(":"))
+    birth_dt = datetime(year, month, day, hour, minute)
+    lat, lon = get_coordinates(location)
+    jd = to_julian(birth_dt, tz)
+    planets = compute_planets(jd)
+    moon = next(p for p in planets if p["planet"] == "Chandra")
+    nak_idx = int(moon["longitude"] // (360 / 27))
+    return {"sign": moon["sign"], "nakshatra": moon["nakshatra"], "nak_idx": nak_idx}
+
+
+def run_match(args):
+    """Run Ashtakoota Gun Milan match."""
+    m1 = _get_moon_info(args.date, args.time, args.location, args.tz)
+    m2 = _get_moon_info(args.date2, args.time2, args.location2, args.tz2)
+    result = compute_ashtakoota(m1["nak_idx"], m2["nak_idx"])
+
+    print(f"\n{'=' * 60}")
+    print(f"  KUNDLI MATCH -- Ashtakoota Gun Milan")
+    print(f"{'=' * 60}")
+    print(f"  Person 1: {m1['sign']} / {m1['nakshatra']}")
+    print(f"  Person 2: {m2['sign']} / {m2['nakshatra']}")
+    print(f"\n  {'Koota':<16} {'Person 1':<14} {'Person 2':<14} {'Score':>7}")
+    print(f"  {'-' * 55}")
+    for k in result["kootas"]:
+        print(f"  {k['name']:<16} {k['boy']:<14} {k['girl']:<14} {k['score']:>4}/{k['max']}")
+    print(f"  {'-' * 55}")
+    print(f"  {'Total':<16} {'':<14} {'':<14} {result['total']:>4}/{result['max']}")
+
+    pct = result["total"] / result["max"] * 100
+    if result["total"] >= 32:
+        verdict = "Excellent match"
+    elif result["total"] >= 24:
+        verdict = "Good match — recommended"
+    elif result["total"] >= 18:
+        verdict = "Average — proceed with caution"
+    else:
+        verdict = "Not recommended"
+    print(f"\n  Verdict: {verdict} ({pct:.0f}%)")
+
+    nadi = result["kootas"][7]
+    bhakoot = result["kootas"][6]
+    if nadi["score"] == 0:
+        print(f"\n  ⚠ Nadi Dosha: Both have {nadi['boy']} Nadi")
+    if bhakoot["score"] == 0:
+        print(f"  ⚠ Bhakoot Dosha: {bhakoot['boy']}-{bhakoot['girl']} axis")
+    print(f"\n{'=' * 60}\n")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Vedic Kundli (Birth Chart) Generator")
     parser.add_argument("--date", required=True, help="Birth date: DD-MM-YYYY")
@@ -32,7 +84,17 @@ def main():
     parser.add_argument("--location", required=True, help="Birth place")
     parser.add_argument("--tz", type=float, default=5.5, help="Timezone offset from UTC (default: 5.5 for IST)")
     parser.add_argument("--chart", choices=["north", "south", "both"], default="both", help="Chart style")
+    parser.add_argument("--match", action="store_true", help="Match mode: compare two charts")
+    parser.add_argument("--date2", help="Second person birth date: DD-MM-YYYY (match mode)")
+    parser.add_argument("--time2", help="Second person birth time: HH:MM (match mode)")
+    parser.add_argument("--location2", help="Second person birth place (match mode)")
+    parser.add_argument("--tz2", type=float, default=5.5, help="Second person timezone offset (match mode)")
     args = parser.parse_args()
+
+    if args.match:
+        if not all([args.date2, args.time2, args.location2]):
+            parser.error("--match requires --date2, --time2, --location2")
+        return run_match(args)
 
     day, month, year = map(int, args.date.split("-"))
     hour, minute = map(int, args.time.split(":"))

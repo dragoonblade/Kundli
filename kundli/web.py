@@ -20,6 +20,7 @@ from kundli.calc import (
 from kundli.readings import build_house_readings
 from kundli.names import PLANET_NAMES, SIGN_NAMES, PLANET_ABBR
 from kundli.chatbot import chat as chatbot_chat
+from kundli.match import compute_ashtakoota
 from kundli.lifeareas import generate_life_areas
 
 app = Flask(__name__, template_folder="../templates", static_folder="../static")
@@ -280,6 +281,46 @@ def index():
         life_areas=life_areas,
         varga_charts=varga_charts,
     )
+
+
+@app.route("/match", methods=["POST"])
+def match():
+    errors = []
+    people = []
+    for i in ("1", "2"):
+        date_str = request.form.get(f"date{i}", "").strip()
+        time_str = request.form.get(f"time{i}", "").strip()
+        location = request.form.get(f"location{i}", "").strip()
+        tz_str = request.form.get(f"tz{i}", "5.5").strip()
+        name = request.form.get(f"name{i}", "").strip() or f"Person {i}"
+        if not date_str or not time_str or not location:
+            errors.append(f"All fields required for Person {i}.")
+            continue
+        try:
+            year, month, day = map(int, date_str.split("-"))
+            hour, minute = map(int, time_str.split(":"))
+            birth_dt = datetime(year, month, day, hour, minute)
+            tz = float(tz_str)
+        except (ValueError, TypeError):
+            errors.append(f"Invalid date/time for Person {i}.")
+            continue
+        lat, lon = get_coordinates(location)
+        if lat is None:
+            errors.append(f"Could not find location: {location}")
+            continue
+        jd = to_julian(birth_dt, tz)
+        planets = compute_planets(jd)
+        moon = next(p for p in planets if p["planet"] == "Chandra")
+        nak_idx = int(moon["longitude"] // (360 / 27))
+        people.append({"name": name, "moon_sign": moon["sign"], "nakshatra": moon["nakshatra"], "nak_idx": nak_idx})
+
+    if errors:
+        return render_template("index.html", match_error="; ".join(errors), tab="match")
+    if len(people) < 2:
+        return render_template("index.html", match_error="Both persons required.", tab="match")
+
+    result = compute_ashtakoota(people[0]["nak_idx"], people[1]["nak_idx"])
+    return render_template("match_result.html", result=result, people=people, planet_names=PLANET_NAMES, sign_names=SIGN_NAMES)
 
 
 @app.route("/chat", methods=["POST"])

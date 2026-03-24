@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kundli Match — Gun Milan</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <meta name="theme-color" content="#f0a030">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🕉 Kundli Match</h1>
+            <p class="subtitle">Ashtakoota Gun Milan</p>
+        </header>
+
+        <section class="card match-header">
+            <div class="match-score">
+                <div class="match-score-num">{{ result.total }}<span class="match-score-max"> / {{ result.max }}</span></div>
+                <div class="match-bar"><div class="match-fill {% if result.total >= 24 %}match-good{% elif result.total >= 18 %}match-avg{% else %}match-poor{% endif %}" style="width: {{ (result.total / result.max * 100)|int }}%"></div></div>
+                {% if result.total >= 32 %}
+                <div class="match-verdict match-good">Excellent match</div>
+                {% elif result.total >= 24 %}
+                <div class="match-verdict match-good">Good match — recommended</div>
+                {% elif result.total >= 18 %}
+                <div class="match-verdict match-avg">Average — proceed with caution</div>
+                {% else %}
+                <div class="match-verdict match-poor">Not recommended</div>
+                {% endif %}
+            </div>
+            <div class="match-people">
+                <div class="match-person">
+                    <div class="match-person-name">{{ people[0].name }}</div>
+                    <div class="match-person-detail">{{ people[0].moon_sign }} · {{ people[0].nakshatra }}</div>
+                </div>
+                <div class="match-vs">⟷</div>
+                <div class="match-person">
+                    <div class="match-person-name">{{ people[1].name }}</div>
+                    <div class="match-person-detail">{{ people[1].moon_sign }} · {{ people[1].nakshatra }}</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Koota Breakdown</h2>
+            <div class="koota-table">
+                <div class="koota-header">
+                    <span>Koota</span>
+                    <span>{{ people[0].name }}</span>
+                    <span>{{ people[1].name }}</span>
+                    <span>Score</span>
+                </div>
+                {% for k in result.kootas %}
+                <div class="koota-row {% if k.score == 0 %}koota-zero{% elif k.score == k.max %}koota-full{% endif %}">
+                    <span class="koota-name">{{ k.name }}<span class="koota-desc">{{ k.description }}</span></span>
+                    <span class="koota-val">{{ k.boy }}</span>
+                    <span class="koota-val">{{ k.girl }}</span>
+                    <span class="koota-score">{{ k.score }} / {{ k.max }}</span>
+                </div>
+                {% endfor %}
+                <div class="koota-row koota-total">
+                    <span class="koota-name">Total</span>
+                    <span></span>
+                    <span></span>
+                    <span class="koota-score">{{ result.total }} / {{ result.max }}</span>
+                </div>
+            </div>
+        </section>
+
+        {% set nadi = result.kootas[7] %}
+        {% set bhakoot = result.kootas[6] %}
+        {% if nadi.score == 0 or bhakoot.score == 0 %}
+        <section class="card match-warnings">
+            <h2>⚠️ Doshas</h2>
+            {% if nadi.score == 0 %}
+            <div class="match-dosha">Nadi Dosha — Both have {{ nadi.boy }} Nadi. Same Nadi may indicate health concerns in offspring. Consult a Jyotish for remedies.</div>
+            {% endif %}
+            {% if bhakoot.score == 0 %}
+            <div class="match-dosha">Bhakoot Dosha — {{ bhakoot.boy }} and {{ bhakoot.girl }} are in an unfavorable axis. May indicate challenges in health or finances.</div>
+            {% endif %}
+        </section>
+        {% endif %}
+
+        <div class="match-actions">
+            <a href="/" class="btn-link">← New Match</a>
+        </div>
+    </div>
+</body>
+</html>
