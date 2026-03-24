@@ -67,6 +67,16 @@ YOGAS = [
      "check": lambda p: _has_planet_offset_from_sun(p, 1)},
     {"name": "Obhayachari", "desc": "Planets on both sides of Surya — influential, strong personality",
      "check": lambda p: _has_planet_offset_from_sun(p, 1) and _has_planet_offset_from_sun(p, 11)},
+    {"name": "Lakshmi", "desc": "Shukra in own or exalted sign — wealth, beauty, fortune",
+     "check": lambda p: _get(p, "Shukra")["sign"] in ("Vrishabha", "Tula", "Meena")},
+    {"name": "Chandra-Budh", "desc": "Chandra and Budh in same sign — sharp mind, good memory",
+     "check": lambda p: _same_sign(p, "Chandra", "Budh")},
+    {"name": "Shani-Mangal", "desc": "Shani and Mangal in same sign — determination, technical ability",
+     "check": lambda p: _same_sign(p, "Shani", "Mangal")},
+    {"name": "Surya-Mangal", "desc": "Surya and Mangal in same sign — courage, leadership, authority",
+     "check": lambda p: _same_sign(p, "Surya", "Mangal")},
+    {"name": "Guru-Mangal", "desc": "Guru and Mangal in same sign — righteous action, spiritual courage",
+     "check": lambda p: _same_sign(p, "Guru", "Mangal")},
 ]
 
 
