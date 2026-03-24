@@ -1,3 +1,4 @@
+{% from 'macros.html' import south_indian_chart %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -81,42 +82,7 @@
                 <!-- South Indian -->
                 <div class="chart-box">
                     <h3>South Indian</h3>
-                    {% set si_layout = [[11,0,1,2],[10,-1,-1,3],[9,-1,-1,4],[8,7,6,5]] %}
-                    <svg viewBox="0 0 360 360" class="chart-svg" role="img" aria-label="South Indian birth chart diagram">
-                        {% for r in range(4) %}
-                        {% for c in range(4) %}
-                        {% set si = si_layout[r][c] %}
-                        {% set x = 5 + c * 87.5 %}
-                        {% set y = 5 + r * 87.5 %}
-                        <rect x="{{ x }}" y="{{ y }}" width="87.5" height="87.5"
-                              fill="{% if si == -1 %}var(--bg){% else %}none{% endif %}"
-                              stroke="{% if si != -1 %}var(--border){% else %}none{% endif %}" stroke-width="1"/>
-                        {% if si != -1 %}
-                        {% set sign = chart[(si - (chart|length) + 13) | int] if false else none %}
-                        {# Build sign/planet data from planets list #}
-                        {% set sign_h = [] %}{% set sign_e = [] %}{% set pl_h = [] %}{% set pl_e = [] %}
-                        {% for ch_key in range(1,13) %}
-                            {% set ch = chart[ch_key] %}
-                        {% endfor %}
-                        {# Direct lookup: si is the sign index (0-11) in SIGNS order #}
-                        {% set abbr_h = {'Surya':'Su','Chandra':'Ch','Mangal':'Ma','Budh':'Bu','Guru':'Gu','Shukra':'Sk','Shani':'Sa','Rahu':'Ra','Ketu':'Ke'} %}
-                        {% set abbr_e = {'Surya':'Su','Chandra':'Mo','Mangal':'Ma','Budh':'Me','Guru':'Ju','Shukra':'Ve','Shani':'Sa','Rahu':'Ra','Ketu':'Ke'} %}
-                        {% set signs_h = ['Mes','Vri','Mit','Kar','Sim','Kan','Tul','Vrs','Dha','Mak','Kum','Mee'] %}
-                        {% set signs_e = ['Ari','Tau','Gem','Can','Leo','Vir','Lib','Sco','Sag','Cap','Aqu','Pis'] %}
-                        {% set signs_full_h = ['Mesha','Vrishabha','Mithuna','Karka','Simha','Kanya','Tula','Vrishchika','Dhanu','Makara','Kumbha','Meena'] %}
-                        {% set pls_h = [] %}{% set pls_e = [] %}
-                        {% for p in planets %}
-                            {% if p.sign == signs_full_h[si] %}
-                                {% if pls_h.append(abbr_h[p.planet]) %}{% endif %}
-                                {% if pls_e.append(abbr_e[p.planet]) %}{% endif %}
-                            {% endif %}
-                        {% endfor %}
-                        <text x="{{ x + 43.75 }}" y="{{ y + 30 }}" class="chart-sign t" data-h="{{ signs_h[si] }}" data-e="{{ signs_e[si] }}">{{ signs_h[si] }}</text>
-                        <text x="{{ x + 43.75 }}" y="{{ y + 55 }}" class="chart-planets t" data-h="{{ pls_h|join(' ') }}" data-e="{{ pls_e|join(' ') }}">{{ pls_h|join(' ') }}</text>
-                        {% endif %}
-                        {% endfor %}
-                        {% endfor %}
-                    </svg>
+                    {{ south_indian_chart(planets, planet_names, sign_names) }}
                 </div>
             </div>
         </section>
@@ -456,24 +422,7 @@
                     </div>
                     <div class="la-body">
                         <!-- South Indian style chart -->
-                        {% set si_layout = [[11,0,1,2],[10,-1,-1,3],[9,-1,-1,4],[8,7,6,5]] %}
-                        <svg viewBox="0 0 360 360" class="chart-svg varga-svg">
-                            {% for r in range(4) %}
-                            {% for c in range(4) %}
-                            {% set si = si_layout[r][c] %}
-                            {% set x = 5 + c * 87.5 %}
-                            {% set y = 5 + r * 87.5 %}
-                            <rect x="{{ x }}" y="{{ y }}" width="87.5" height="87.5"
-                                  fill="{% if si == -1 %}var(--bg){% else %}none{% endif %}"
-                                  stroke="{% if si != -1 %}var(--border){% else %}none{% endif %}" stroke-width="1"/>
-                            {% if si != -1 %}
-                            {% set cell = vc.chart_cells[si] %}
-                            <text x="{{ x + 43.75 }}" y="{{ y + 30 }}" class="chart-sign t" data-h="{{ cell.sign_h }}" data-e="{{ cell.sign_e }}">{{ cell.sign_h }}</text>
-                            <text x="{{ x + 43.75 }}" y="{{ y + 55 }}" class="chart-planets t" data-h="{{ cell.planets_h }}" data-e="{{ cell.planets_e }}">{{ cell.planets_h }}</text>
-                            {% endif %}
-                            {% endfor %}
-                            {% endfor %}
-                        </svg>
+                        {{ south_indian_chart(vc.planets, planet_names, sign_names, 'varga-svg') }}
 
                         <!-- Planet positions table -->
                         <div class="table-wrap" style="margin-top:0.75rem">

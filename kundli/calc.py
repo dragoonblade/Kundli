@@ -392,7 +392,7 @@ def check_doshas(planets: list, planet_house_map: dict, current_saturn_sign: str
         doshas.append({
             "name": "Manglik Dosha",
             "present": True,
-            "detail": f"Mangal (Mars) is in House {mars_house}. Traditionally significant for marriage compatibility.",
+            "detail": f"Mangal (Mars) is in House {mars_house}. This brings strong energy and drive. For marriage, matching with another Manglik or performing remedies can harmonize this influence.",
         })
     else:
         doshas.append({"name": "Manglik Dosha", "present": False, "detail": "Mangal is not in houses 1/2/4/7/8/12."})
@@ -412,7 +412,7 @@ def check_doshas(planets: list, planet_house_map: dict, current_saturn_sign: str
         doshas.append({
             "name": "Kalsarpa Dosha",
             "present": True,
-            "detail": "All planets are hemmed between the Rahu-Ketu axis. Indicates karmic patterns requiring resolution.",
+            "detail": "All planets are between the Rahu-Ketu axis. This indicates a focused karmic path — with awareness and remedies, it brings deep spiritual growth and eventual success.",
         })
     else:
         doshas.append({"name": "Kalsarpa Dosha", "present": False, "detail": "Planets are not confined to the Rahu-Ketu axis."})
@@ -427,7 +427,7 @@ def check_doshas(planets: list, planet_house_map: dict, current_saturn_sign: str
             doshas.append({
                 "name": "Sade Sati",
                 "present": True,
-                "detail": f"Saturn is transiting {current_saturn_sign} — {phase}. A 7.5-year period of challenges and transformation.",
+                "detail": f"Saturn is transiting {current_saturn_sign} — {phase}. This 7.5-year period builds resilience, discipline, and lasting achievements through patience.",
             })
         else:
             doshas.append({"name": "Sade Sati", "present": False, "detail": f"Saturn is in {current_saturn_sign}, not adjacent to your Moon sign."})
