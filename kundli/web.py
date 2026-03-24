@@ -404,6 +404,45 @@ def match_pdf_download():
     }
 
 
+
+@app.route("/api/chart", methods=["POST"])
+def api_chart():
+    """REST API: generate chart from JSON input, return JSON output."""
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "JSON body required"}), 400
+    date_str = data.get("date", "")
+    time_str = data.get("time", "")
+    location = data.get("location", "")
+    tz_val = data.get("tz", 5.5)
+    if not all([date_str, time_str, location]):
+        return jsonify({"error": "date, time, location required"}), 400
+    try:
+        year, month, day = map(int, date_str.split("-"))
+        hour, minute = map(int, time_str.split(":"))
+        birth_dt = datetime(year, month, day, hour, minute)
+        tz = float(tz_val)
+    except (ValueError, TypeError) as e:
+        return jsonify({"error": f"Invalid input: {e}"}), 400
+    lat, lon = get_coordinates(location)
+    if lat is None:
+        return jsonify({"error": f"Could not find location: {location}"}), 400
+    jd = to_julian(birth_dt, tz)
+    planets = compute_planets(jd)
+    houses = compute_houses(jd, lat, lon)
+    planet_house_map = build_planet_house_map(planets, houses)
+    moon = next(p for p in planets if p["planet"] == "Chandra")
+    dashas = compute_dasha(moon["longitude"], birth_dt)
+    yogas = check_yogas(planets, houses, planet_house_map)
+    return jsonify({
+        "birth": {"date": date_str, "time": time_str, "location": location, "tz": tz, "lat": lat, "lon": lon},
+        "lagna": {"sign": houses[0]["sign"], "degree": houses[0]["degree"]},
+        "planets": planets,
+        "houses": houses,
+        "dashas": [{"lord": d["lord"], "start": d["start"].isoformat(), "end": d["end"].isoformat(), "years": d["years"]} for d in dashas],
+        "yogas": yogas,
+    })
+
 @app.route("/chat", methods=["POST"])
 def chat_endpoint():
     data = request.get_json()
