@@ -98,20 +98,32 @@ class ChartStore:
         out = dict(ctx)
         out["planets"] = ctx["planets"]
         out["houses"] = ctx["houses"]
-        out["dashas"] = [
-            {**d, "start": d["start"].isoformat(), "end": d["end"].isoformat()}
-            for d in ctx["dashas"]
-        ]
-        # house_readings contain no datetimes, safe as-is
+
+        def _ser_period(d):
+            s = {**d, "start": d["start"].isoformat(), "end": d["end"].isoformat()}
+            if "antardasha" in d:
+                s["antardasha"] = [_ser_period(a) for a in d["antardasha"]]
+            if "pratyantar" in d:
+                s["pratyantar"] = [_ser_period(p) for p in d["pratyantar"]]
+            return s
+
+        out["dashas"] = [_ser_period(d) for d in ctx["dashas"]]
         return out
 
     @staticmethod
     def _deserialize(data):
         """Restore chart context from JSON (ISO strings → datetimes)."""
-        data["dashas"] = [
-            {**d, "start": datetime.fromisoformat(d["start"]), "end": datetime.fromisoformat(d["end"])}
-            for d in data["dashas"]
-        ]
+
+        def _deser_period(d):
+            d["start"] = datetime.fromisoformat(d["start"])
+            d["end"] = datetime.fromisoformat(d["end"])
+            if "antardasha" in d:
+                d["antardasha"] = [_deser_period(a) for a in d["antardasha"]]
+            if "pratyantar" in d:
+                d["pratyantar"] = [_deser_period(p) for p in d["pratyantar"]]
+            return d
+
+        data["dashas"] = [_deser_period(d) for d in data["dashas"]]
         return data
 
 
