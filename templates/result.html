@@ -326,6 +326,63 @@
             </div>
         </section>
 
+        <!-- Divisional Charts (Varga) -->
+        <section class="card">
+            <h2>Divisional Charts (Varga)</h2>
+            <p class="muted" style="margin-bottom:1rem">Divisional charts reveal deeper layers of your birth chart. Tap any chart to expand.</p>
+            <div class="varga-grid">
+                {% for vc in varga_charts %}
+                <div class="la-card" onclick="this.classList.toggle('la-open')">
+                    <div class="la-header">
+                        <span class="la-icon varga-key">{{ vc.key }}</span>
+                        <div>
+                            <h3>{{ vc.name }}</h3>
+                            <p class="la-desc">{{ vc.desc }}</p>
+                        </div>
+                        <span class="la-chevron">▾</span>
+                    </div>
+                    <div class="la-body">
+                        <!-- South Indian style chart -->
+                        {% set si_layout = [[11,0,1,2],[10,-1,-1,3],[9,-1,-1,4],[8,7,6,5]] %}
+                        <svg viewBox="0 0 360 360" class="chart-svg varga-svg">
+                            {% for r in range(4) %}
+                            {% for c in range(4) %}
+                            {% set si = si_layout[r][c] %}
+                            {% set x = 5 + c * 87.5 %}
+                            {% set y = 5 + r * 87.5 %}
+                            <rect x="{{ x }}" y="{{ y }}" width="87.5" height="87.5"
+                                  fill="{% if si == -1 %}var(--bg){% else %}none{% endif %}"
+                                  stroke="{% if si != -1 %}var(--border){% else %}none{% endif %}" stroke-width="1"/>
+                            {% if si != -1 %}
+                            {% set cell = vc.chart_cells[si] %}
+                            <text x="{{ x + 43.75 }}" y="{{ y + 30 }}" class="chart-sign t" data-h="{{ cell.sign_h }}" data-e="{{ cell.sign_e }}">{{ cell.sign_h }}</text>
+                            <text x="{{ x + 43.75 }}" y="{{ y + 55 }}" class="chart-planets t" data-h="{{ cell.planets_h }}" data-e="{{ cell.planets_e }}">{{ cell.planets_h }}</text>
+                            {% endif %}
+                            {% endfor %}
+                            {% endfor %}
+                        </svg>
+
+                        <!-- Planet positions table -->
+                        <div class="table-wrap" style="margin-top:0.75rem">
+                            <table>
+                                <thead><tr><th>Planet</th><th>Sign</th><th>Degree</th></tr></thead>
+                                <tbody>
+                                    {% for p in vc.planets %}
+                                    <tr>
+                                        <td class="planet-name"><span class="t" data-h="{{ p.planet }}" data-e="{{ planet_names[p.planet] }}">{{ p.planet }}</span>{% if p.retrograde %} <span class="retro-badge t" data-h="वक्री" data-e="R">वक्री</span>{% endif %}</td>
+                                        <td><span class="t" data-h="{{ p.sign }}" data-e="{{ sign_names[p.sign] }}">{{ p.sign }}</span></td>
+                                        <td>{{ "%.2f"|format(p.degree) }}°</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
         <footer>
             <p>Calculations powered by Swiss Ephemeris · For educational purposes only</p>
         </footer>

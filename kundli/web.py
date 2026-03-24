@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(mess
 from kundli.calc import (
     to_julian, compute_planets, compute_houses,
     compute_dasha, compute_aspects, check_yogas, SIGNS,
-    build_planet_house_map,
+    build_planet_house_map, compute_divisional_chart, DIVISIONAL_CHARTS,
 )
 from kundli.readings import (
     HOUSE_THEMES, build_house_readings,
@@ -137,6 +137,29 @@ def index():
     house_readings, current_dasha = build_house_readings(planets, houses, dashas, now, planet_house_map)
     life_areas = generate_life_areas(planets, houses, dashas, current_dasha, planet_house_map)
 
+    # Divisional charts (skip D-1, that's the birth chart)
+    varga_charts = []
+    for key, info in DIVISIONAL_CHARTS.items():
+        if info["div"] == 1:
+            continue
+        div_planets = compute_divisional_chart(planets, info["div"])
+        # Build South Indian style chart data
+        chart_cells = {}
+        for si in range(12):
+            sign = SIGNS[si]
+            pls_h = [PLANET_ABBR["hindu"][p["planet"]] for p in div_planets if p["sign"] == sign]
+            pls_e = [PLANET_ABBR["english"][p["planet"]] for p in div_planets if p["sign"] == sign]
+            chart_cells[si] = {
+                "sign_h": sign[:3],
+                "sign_e": SIGN_NAMES.get(sign, sign)[:3],
+                "planets_h": " ".join(pls_h),
+                "planets_e": " ".join(pls_e),
+            }
+        varga_charts.append({
+            "key": key, "name": info["name"], "desc": info["desc"],
+            "planets": div_planets, "chart_cells": chart_cells,
+        })
+
     # Store chart context for chatbot
     chart_id = uuid.uuid4().hex[:8]
     _chart_store.set(chart_id, {
@@ -157,6 +180,7 @@ def index():
         current_dasha=current_dasha, now=now,
         planet_names=PLANET_NAMES, sign_names=SIGN_NAMES,
         life_areas=life_areas,
+        varga_charts=varga_charts,
     )
 
 
