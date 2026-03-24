@@ -1122,3 +1122,17 @@ footer {
 .av-good { background: var(--active); }
 .av-good .av-pts { color: var(--active-border); }
 .av-weak .av-pts { color: var(--danger); }
+
+/* Saved Charts */
+.saved-item {
+    display: block;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: var(--space-xs);
+}
+.saved-item:hover { border-color: var(--accent); }

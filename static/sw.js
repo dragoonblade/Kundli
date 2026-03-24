@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kundli-v1';
+const CACHE_NAME = 'kundli-v2';
 const ASSETS = [
   '/',
   '/static/style.css',
@@ -22,15 +22,27 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  // Network-first for API calls, cache-first for static assets
   if (e.request.method === 'POST') return;
-  e.respondWith(
-    fetch(e.request)
-      .then(r => {
+  // Cache chart result pages (GET with query params)
+  const url = new URL(e.request.url);
+  const isChartPage = url.pathname === '/' && url.searchParams.has('d');
+  if (isChartPage) {
+    // Network first, cache result for offline
+    e.respondWith(
+      fetch(e.request).then(r => {
         const clone = r.clone();
         caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
         return r;
-      })
-      .catch(() => caches.match(e.request))
+      }).catch(() => caches.match(e.request))
+    );
+    return;
+  }
+  // Static assets: network first, fallback to cache
+  e.respondWith(
+    fetch(e.request).then(r => {
+      const clone = r.clone();
+      caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
+      return r;
+    }).catch(() => caches.match(e.request))
   );
 });

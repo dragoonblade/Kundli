@@ -107,6 +107,11 @@
             </div>
             <button type="submit">Check Compatibility</button>
         </form>
+
+        <div id="saved-charts" style="display:none">
+            <h3 style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:var(--space-sm)">💾 Saved Charts</h3>
+            <div id="saved-list"></div>
+        </div>
     </div>
 <script>
 function switchTab(tab) {
@@ -131,6 +136,32 @@ function toggleTheme() {
     localStorage.setItem('kundli-theme', document.documentElement.classList.contains('light') ? 'light' : 'dark');
 }
 if(localStorage.getItem('kundli-theme') === 'light') document.documentElement.classList.add('light');
+
+// Load saved charts from IndexedDB
+(function() {
+    var req = indexedDB.open('kundli-charts', 1);
+    req.onupgradeneeded = function(e) { e.target.result.createObjectStore('charts', {keyPath: 'id'}); };
+    req.onsuccess = function(e) {
+        var db = e.target.result;
+        var tx = db.transaction('charts', 'readonly');
+        var all = tx.objectStore('charts').getAll();
+        all.onsuccess = function() {
+            var charts = all.result;
+            if (!charts.length) return;
+            var container = document.getElementById('saved-charts');
+            var list = document.getElementById('saved-list');
+            container.style.display = '';
+            charts.sort(function(a, b) { return b.date.localeCompare(a.date); });
+            charts.slice(0, 10).forEach(function(c) {
+                var a = document.createElement('a');
+                a.href = c.id;
+                a.className = 'saved-item';
+                a.textContent = c.label;
+                list.appendChild(a);
+            });
+        };
+    };
+})();
 </script>
 </body>
 </html>
