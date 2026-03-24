@@ -1,6 +1,6 @@
 """Flask web UI for Kundli."""
 from flask import Flask, render_template, request, jsonify, session as flask_session
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from geopy.geocoders import Nominatim
 import json
 import os
@@ -219,14 +219,14 @@ def index():
         logging.exception("Chart computation failed")
         return render_template("index.html", error=f"Could not compute chart: {e}")
 
-    now = datetime.now()
+    now = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(hours=tz)
 
     # Precompute shared data once
     planet_house_map = build_planet_house_map(planets, houses)
     moon = next(p for p in planets if p["planet"] == "Chandra")
     dashas = compute_dasha(moon["longitude"], birth_dt)
     aspects = compute_aspects(planets)
-    yogas = check_yogas(planets)
+    yogas = check_yogas(planets, houses)
     chart_data = build_chart_data(planets, houses)
     house_readings, current_dasha = build_house_readings(planets, houses, dashas, now, planet_house_map)
     life_areas = generate_life_areas(planets, houses, dashas, current_dasha, planet_house_map)
@@ -263,6 +263,7 @@ def index():
         "planets": planets,
         "houses": houses,
         "dashas": dashas,
+        "tz_offset": tz,
     })
     flask_session["chart_id"] = chart_id
 

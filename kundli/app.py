@@ -1,6 +1,6 @@
 """CLI application for Kundli generation."""
 import argparse
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from geopy.geocoders import Nominatim
 
 from kundli.calc import (
@@ -41,7 +41,7 @@ def main():
     jd = to_julian(birth_dt, args.tz)
     planets = compute_planets(jd)
     houses = compute_houses(jd, lat, lon)
-    now = datetime.now()
+    now = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(hours=args.tz)
     planet_house_map = build_planet_house_map(planets, houses)
     moon = next(p for p in planets if p["planet"] == "Chandra")
     dashas = compute_dasha(moon["longitude"], birth_dt)
@@ -88,7 +88,7 @@ def main():
 
     # Yogas
     print_section("Yogas")
-    yogas = check_yogas(planets)
+    yogas = check_yogas(planets, houses)
     if yogas:
         for y in yogas:
             print(f"  * {y['name']}: {y['desc']}")

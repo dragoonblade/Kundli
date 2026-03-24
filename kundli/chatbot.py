@@ -1,6 +1,6 @@
 """Rule-based chatbot for Kundli Q&A."""
 import re
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 from kundli.readings import SIMPLE_DASHA_EFFECTS
 
@@ -113,22 +113,23 @@ def _build_house_answer(readings, house_nums, current_dasha):
     return "\n\n---\n\n".join(parts)
 
 
-def _build_dasha_answer(dashas, current_dasha, readings, planet_names):
+def _build_dasha_answer(dashas, current_dasha, readings, planet_names, tz_offset=5.5):
     """Build answer about current dasha period."""
     effect = SIMPLE_DASHA_EFFECTS.get(current_dasha, "")
     en_name = planet_names.get(current_dasha, current_dasha)
+    now = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(hours=tz_offset)
 
     current = None
     for d in dashas:
         if d["lord"] == current_dasha and d.get("years"):
-            if d["start"] <= datetime.now() <= d["end"]:
+            if d["start"] <= now <= d["end"]:
                 current = d
                 break
 
     answer = f"You're currently in **{current_dasha} ({en_name}) Mahadasha**. {effect}.\n\n"
     if current:
-        elapsed = (datetime.now() - current["start"]).days / 365.25
-        remaining = (current["end"] - datetime.now()).days / 365.25
+        elapsed = (now - current["start"]).days / 365.25
+        remaining = (current["end"] - now).days / 365.25
         answer += f"This period started on {current['start'].strftime('%d %b %Y')} and runs until {current['end'].strftime('%d %b %Y')} ({current['years']} years total). You're about {elapsed:.1f} years in, with ~{remaining:.1f} years remaining.\n\n"
 
     # Add key influences
@@ -260,7 +261,7 @@ def rule_based_answer(question, chart_context):
     if general == "challenges":
         return _build_challenges(readings), 0.8
     if general == "future":
-        return _build_dasha_answer(dashas, current_dasha, readings, planet_names), 0.85
+        return _build_dasha_answer(dashas, current_dasha, readings, planet_names, tz_offset=chart_context.get("tz_offset", 5.5)), 0.85
     if general == "explain":
         return _build_explain_answer(question, planets, houses, current_dasha, planet_names), 0.8
     if general == "retrograde":
@@ -268,7 +269,7 @@ def rule_based_answer(question, chart_context):
 
     # Dasha questions
     if _is_dasha_question(question):
-        return _build_dasha_answer(dashas, current_dasha, readings, planet_names), 0.9
+        return _build_dasha_answer(dashas, current_dasha, readings, planet_names, tz_offset=chart_context.get("tz_offset", 5.5)), 0.9
 
     # Topic-based house lookup
     house_nums, topics = _find_topics(question)

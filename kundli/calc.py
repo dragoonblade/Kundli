@@ -27,10 +27,20 @@ DASHA_YEARS = {
     "Rahu": 18, "Guru": 16, "Shani": 19, "Budh": 17,
 }
 DASHA_ORDER = ["Ketu", "Shukra", "Surya", "Chandra", "Mangal", "Rahu", "Guru", "Shani", "Budh"]
+DASHA_TOTAL_YEARS = 120
 ASPECTS = {
     "Surya": [7], "Chandra": [7], "Budh": [7], "Shukra": [7],
     "Mangal": [4, 7, 8], "Guru": [5, 7, 9], "Shani": [3, 7, 10],
     "Rahu": [5, 7, 9], "Ketu": [5, 7, 9],
+}
+EXALTATION = {
+    "Surya": "Mesha", "Chandra": "Vrishabha", "Mangal": "Makara",
+    "Budh": "Kanya", "Guru": "Karka", "Shukra": "Meena", "Shani": "Tula",
+}
+OWN_SIGNS = {
+    "Mangal": ["Mesha", "Vrishchika"], "Budh": ["Mithuna", "Kanya"],
+    "Guru": ["Dhanu", "Meena"], "Shukra": ["Vrishabha", "Tula"],
+    "Shani": ["Makara", "Kumbha"],
 }
 YOGAS = [
     {"name": "Gajakesari", "desc": "Guru in kendra from Chandra",
@@ -57,6 +67,21 @@ def _in_kendra(planets, p1, p2):
 
 def _same_sign(planets, p1, p2):
     return _get(planets, p1)["sign"] == _get(planets, p2)["sign"]
+
+
+def _in_kendra_from_sign(sign1: str, sign2: str) -> bool:
+    """Check if sign1 is in kendra (1/4/7/10) from sign2."""
+    return (SIGNS.index(sign1) - SIGNS.index(sign2)) % 12 in (0, 3, 6, 9)
+
+
+def _has_kemadruma(planets: list) -> bool:
+    """Check Kemadruma — no planet (except Sun, Rahu, Ketu) adjacent to Moon."""
+    moon_idx = _sign_index(planets, "Chandra")
+    adjacent = {(moon_idx - 1) % 12, (moon_idx + 1) % 12}
+    excluded = {"Surya", "Rahu", "Ketu", "Chandra"}
+    return not any(
+        SIGNS.index(p["sign"]) in adjacent for p in planets if p["planet"] not in excluded
+    )
 
 
 def get_sign(longitude):
@@ -151,6 +176,21 @@ def compute_dasha(moon_longitude, birth_dt):
     return dashas
 
 
+def compute_antardasha(dashas: list[dict]) -> list[dict]:
+    """Add antardasha (sub-periods) to each mahadasha."""
+    for dasha in dashas:
+        lord_idx = DASHA_ORDER.index(dasha["lord"])
+        total_days = (dasha["end"] - dasha["start"]).total_seconds() / 86400
+        sub_start = dasha["start"]
+        subs = []
+        for i in range(9):
+            sub_lord = DASHA_ORDER[(lord_idx + i) % 9]
+            sub_days = total_days * DASHA_YEARS[sub_lord] / DASHA_TOTAL_YEARS
+            sub_end = sub_start + timedelta(days=sub_days)
+            subs.append({"lord": sub_lord, "start": sub_start, "end": sub_end, "years": round(sub_days / 365.25, 2)})
+            sub_start = sub_end
+        dasha["antardasha"] = subs
+    return dashas
 
 
 DIVISIONAL_CHARTS = {
@@ -266,6 +306,26 @@ def compute_aspects(planets):
     return results
 
 
-def check_yogas(planets):
-    return [{"name": y["name"], "desc": y["desc"]}
-            for y in YOGAS if y["check"](planets)]
+def check_yogas(planets: list, houses: list | None = None) -> list:
+    """Detect Vedic yogas from planetary positions."""
+    results = [{"name": y["name"], "desc": y["desc"]} for y in YOGAS if y["check"](planets)]
+
+    if _has_kemadruma(planets):
+        results.append({"name": "Kemadruma", "desc": "No planets adjacent to Chandra — emotional isolation, self-reliance"})
+
+    if houses:
+        lagna_sign = houses[0]["sign"]
+        mahapurusha = {
+            "Mangal": ("Ruchaka", "Mangal in own/exalted sign in kendra — courage, leadership, physical strength"),
+            "Budh": ("Bhadra", "Budh in own/exalted sign in kendra — intellect, communication, business acumen"),
+            "Guru": ("Hamsa", "Guru in own/exalted sign in kendra — wisdom, spirituality, good fortune"),
+            "Shukra": ("Malavya", "Shukra in own/exalted sign in kendra — beauty, luxury, artistic talent"),
+            "Shani": ("Sasa", "Shani in own/exalted sign in kendra — discipline, authority, longevity"),
+        }
+        for planet, (name, desc) in mahapurusha.items():
+            sign = _get(planets, planet)["sign"]
+            if (sign in OWN_SIGNS.get(planet, []) or sign == EXALTATION.get(planet)) \
+                    and _in_kendra_from_sign(sign, lagna_sign):
+                results.append({"name": name, "desc": desc})
+
+    return results
