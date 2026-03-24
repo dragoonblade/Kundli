@@ -1112,3 +1112,13 @@ footer {
     line-height: 1;
 }
 .theme-toggle:hover { border-color: var(--accent); }
+
+/* Ashtakavarga */
+.av-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; }
+@media (min-width: 600px) { .av-grid { grid-template-columns: repeat(12, 1fr); } }
+.av-cell { text-align: center; padding: var(--space-sm) var(--space-xs); background: var(--tag-bg); border-radius: var(--radius-sm); }
+.av-sign { display: block; font-size: 0.68rem; color: var(--text-secondary); }
+.av-pts { display: block; font-size: 1rem; font-weight: 700; }
+.av-good { background: var(--active); }
+.av-good .av-pts { color: var(--active-border); }
+.av-weak .av-pts { color: var(--danger); }

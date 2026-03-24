@@ -41,6 +41,7 @@
             <a href="#sec-life">Life Areas</a>
             <a href="#sec-readings">Readings</a>
             <a href="#sec-varga">Varga</a>
+            <a href="#sec-ashtakavarga">AV</a>
         </nav>
 
         <!-- Birth Info -->
@@ -448,6 +449,23 @@
                 {% endfor %}
             </div>
         </section>
+
+        <!-- Ashtakavarga -->
+        {% if ashtakavarga %}
+        <section class="card" id="sec-ashtakavarga">
+            <h2>Ashtakavarga</h2>
+            <p class="muted" style="margin-bottom:0.75rem">Points per sign — higher means more favorable for transits. SAV total is always 337.</p>
+            <h3 style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:var(--space-sm)">Sarvashtakavarga (Total)</h3>
+            <div class="av-grid">
+                {% for i in range(12) %}
+                <div class="av-cell {% if ashtakavarga.sav[i] >= 28 %}av-good{% elif ashtakavarga.sav[i] < 25 %}av-weak{% endif %}">
+                    <span class="av-sign"><span class="t" data-h="{{ ashtakavarga.signs[i][:3] }}" data-e="{{ sign_names[ashtakavarga.signs[i]][:3] }}">{{ ashtakavarga.signs[i][:3] }}</span></span>
+                    <span class="av-pts">{{ ashtakavarga.sav[i] }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
 
         <footer>
             <a href="/pdf" class="btn-pdf">📄 Download PDF</a>

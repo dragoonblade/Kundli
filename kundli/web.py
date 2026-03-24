@@ -25,6 +25,7 @@ from kundli.match import compute_ashtakoota
 from kundli.lifeareas import generate_life_areas
 from kundli.pdf import generate_kundli_pdf, generate_match_pdf
 from kundli.remedies import DOSHA_REMEDIES, PLANET_REMEDIES
+from kundli.ashtakavarga import compute_ashtakavarga
 
 app = Flask(__name__, template_folder="../templates", static_folder="../static")
 app.secret_key = os.environ.get("KUNDLI_SECRET_KEY", "change-me-in-production")
@@ -257,6 +258,7 @@ def _generate_chart(date_str, time_str, location, tz_str):
     aspects = compute_aspects(planets)
     yogas = check_yogas(planets, houses, planet_house_map)
     shadbala = compute_shadbala(planets, houses, planet_house_map)
+    ashtakavarga = compute_ashtakavarga(planets, houses)
     # Current transit positions for Sade Sati + Gochar
     current_jd = to_julian(now, 0)
     current_planets = compute_planets(current_jd)
@@ -316,7 +318,7 @@ def _generate_chart(date_str, time_str, location, tz_str):
     return render_template("result.html",
         birth_dt=birth_dt, location=location, lat=lat, lon=lon,
         lagna=houses[0], planets=planets, houses=houses,
-        dashas=dashas, aspects=aspects, yogas=yogas, doshas=doshas, shadbala=shadbala,
+        dashas=dashas, aspects=aspects, yogas=yogas, doshas=doshas, shadbala=shadbala, ashtakavarga=ashtakavarga,
         chart=chart_data, house_readings=house_readings,
         current_dasha=current_dasha, now=now,
         planet_names=PLANET_NAMES, sign_names=SIGN_NAMES,
