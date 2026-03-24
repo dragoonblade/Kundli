@@ -85,6 +85,9 @@
                     {{ south_indian_chart(planets, planet_names, sign_names) }}
                 </div>
             </div>
+            <div style="text-align:center;margin-top:var(--space-sm)">
+                <button class="btn-share" onclick="exportChartPNG()">📷 Save Chart as PNG</button>
+            </div>
         </section>
 
         <!-- Planetary Positions -->
@@ -507,6 +510,10 @@
     var savedMode = localStorage.getItem('kundli-mode') || 'general';
     setMode(savedMode);
 
+    // Restore chat history
+    var chatHistory = JSON.parse(localStorage.getItem('kundli-chat') || '[]');
+    chatHistory.forEach(function(m) { addMsg(m.text, m.cls, false); });
+
     // Render markdown bold in life area sections
     document.querySelectorAll('.la-section p, .la-item').forEach(function(el) {
         el.innerHTML = el.innerHTML.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
@@ -519,7 +526,7 @@
         else { w.style.display = 'none'; t.style.display = 'flex'; }
     }
 
-    function addMsg(text, cls) {
+    function addMsg(text, cls, save) {
         var div = document.createElement('div');
         div.className = 'chat-msg ' + cls;
         div.innerHTML = text.replace(/\n/g, '<br>')
@@ -528,6 +535,11 @@
         var msgs = document.getElementById('chat-messages');
         msgs.appendChild(div);
         msgs.scrollTop = msgs.scrollHeight;
+        if (save !== false) {
+            var history = JSON.parse(localStorage.getItem('kundli-chat') || '[]');
+            history.push({text: text, cls: cls});
+            localStorage.setItem('kundli-chat', JSON.stringify(history.slice(-50)));
+        }
     }
 
     function sendChat() {
@@ -598,6 +610,32 @@
             if (btn) { btn.disabled = true; btn.textContent = 'Loading…'; btn.style.opacity = '0.7'; }
         });
     });
+
+    // Export North Indian chart as PNG
+    function exportChartPNG() {
+        var svg = document.querySelector('#sec-charts .chart-svg');
+        var svgData = new XMLSerializer().serializeToString(svg);
+        var canvas = document.createElement('canvas');
+        canvas.width = 720; canvas.height = 720;
+        var ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#0c0c11';
+        ctx.fillRect(0, 0, 720, 720);
+        var img = new Image();
+        img.onload = function() {
+            ctx.drawImage(img, 0, 0, 720, 720);
+            var a = document.createElement('a');
+            a.download = 'kundli-chart.png';
+            a.href = canvas.toDataURL('image/png');
+            a.click();
+        };
+        img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(
+            svgData.replace(/var\(--border\)/g, '#252535')
+                   .replace(/var\(--accent\)/g, '#e8a020')
+                   .replace(/var\(--planet\)/g, '#6aacf0')
+                   .replace(/var\(--text-secondary\)/g, '#a8a8bc')
+                   .replace(/var\(--bg\)/g, '#0c0c11')
+        )));
+    }
     </script>
 </body>
 </html>
