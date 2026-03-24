@@ -49,12 +49,18 @@ SIGN_LORDS_CALC = {
 }
 
 YOGAS = [
-    {"name": "Gajakesari", "desc": "Guru in kendra from Chandra",
+    {"name": "Gajakesari", "desc": "Guru in kendra from Chandra — wisdom, fame, prosperity",
      "check": lambda p: _in_kendra(p, "Guru", "Chandra")},
-    {"name": "Budhaditya", "desc": "Surya and Budh in same sign",
+    {"name": "Budhaditya", "desc": "Surya and Budh in same sign — intelligence, communication skills",
      "check": lambda p: _same_sign(p, "Surya", "Budh")},
-    {"name": "Chandra-Mangal", "desc": "Chandra and Mangal in same sign",
+    {"name": "Chandra-Mangal", "desc": "Chandra and Mangal in same sign — wealth through enterprise",
      "check": lambda p: _same_sign(p, "Chandra", "Mangal")},
+    {"name": "Sunapha", "desc": "Planet (not Sun) in 2nd from Chandra — self-made wealth",
+     "check": lambda p: _has_planet_offset_from_moon(p, 1)},
+    {"name": "Anapha", "desc": "Planet (not Sun) in 12th from Chandra — spiritual inclination, generosity",
+     "check": lambda p: _has_planet_offset_from_moon(p, 11)},
+    {"name": "Durudhura", "desc": "Planets on both sides of Chandra — wealth, fame, generous nature",
+     "check": lambda p: _has_planet_offset_from_moon(p, 1) and _has_planet_offset_from_moon(p, 11)},
 ]
 
 
@@ -73,6 +79,14 @@ def _in_kendra(planets, p1, p2):
 
 def _same_sign(planets, p1, p2):
     return _get(planets, p1)["sign"] == _get(planets, p2)["sign"]
+
+
+def _has_planet_offset_from_moon(planets, offset):
+    """Check if any planet (not Sun/Rahu/Ketu) is `offset` signs from Moon."""
+    moon_idx = _sign_index(planets, "Chandra")
+    target = (moon_idx + offset) % 12
+    excluded = {"Surya", "Rahu", "Ketu", "Chandra"}
+    return any(SIGNS.index(p["sign"]) == target for p in planets if p["planet"] not in excluded)
 
 
 def _in_kendra_from_sign(sign1: str, sign2: str) -> bool:
@@ -493,6 +507,22 @@ def check_yogas(planets: list, houses: list | None = None, planet_house_map: dic
             lord_h = _house_of(lord)
             if lord_h in dusthana and lord_h != h:
                 results.append({"name": "Viparita Raja", "desc": f"Lord of {h}th ({lord}) in {lord_h}th house — success through adversity"})
+                break
+
+        # Adhi Yoga: benefics (Guru, Shukra, Budh) in 6th, 7th, 8th from Moon
+        moon_sign_idx = SIGNS.index(_get(planets, "Chandra")["sign"])
+        benefic_houses = {(moon_sign_idx + offset) % 12 for offset in (5, 6, 7)}  # 6th, 7th, 8th
+        benefics_in = sum(1 for p in planets if p["planet"] in ("Guru", "Shukra", "Budh") and SIGNS.index(p["sign"]) in benefic_houses)
+        if benefics_in >= 2:
+            results.append({"name": "Adhi", "desc": "Benefics in 6/7/8th from Chandra — leadership, authority, prosperity"})
+
+        # Amala Yoga: benefic in 10th from Lagna or Moon
+        lagna_idx = SIGNS.index(houses[0]["sign"])
+        tenth_from_lagna = (lagna_idx + 9) % 12
+        tenth_from_moon = (moon_sign_idx + 9) % 12
+        for p in planets:
+            if p["planet"] in ("Guru", "Shukra", "Budh") and SIGNS.index(p["sign"]) in (tenth_from_lagna, tenth_from_moon):
+                results.append({"name": "Amala", "desc": f"{p['planet']} in 10th — lasting fame, virtuous reputation"})
                 break
 
     return results
