@@ -22,6 +22,7 @@ from kundli.names import PLANET_NAMES, SIGN_NAMES, PLANET_ABBR
 from kundli.chatbot import chat as chatbot_chat
 from kundli.match import compute_ashtakoota
 from kundli.lifeareas import generate_life_areas
+from kundli.pdf import generate_kundli_pdf, generate_match_pdf
 
 app = Flask(__name__, template_folder="../templates", static_folder="../static")
 app.secret_key = os.environ.get("KUNDLI_SECRET_KEY", "change-me-in-production")
@@ -281,6 +282,10 @@ def index():
         "houses": houses,
         "dashas": dashas,
         "tz_offset": tz,
+        "yogas": yogas,
+        "doshas": doshas,
+        "birth_dt": birth_dt.isoformat(),
+        "location": location,
     })
     flask_session["chart_id"] = chart_id
 
@@ -340,7 +345,34 @@ def match():
         return render_template("index.html", match_error="Both persons required.", tab="match")
 
     result = compute_ashtakoota(people[0]["nak_idx"], people[1]["nak_idx"])
+    flask_session["match_result"] = {"result": result, "people": people}
     return render_template("match_result.html", result=result, people=people, planet_names=PLANET_NAMES, sign_names=SIGN_NAMES)
+
+
+@app.route("/pdf", methods=["GET"])
+def pdf_download():
+    chart_id = flask_session.get("chart_id")
+    ctx = _chart_store.get(chart_id) if chart_id else None
+    if not ctx:
+        return "No chart found. Generate a Kundli first.", 404
+    pdf_bytes = generate_kundli_pdf(ctx)
+    return pdf_bytes, 200, {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": "attachment; filename=kundli.pdf",
+    }
+
+
+@app.route("/match/pdf", methods=["GET"])
+def match_pdf_download():
+    """Generate match PDF from session data."""
+    data = flask_session.get("match_result")
+    if not data:
+        return "No match found. Run a compatibility check first.", 404
+    pdf_bytes = generate_match_pdf(data["result"], data["people"])
+    return pdf_bytes, 200, {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": "attachment; filename=kundli-match.pdf",
+    }
 
 
 @app.route("/chat", methods=["POST"])

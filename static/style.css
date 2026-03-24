@@ -1025,3 +1025,17 @@ footer {
 .dosha-detail { font-size: 0.85rem; color: var(--text-secondary); display: block; line-height: 1.5; }
 .dosha-present .dosha-name { color: var(--danger); }
 .dosha-clear .dosha-name { color: var(--active-border); }
+
+/* PDF Download */
+.btn-pdf {
+    display: inline-block;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--accent);
+    color: #000;
+    text-decoration: none;
+    border-radius: var(--radius);
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: var(--space-md);
+}
+.btn-pdf:hover { background: var(--accent-hover); }
