@@ -1067,3 +1067,18 @@ footer {
     margin-left: var(--space-sm);
 }
 .btn-share:hover { border-color: var(--accent); }
+
+/* Planetary Strength */
+.strength-grid { display: flex; flex-direction: column; gap: var(--space-sm); }
+.strength-item { display: grid; grid-template-columns: 1fr auto; gap: var(--space-xs) var(--space-sm); align-items: center; }
+.strength-header { display: flex; align-items: center; gap: var(--space-sm); }
+.strength-label { font-size: 0.7rem; font-weight: 600; padding: 1px 6px; border-radius: 3px; }
+.strength-strong { background: rgba(68,184,112,0.15); color: var(--active-border); }
+.strength-moderate { background: var(--accent-dim); color: var(--accent); }
+.strength-weak { background: rgba(208,64,64,0.15); color: var(--danger); }
+.strength-bar { grid-column: 1; height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+.strength-fill { height: 100%; border-radius: 3px; }
+.strength-fill.strength-strong { background: var(--active-border); }
+.strength-fill.strength-moderate { background: var(--accent); }
+.strength-fill.strength-weak { background: var(--danger); }
+.strength-val { font-size: 0.75rem; color: var(--text-secondary); text-align: right; }

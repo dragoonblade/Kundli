@@ -16,6 +16,7 @@ from kundli.calc import (
     compute_dasha, compute_antardasha, compute_pratyantar,
     compute_aspects, check_yogas, check_doshas, SIGNS,
     build_planet_house_map, compute_divisional_chart, DIVISIONAL_CHARTS,
+    compute_shadbala,
 )
 from kundli.readings import build_house_readings
 from kundli.names import PLANET_NAMES, SIGN_NAMES, PLANET_ABBR
@@ -255,6 +256,7 @@ def _generate_chart(date_str, time_str, location, tz_str):
     dashas = compute_pratyantar(dashas)
     aspects = compute_aspects(planets)
     yogas = check_yogas(planets, houses, planet_house_map)
+    shadbala = compute_shadbala(planets, houses, planet_house_map)
     # Current transit positions for Sade Sati + Gochar
     current_jd = to_julian(now, 0)
     current_planets = compute_planets(current_jd)
@@ -314,7 +316,7 @@ def _generate_chart(date_str, time_str, location, tz_str):
     return render_template("result.html",
         birth_dt=birth_dt, location=location, lat=lat, lon=lon,
         lagna=houses[0], planets=planets, houses=houses,
-        dashas=dashas, aspects=aspects, yogas=yogas, doshas=doshas,
+        dashas=dashas, aspects=aspects, yogas=yogas, doshas=doshas, shadbala=shadbala,
         chart=chart_data, house_readings=house_readings,
         current_dasha=current_dasha, now=now,
         planet_names=PLANET_NAMES, sign_names=SIGN_NAMES,

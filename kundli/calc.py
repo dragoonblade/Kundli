@@ -329,6 +329,58 @@ def compute_aspects(planets):
                 })
     return results
 
+def compute_shadbala(planets: list, houses: list, planet_house_map: dict) -> list:
+    """Compute simplified planetary strength (0-100 scale)."""
+    lagna_sign = houses[0]["sign"]
+    results = []
+
+    # Dig Bala: directional strength based on house position
+    # Each planet is strongest in a specific house
+    _DIG_BEST = {"Surya": 10, "Chandra": 4, "Mangal": 10, "Budh": 1, "Guru": 1, "Shukra": 4, "Shani": 7}
+
+    # Naisargika Bala: natural strength (fixed, descending)
+    _NAISARGIKA = {"Surya": 60, "Chandra": 51, "Shukra": 43, "Guru": 34, "Budh": 26, "Mangal": 17, "Shani": 9}
+
+    for p in planets:
+        if p["planet"] in ("Rahu", "Ketu"):
+            continue
+        name = p["planet"]
+        sign = p["sign"]
+        house = planet_house_map.get(name, 1)
+        score = 0
+
+        # 1. Sthana Bala (positional): exalted=30, own=25, friend=15, neutral=10, enemy=5, debilitated=0
+        if sign == EXALTATION.get(name):
+            score += 30
+        elif sign in OWN_SIGNS.get(name, []):
+            score += 25
+        else:
+            score += 10  # neutral default
+
+        # 2. Dig Bala (directional): max 25 if in best house, scaled by distance
+        best = _DIG_BEST.get(name, 1)
+        dist = min(abs(house - best), 12 - abs(house - best))
+        score += max(0, 25 - dist * 4)
+
+        # 3. Cheshta Bala (motional): retrograde planets get reduced strength
+        if p.get("retrograde"):
+            score += 5  # retrograde = some strength (revisiting)
+        else:
+            score += 15  # direct motion = full motional strength
+
+        # 4. Naisargika Bala (natural): scaled to 0-30 range
+        nat = _NAISARGIKA.get(name, 30)
+        score += int(nat * 30 / 60)
+
+        # Clamp to 0-100
+        strength = min(100, max(0, score))
+        label = "Strong" if strength >= 60 else "Moderate" if strength >= 40 else "Weak"
+        results.append({"planet": name, "strength": strength, "label": label})
+
+    results.sort(key=lambda x: x["strength"], reverse=True)
+    return results
+
+
 
 def check_doshas(planets: list, planet_house_map: dict, current_saturn_sign: str | None = None) -> list:
     """Detect doshas (afflictions) from planetary positions and house placements."""
