@@ -45,6 +45,7 @@ GENERAL_PATTERNS = [
     (r"(what is|explain|meaning of).*(house|planet|sign|nakshatra|dasha|lagna|ascendant)", "explain"),
     (r"(future|prediction|predict|next year|coming year|2026|2027)", "future"),
     (r"(remedy|remedies|solution|fix|improve|upay)", "remedies"),
+    (r"(retrograde|vakri)", "retrograde"),
 ]
 
 # Meta answers that don't need chart context
@@ -213,6 +214,26 @@ def _build_challenges(readings):
     return "\n".join(parts)
 
 
+
+def _build_retrograde_answer(planets, planet_names):
+    """List retrograde planets and their effects."""
+    from kundli.readings import RETROGRADE_EFFECTS
+    retro_planets = [p for p in planets if p.get("retrograde")]
+    if not retro_planets:
+        return "No planets are retrograde in your birth chart. All planets were moving in direct motion at the time of your birth."
+
+    answer = f"**Retrograde (Vakri) planets in your chart: {len(retro_planets)}**\n\n"
+    for p in retro_planets:
+        en = planet_names.get(p["planet"], p["planet"])
+        effect = RETROGRADE_EFFECTS.get(p["planet"], {}).get("simple", "")
+        answer += f"**{p['planet']} ({en})** in {p['sign']} is retrograde."
+        if effect:
+            answer += f" {effect}"
+        answer += "\n\n"
+    answer += ("Retrograde planets are not negative. They indicate areas where energy is directed inward "
+               "rather than outward, often giving deeper insight and unconventional strengths.")
+    return answer
+
 def rule_based_answer(question, chart_context):
     """Try to answer using rules. Returns (answer, confidence)."""
     readings = chart_context["house_readings"]
@@ -241,6 +262,8 @@ def rule_based_answer(question, chart_context):
         return _build_dasha_answer(dashas, current_dasha, readings, planet_names), 0.85
     if general == "explain":
         return _build_explain_answer(question, planets, houses, current_dasha, planet_names), 0.8
+    if general == "retrograde":
+        return _build_retrograde_answer(planets, planet_names), 0.9
 
     # Dasha questions
     if _is_dasha_question(question):

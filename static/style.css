@@ -307,6 +307,23 @@ tr.highlight { background: var(--accent-dim); }
     vertical-align: middle;
     margin-left: 4px;
 }
+.retro-badge {
+    background: rgba(200, 120, 255, 0.2);
+    color: #c878ff;
+    font-size: 0.6rem;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-weight: 600;
+    vertical-align: middle;
+    margin-left: 3px;
+}
+.retro-note {
+    font-size: 0.78rem;
+    color: #c878ff;
+    margin-top: 2px;
+    opacity: 0.85;
+    line-height: 1.5;
+}
 
 /* Aspects */
 .aspects-grid {

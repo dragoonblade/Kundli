@@ -30,3 +30,5 @@ SIGN_ABBR = {
     "hindu": {s: s[:3] for s in SIGN_NAMES},
     "english": {s: e[:3] for s, e in SIGN_NAMES.items()},
 }
+
+RETROGRADE_LABEL = {"hindu": "वक्री", "english": "Retrograde"}

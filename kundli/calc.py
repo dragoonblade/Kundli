@@ -85,14 +85,19 @@ def compute_planets(jd):
     ayanamsa = swe.get_ayanamsa_ut(jd)
     results = []
     for pid, name in PLANETS.items():
-        lon = swe.calc_ut(jd, pid)[0][0]
+        calc_result = swe.calc_ut(jd, pid)[0]
+        lon = calc_result[0]
+        lon_speed = calc_result[3]
         sid_lon = (lon - ayanamsa) % 360
         sign, deg = get_sign(sid_lon)
         nak, pada = get_nakshatra(sid_lon)
+        # Rahu is always retrograde by convention, not marked
+        retrograde = lon_speed < 0 and name != "Rahu"
         results.append({
             "planet": name, "longitude": round(sid_lon, 4),
             "sign": sign, "degree": round(deg, 2),
             "nakshatra": nak, "pada": pada,
+            "retrograde": retrograde,
         })
     rahu_lon = _get(results, "Rahu")["longitude"]
     ketu_lon = (rahu_lon + 180) % 360
@@ -102,6 +107,7 @@ def compute_planets(jd):
         "planet": "Ketu", "longitude": round(ketu_lon, 4),
         "sign": sign, "degree": round(deg, 2),
         "nakshatra": nak, "pada": pada,
+        "retrograde": False,  # Ketu always retrograde, conventionally not marked
     })
     return results
 

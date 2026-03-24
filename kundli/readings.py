@@ -149,6 +149,39 @@ PLANET_IN_HOUSE = {
 }
 
 # Dasha lord influence on houses
+
+# Retrograde (Vakri) effects per planet
+RETROGRADE_EFFECTS = {
+    "Surya": {
+        "general": "A retrograde Sun is rare in transit but when present in a chart, it indicates a deeply internalized sense of self. You may struggle with confidence early in life but develop a powerful inner authority over time.",
+        "simple": "You may take longer to find your confidence, but once you do, it runs very deep.",
+    },
+    "Chandra": {
+        "general": "The Moon does not go retrograde astronomically. Its nodes (Rahu/Ketu) are always retrograde.",
+        "simple": "The Moon does not go retrograde.",
+    },
+    "Mangal": {
+        "general": "Retrograde Mars turns its energy inward. Instead of outward aggression, you channel drive into internal determination. Actions may be delayed but are more deliberate and strategic when taken.",
+        "simple": "Your energy and drive work more on the inside. You think carefully before acting, and when you do act, it is with full force.",
+    },
+    "Budh": {
+        "general": "Retrograde Mercury gives a reflective, non-linear thinking style. Communication may be unconventional. You process information differently, often revisiting and refining ideas. Strong analytical and research abilities.",
+        "simple": "Your mind works in unique ways. You may rethink things often, but this gives you deeper understanding than most people.",
+    },
+    "Guru": {
+        "general": "Retrograde Jupiter internalizes wisdom. Rather than seeking external teachers, you develop your own philosophy. Spiritual growth comes through personal experience rather than formal education or tradition.",
+        "simple": "You develop your own wisdom through life experience rather than following what others teach. Your beliefs are deeply personal.",
+    },
+    "Shukra": {
+        "general": "Retrograde Venus creates an unconventional approach to love and beauty. Relationships may not follow traditional patterns. You value inner beauty and emotional depth over surface-level attraction.",
+        "simple": "Your approach to love and relationships is unique. You value deep emotional connection over appearances.",
+    },
+    "Shani": {
+        "general": "Retrograde Saturn intensifies karmic lessons. Responsibilities may feel heavier, but the rewards for discipline are also greater. Past-life debts surface more prominently for resolution.",
+        "simple": "Life's lessons may feel more intense for you, but the growth and rewards that come from facing them are also much greater.",
+    },
+}
+
 DASHA_EFFECTS = {
     "Surya": "authority, government matters, father, health vitality",
     "Chandra": "emotions, mother, public life, mental peace, travel",
@@ -492,13 +525,20 @@ def build_house_readings(planets, houses, dashas, now, planet_house_map=None):
         planet_readings = []
         simple_planet_readings = []
         for o in occ:
+            retro = o.get("retrograde", False)
+            retro_text = RETROGRADE_EFFECTS.get(o["planet"], {}).get("general", "") if retro else ""
+            retro_simple = RETROGRADE_EFFECTS.get(o["planet"], {}).get("simple", "") if retro else ""
             planet_readings.append({
                 "name": o["planet"],
                 "reading": PLANET_IN_HOUSE.get(o["planet"], {}).get(num, ""),
+                "retrograde": retro,
+                "retrograde_text": retro_text,
             })
             simple_planet_readings.append({
                 "name": o["planet"],
                 "reading": SIMPLE_PLANET_IN_HOUSE.get(o["planet"], {}).get(num, ""),
+                "retrograde": retro,
+                "retrograde_text": retro_simple,
             })
 
         # Lord note

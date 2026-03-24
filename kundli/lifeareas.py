@@ -203,9 +203,15 @@ def generate_life_areas(planets, houses, dashas, current_dasha, planet_house_map
             en_name = PLANET_NAMES.get(pname, pname)
             context = AREA_PLANET_CONTEXT.get(area["id"], {}).get(pname, "")
             p_reading = SIMPLE_PLANET_IN_HOUSE.get(pname, {}).get(p_house, "")
-            insight = f"**{pname} ({en_name})** in House {p_house}. {context}."
+            retro_tag = " (Vakri/Retrograde)" if p.get("retrograde") else ""
+            insight = f"**{pname} ({en_name}){retro_tag}** in House {p_house}. {context}."
             if p_reading:
                 insight += f" {p_reading}"
+            if p.get("retrograde"):
+                from kundli.readings import RETROGRADE_EFFECTS
+                retro_note = RETROGRADE_EFFECTS.get(pname, {}).get("simple", "")
+                if retro_note:
+                    insight += f" Being retrograde: {retro_note}"
             planet_insights.append(insight)
 
         if planet_insights:

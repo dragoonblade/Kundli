@@ -114,7 +114,7 @@
                     <tbody>
                         {% for p in planets %}
                         <tr>
-                            <td class="planet-name"><span class="t" data-h="{{ p.planet }}" data-e="{{ planet_names[p.planet] }}">{{ p.planet }}</span></td>
+                            <td class="planet-name"><span class="t" data-h="{{ p.planet }}" data-e="{{ planet_names[p.planet] }}">{{ p.planet }}</span>{% if p.retrograde %} <span class="badge retro-badge t" data-h="वक्री" data-e="R">वक्री</span>{% endif %}</td>
                             <td><span class="t" data-h="{{ p.sign }}" data-e="{{ sign_names[p.sign] }}">{{ p.sign }}</span></td>
                             <td>{{ "%.2f"|format(p.degree) }}°</td>
                             <td>{{ p.nakshatra }}</td>
@@ -288,7 +288,8 @@
                         {% for pr in r.planet_readings %}
                         {% if pr.reading %}
                         <div class="planet-reading">
-                            <span class="planet-name t" data-h="{{ pr.name }}" data-e="{{ planet_names[pr.name] }}">{{ pr.name }}</span>: {{ pr.reading }}
+                            <span class="planet-name t" data-h="{{ pr.name }}" data-e="{{ planet_names[pr.name] }}">{{ pr.name }}</span>{% if pr.retrograde %} <span class="retro-badge t" data-h="वक्री" data-e="R">वक्री</span>{% endif %}: {{ pr.reading }}
+                            {% if pr.retrograde_text %}<div class="retro-note">↻ {{ pr.retrograde_text }}</div>{% endif %}
                         </div>
                         {% endif %}
                         {% endfor %}
