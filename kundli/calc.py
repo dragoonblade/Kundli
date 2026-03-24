@@ -156,11 +156,20 @@ DIVISIONAL_CHARTS = {
     "D-1": {"name": "Rashi", "div": 1, "desc": "Birth chart. Overall life."},
     "D-2": {"name": "Hora", "div": 2, "desc": "Wealth and financial prosperity."},
     "D-3": {"name": "Drekkana", "div": 3, "desc": "Siblings, courage, and short journeys."},
+    "D-4": {"name": "Chaturthamsa", "div": 4, "desc": "Property, fortune, and fixed assets."},
+    "D-6": {"name": "Shashthamsa", "div": 6, "desc": "Health, diseases, and enemies."},
     "D-7": {"name": "Saptamsa", "div": 7, "desc": "Children and progeny."},
     "D-9": {"name": "Navamsa", "div": 9, "desc": "Marriage, dharma, and inner strength. The most important divisional chart."},
     "D-10": {"name": "Dasamsa", "div": 10, "desc": "Career, profession, and public reputation."},
     "D-12": {"name": "Dwadasamsa", "div": 12, "desc": "Parents and ancestral lineage."},
+    "D-16": {"name": "Shodasamsa", "div": 16, "desc": "Vehicles, comforts, and luxuries."},
+    "D-20": {"name": "Vimsamsa", "div": 20, "desc": "Spiritual progress and worship."},
+    "D-24": {"name": "Chaturvimsamsa", "div": 24, "desc": "Education, learning, and knowledge."},
+    "D-27": {"name": "Saptavimsamsa", "div": 27, "desc": "Physical strength and stamina."},
     "D-30": {"name": "Trimsamsa", "div": 30, "desc": "Misfortunes, challenges, and hidden difficulties."},
+    "D-40": {"name": "Khavedamsa", "div": 40, "desc": "Auspicious and inauspicious effects from maternal side."},
+    "D-45": {"name": "Akshavedamsa", "div": 45, "desc": "General well-being and paternal legacy."},
+    "D-60": {"name": "Shashtiamsa", "div": 60, "desc": "Past-life karma. The most granular divisional chart."},
 }
 
 # D-9 Navamsa starting signs: Aries signs start from Aries, Taurus signs from Capricorn, etc.
