@@ -192,6 +192,24 @@ def compute_antardasha(dashas: list[dict]) -> list[dict]:
         dasha["antardasha"] = subs
     return dashas
 
+def compute_pratyantar(dashas: list[dict]) -> list[dict]:
+    """Add pratyantar (sub-sub-periods) to each antardasha."""
+    for dasha in dashas:
+        for ad in dasha.get("antardasha", []):
+            lord_idx = DASHA_ORDER.index(ad["lord"])
+            total_days = (ad["end"] - ad["start"]).total_seconds() / 86400
+            sub_start = ad["start"]
+            subs = []
+            for i in range(9):
+                sub_lord = DASHA_ORDER[(lord_idx + i) % 9]
+                sub_days = total_days * DASHA_YEARS[sub_lord] / DASHA_TOTAL_YEARS
+                sub_end = sub_start + timedelta(days=sub_days)
+                subs.append({"lord": sub_lord, "start": sub_start, "end": sub_end, "years": round(sub_days / 365.25, 2)})
+                sub_start = sub_end
+            ad["pratyantar"] = subs
+    return dashas
+
+
 
 DIVISIONAL_CHARTS = {
     "D-1": {"name": "Rashi", "div": 1, "desc": "Birth chart. Overall life."},

@@ -391,6 +391,31 @@ tr.highlight { background: var(--accent-dim); }
     text-transform: uppercase;
     letter-spacing: 0.04em;
 }
+.dasha-group { border-radius: var(--radius); }
+.dasha-group .dasha-item { cursor: pointer; }
+.dasha-group .dasha-item:hover { background: var(--card-hover); }
+.dasha-group.dasha-current .dasha-item:hover { background: var(--active); }
+.dasha-sub, .dasha-prat { display: none; padding-left: var(--space-md); }
+.dasha-group.open > .dasha-sub,
+.dasha-sub-group.open > .dasha-prat,
+.dasha-group.dasha-current > .dasha-sub { display: flex; flex-direction: column; gap: 2px; margin-top: 2px; }
+.dasha-sub-item, .dasha-prat-item {
+    display: flex; align-items: center; gap: var(--space-sm);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+.dasha-sub-item:hover, .dasha-prat-item:hover { background: var(--card-hover); }
+.dasha-sub-group.dasha-current > .dasha-sub-item,
+.dasha-prat-item.dasha-current { background: var(--active); border: 1px solid var(--active-border); }
+.dasha-sub-lord { color: var(--planet); font-weight: 600; min-width: 50px; }
+.dasha-sub-dates { flex: 1; font-size: 0.72rem; }
+.dasha-sub-years { font-size: 0.72rem; }
+.dasha-sub-badge { color: var(--active-border); font-size: 0.65rem; font-weight: 600; }
+.dasha-prat { padding-left: var(--space-lg); }
+.dasha-sub-group.dasha-current > .dasha-prat { display: flex; flex-direction: column; gap: 2px; margin-top: 2px; }
 .dasha-note {
     background: var(--active);
     border: 1px solid var(--active-border);

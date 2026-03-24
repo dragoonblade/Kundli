@@ -30,7 +30,7 @@
                 <div><span class="label">Place</span><span class="value">{{ location }} ({{ "%.4f"|format(lat) }}°, {{ "%.4f"|format(lon) }}°)</span></div>
                 <div><span class="label">Lagna</span><span class="value lagna"><span class="t" data-h="{{ lagna.sign }}" data-e="{{ sign_names[lagna.sign] }}">{{ lagna.sign }}</span> {{ "%.2f"|format(lagna.degree) }}°</span></div>
                 {% if current_dasha %}
-                <div><span class="label">Dasha</span><span class="value dasha-active"><span class="t" data-h="{{ current_dasha }}" data-e="{{ planet_names[current_dasha] }}">{{ current_dasha }}</span> Mahadasha</span></div>
+                <div><span class="label">Dasha</span><span class="value dasha-active"><span class="t" data-h="{{ current_dasha }}" data-e="{{ planet_names[current_dasha] }}">{{ current_dasha }}</span> › {% for d in dashas if d.start <= now and now <= d.end %}{% for ad in d.antardasha if ad.start <= now and now <= ad.end %}<span class="t" data-h="{{ ad.lord }}" data-e="{{ planet_names[ad.lord] }}">{{ ad.lord }}</span> › {% for pr in ad.pratyantar if pr.start <= now and now <= pr.end %}<span class="t" data-h="{{ pr.lord }}" data-e="{{ planet_names[pr.lord] }}">{{ pr.lord }}</span>{% endfor %}{% endfor %}{% endfor %}</span></div>
                 {% endif %}
             </div>
         </section>
@@ -185,15 +185,45 @@
             <div class="dasha-timeline">
                 {% for d in dashas %}
                 {% set is_current = d.start <= now and now <= d.end %}
-                <div class="dasha-item {% if is_current %}dasha-current{% endif %}">
-                    <div class="dasha-lord"><span class="t" data-h="{{ d.lord }}" data-e="{{ planet_names[d.lord] }}">{{ d.lord }}</span></div>
-                    <div class="dasha-dates">{{ d.start.strftime('%d %b %Y') }} → {{ d.end.strftime('%d %b %Y') }}</div>
-                    <div class="dasha-years">{{ d.years }} yrs</div>
-                    {% if is_current %}
-                    {% set elapsed = (now - d.start).days %}
-                    {% set total = (d.end - d.start).days %}
-                    <div class="dasha-bar"><div class="dasha-fill" style="width: {{ (elapsed/total*100)|int }}%"></div></div>
-                    <div class="dasha-badge">◄ CURRENT</div>
+                <div class="dasha-group {% if is_current %}dasha-current{% endif %}">
+                    <div class="dasha-item" onclick="this.parentElement.classList.toggle('open')">
+                        <div class="dasha-lord"><span class="t" data-h="{{ d.lord }}" data-e="{{ planet_names[d.lord] }}">{{ d.lord }}</span></div>
+                        <div class="dasha-dates">{{ d.start.strftime('%d %b %Y') }} → {{ d.end.strftime('%d %b %Y') }}</div>
+                        <div class="dasha-years">{{ d.years }} yrs</div>
+                        {% if is_current %}
+                        {% set elapsed = (now - d.start).days %}
+                        {% set total = (d.end - d.start).days %}
+                        <div class="dasha-bar"><div class="dasha-fill" style="width: {{ (elapsed/total*100)|int }}%"></div></div>
+                        <div class="dasha-badge">◄ CURRENT</div>
+                        {% endif %}
+                    </div>
+                    {% if d.antardasha %}
+                    <div class="dasha-sub">
+                        {% for ad in d.antardasha %}
+                        {% set ad_current = ad.start <= now and now <= ad.end %}
+                        <div class="dasha-sub-group {% if ad_current %}dasha-current{% endif %}">
+                            <div class="dasha-sub-item" onclick="this.parentElement.classList.toggle('open')">
+                                <span class="dasha-sub-lord"><span class="t" data-h="{{ ad.lord }}" data-e="{{ planet_names[ad.lord] }}">{{ ad.lord }}</span></span>
+                                <span class="dasha-sub-dates">{{ ad.start.strftime('%d %b %Y') }} → {{ ad.end.strftime('%d %b %Y') }}</span>
+                                <span class="dasha-sub-years">{{ ad.years }}y</span>
+                                {% if ad_current %}<span class="dasha-sub-badge">◄</span>{% endif %}
+                            </div>
+                            {% if ad_current and ad.pratyantar %}
+                            <div class="dasha-prat">
+                                {% for pr in ad.pratyantar %}
+                                {% set pr_current = pr.start <= now and now <= pr.end %}
+                                <div class="dasha-prat-item {% if pr_current %}dasha-current{% endif %}">
+                                    <span class="dasha-sub-lord"><span class="t" data-h="{{ pr.lord }}" data-e="{{ planet_names[pr.lord] }}">{{ pr.lord }}</span></span>
+                                    <span class="dasha-sub-dates">{{ pr.start.strftime('%d %b %Y') }} → {{ pr.end.strftime('%d %b %Y') }}</span>
+                                    <span class="dasha-sub-years">{{ pr.years }}y</span>
+                                    {% if pr_current %}<span class="dasha-sub-badge">◄</span>{% endif %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
                     {% endif %}
                 </div>
                 {% endfor %}

@@ -13,7 +13,8 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(mess
 
 from kundli.calc import (
     to_julian, compute_planets, compute_houses,
-    compute_dasha, compute_aspects, check_yogas, SIGNS,
+    compute_dasha, compute_antardasha, compute_pratyantar,
+    compute_aspects, check_yogas, SIGNS,
     build_planet_house_map, compute_divisional_chart, DIVISIONAL_CHARTS,
 )
 from kundli.readings import build_house_readings
@@ -225,6 +226,8 @@ def index():
     planet_house_map = build_planet_house_map(planets, houses)
     moon = next(p for p in planets if p["planet"] == "Chandra")
     dashas = compute_dasha(moon["longitude"], birth_dt)
+    dashas = compute_antardasha(dashas)
+    dashas = compute_pratyantar(dashas)
     aspects = compute_aspects(planets)
     yogas = check_yogas(planets, houses)
     chart_data = build_chart_data(planets, houses)

@@ -132,6 +132,18 @@ def _build_dasha_answer(dashas, current_dasha, readings, planet_names, tz_offset
         remaining = (current["end"] - now).days / 365.25
         answer += f"This period started on {current['start'].strftime('%d %b %Y')} and runs until {current['end'].strftime('%d %b %Y')} ({current['years']} years total). You're about {elapsed:.1f} years in, with ~{remaining:.1f} years remaining.\n\n"
 
+        # Current antardasha
+        for ad in current.get("antardasha", []):
+            if ad["start"] <= now <= ad["end"]:
+                ad_en = planet_names.get(ad["lord"], ad["lord"])
+                answer += f"**Current Antardasha:** {ad['lord']} ({ad_en}) — {ad['start'].strftime('%d %b %Y')} to {ad['end'].strftime('%d %b %Y')}\n\n"
+                for pr in ad.get("pratyantar", []):
+                    if pr["start"] <= now <= pr["end"]:
+                        pr_en = planet_names.get(pr["lord"], pr["lord"])
+                        answer += f"**Current Pratyantar:** {pr['lord']} ({pr_en}) — {pr['start'].strftime('%d %b %Y')} to {pr['end'].strftime('%d %b %Y')}\n\n"
+                        break
+                break
+
     # Add key influences
     active_houses = [r for r in readings if r["current_influence"]]
     if active_houses:

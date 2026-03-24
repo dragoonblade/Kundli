@@ -5,7 +5,8 @@ from geopy.geocoders import Nominatim
 
 from kundli.calc import (
     to_julian, compute_planets, compute_houses,
-    compute_dasha, compute_aspects, check_yogas,
+    compute_dasha, compute_antardasha, compute_pratyantar,
+    compute_aspects, check_yogas,
     build_planet_house_map,
 )
 from kundli.chart import draw_north_indian, draw_south_indian
@@ -45,6 +46,8 @@ def main():
     planet_house_map = build_planet_house_map(planets, houses)
     moon = next(p for p in planets if p["planet"] == "Chandra")
     dashas = compute_dasha(moon["longitude"], birth_dt)
+    dashas = compute_antardasha(dashas)
+    dashas = compute_pratyantar(dashas)
 
     # Header
     print(f"\n{'=' * 60}")
@@ -98,9 +101,22 @@ def main():
     # Vimshottari Dasha
     print_section("Vimshottari Dasha")
     for d in dashas:
-        active = " << CURRENT" if d["start"] <= now <= d["end"] else ""
+        md_active = d["start"] <= now <= d["end"]
+        marker = " << CURRENT" if md_active else ""
         print(f"  {d['lord']:<10} {d['start'].strftime('%d-%b-%Y')} -> "
-              f"{d['end'].strftime('%d-%b-%Y')}  ({d['years']} yrs){active}")
+              f"{d['end'].strftime('%d-%b-%Y')}  ({d['years']} yrs){marker}")
+        if md_active:
+            for ad in d.get("antardasha", []):
+                ad_active = ad["start"] <= now <= ad["end"]
+                ad_marker = " << CURRENT" if ad_active else ""
+                print(f"    {ad['lord']:<10} {ad['start'].strftime('%d-%b-%Y')} -> "
+                      f"{ad['end'].strftime('%d-%b-%Y')}  ({ad['years']} yrs){ad_marker}")
+                if ad_active:
+                    for pr in ad.get("pratyantar", []):
+                        pr_active = pr["start"] <= now <= pr["end"]
+                        pr_marker = " << CURRENT" if pr_active else ""
+                        print(f"      {pr['lord']:<10} {pr['start'].strftime('%d-%b-%Y')} -> "
+                              f"{pr['end'].strftime('%d-%b-%Y')}  ({pr['years']} yrs){pr_marker}")
 
     # House Readings
     print_section("House Readings")
