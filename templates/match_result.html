@@ -20,7 +20,13 @@
             <a href="/" class="back-link">Kundli ↗</a>
         </header>
 
-        <section class="card match-header">
+        <nav class="section-nav" id="section-nav">
+            <a href="#sec-score">Score</a>
+            <a href="#sec-kootas">Kootas</a>
+            <a href="#sec-doshas">Doshas</a>
+        </nav>
+
+        <section class="card match-header" id="sec-score">
             <div class="match-score">
                 <div class="match-score-num">{{ result.total }}<span class="match-score-max"> / {{ result.max }}</span></div>
                 <div class="match-bar"><div class="match-fill {% if result.total >= 24 %}match-good{% elif result.total >= 18 %}match-avg{% else %}match-poor{% endif %}" style="width: {{ (result.total / result.max * 100)|int }}%"></div></div>
@@ -47,7 +53,7 @@
             </div>
         </section>
 
-        <section class="card">
+        <section class="card" id="sec-kootas">
             <h2>Koota Breakdown</h2>
             <div class="koota-table">
                 <div class="koota-header">
@@ -76,7 +82,7 @@
         {% set nadi = result.kootas[7] %}
         {% set bhakoot = result.kootas[6] %}
         {% if nadi.score == 0 or bhakoot.score == 0 or people[0].manglik or people[1].manglik %}
-        <section class="card match-warnings">
+        <section class="card match-warnings" id="sec-doshas">
             <h2>⚠️ Doshas</h2>
             {% if people[0].manglik or people[1].manglik %}
             <div class="match-dosha">Manglik Dosha — {% if people[0].manglik and people[1].manglik %}Both {{ people[0].name }} (Mars in House {{ people[0].mars_house }}) and {{ people[1].name }} (Mars in House {{ people[1].mars_house }}) are Manglik. When both partners are Manglik, the dosha is considered neutralized.{% elif people[0].manglik %}{{ people[0].name }} is Manglik (Mars in House {{ people[0].mars_house }}). {{ people[1].name }} is not. This mismatch is traditionally significant for compatibility.{% else %}{{ people[1].name }} is Manglik (Mars in House {{ people[1].mars_house }}). {{ people[0].name }} is not. This mismatch is traditionally significant for compatibility.{% endif %}</div>
@@ -95,5 +101,18 @@
             <a href="/?tab=match" class="btn-link">← New Match</a>
         </div>
     </div>
+    <button class="back-to-top" id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">↑</button>
+    <script>
+    const btt = document.getElementById('btt');
+    window.addEventListener('scroll', function() { btt.classList.toggle('visible', window.scrollY > 300); });
+    const navLinks = document.querySelectorAll('.section-nav a');
+    const sections = Array.from(navLinks).map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+    function updateNav() {
+        let current = '';
+        for (const sec of sections) { if (sec.getBoundingClientRect().top <= 80) current = sec.id; }
+        navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+    }
+    window.addEventListener('scroll', updateNav);
+    </script>
 </body>
 </html>

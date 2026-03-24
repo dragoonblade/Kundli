@@ -58,7 +58,7 @@
                 <!-- North Indian -->
                 <div class="chart-box">
                     <h3>North Indian</h3>
-                    <svg viewBox="0 0 360 360" class="chart-svg">
+                    <svg viewBox="0 0 360 360" class="chart-svg" role="img" aria-label="North Indian birth chart diagram">
                         <rect x="5" y="5" width="350" height="350" fill="none" stroke="var(--border)" stroke-width="1.5" rx="4"/>
                         <line x1="5" y1="5" x2="180" y2="180" stroke="var(--border)" stroke-width="1"/>
                         <line x1="355" y1="5" x2="180" y2="180" stroke="var(--border)" stroke-width="1"/>
@@ -80,7 +80,7 @@
                 <div class="chart-box">
                     <h3>South Indian</h3>
                     {% set si_layout = [[11,0,1,2],[10,-1,-1,3],[9,-1,-1,4],[8,7,6,5]] %}
-                    <svg viewBox="0 0 360 360" class="chart-svg">
+                    <svg viewBox="0 0 360 360" class="chart-svg" role="img" aria-label="South Indian birth chart diagram">
                         {% for r in range(4) %}
                         {% for c in range(4) %}
                         {% set si = si_layout[r][c] %}
@@ -218,7 +218,7 @@
                 {% for d in dashas %}
                 {% set is_current = d.start <= now and now <= d.end %}
                 <div class="dasha-group {% if is_current %}dasha-current{% endif %}">
-                    <div class="dasha-item" onclick="this.parentElement.classList.toggle('open')">
+                    <div class="dasha-item" tabindex="0" onclick="this.parentElement.classList.toggle('open')" onkeydown="if(event.key==='Enter')this.parentElement.classList.toggle('open')">
                         <div class="dasha-lord"><span class="t" data-h="{{ d.lord }}" data-e="{{ planet_names[d.lord] }}">{{ d.lord }}</span></div>
                         <div class="dasha-dates">{{ d.start.strftime('%d %b %Y') }} → {{ d.end.strftime('%d %b %Y') }}</div>
                         <div class="dasha-years">{{ d.years }} yrs</div>
@@ -234,7 +234,7 @@
                         {% for ad in d.antardasha %}
                         {% set ad_current = ad.start <= now and now <= ad.end %}
                         <div class="dasha-sub-group {% if ad_current %}dasha-current{% endif %}">
-                            <div class="dasha-sub-item" onclick="this.parentElement.classList.toggle('open')">
+                            <div class="dasha-sub-item" tabindex="0" onclick="this.parentElement.classList.toggle('open')" onkeydown="if(event.key==='Enter')this.parentElement.classList.toggle('open')">
                                 <span class="dasha-sub-lord"><span class="t" data-h="{{ ad.lord }}" data-e="{{ planet_names[ad.lord] }}">{{ ad.lord }}</span></span>
                                 <span class="dasha-sub-dates">{{ ad.start.strftime('%d %b %Y') }} → {{ ad.end.strftime('%d %b %Y') }}</span>
                                 <span class="dasha-sub-years">{{ ad.years }}y</span>
@@ -268,7 +268,7 @@
             <p class="muted" style="margin-bottom:1rem">Tap any area to see a detailed reading based on your chart</p>
             <div class="life-areas-grid">
                 {% for la in life_areas %}
-                <div class="la-card" onclick="this.classList.toggle('la-open')">
+                <div class="la-card" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
                     <div class="la-header">
                         <span class="la-icon">{{ la.icon }}</span>
                         <div>
@@ -393,7 +393,7 @@
             <p class="muted" style="margin-bottom:1rem">Divisional charts reveal deeper layers of your birth chart. Tap any chart to expand.</p>
             <div class="varga-grid">
                 {% for vc in varga_charts %}
-                <div class="la-card" onclick="this.classList.toggle('la-open')">
+                <div class="la-card" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
                     <div class="la-header">
                         <span class="la-icon varga-key">{{ vc.key }}</span>
                         <div>
@@ -520,9 +520,9 @@
     function addMsg(text, cls) {
         var div = document.createElement('div');
         div.className = 'chat-msg ' + cls;
-        div.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                             .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                             .replace(/\n/g, '<br>');
+        div.innerHTML = text.replace(/\n/g, '<br>')
+                             .replace(/\*\*([\s\S]*?)\*\*/g, '<strong>$1</strong>')
+                             .replace(/\*([\s\S]*?)\*/g, '<em>$1</em>');
         var msgs = document.getElementById('chat-messages');
         msgs.appendChild(div);
         msgs.scrollTop = msgs.scrollHeight;
