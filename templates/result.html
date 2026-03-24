@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kundli. {{ birth_dt.strftime('%d %B %Y') }}</title>
+    <meta name="description" content="Vedic birth chart analysis with planetary positions, house readings, dasha timeline, yogas, and life area interpretations.">
     <link rel="stylesheet" href="/static/style.css">
     <link rel="manifest" href="/static/manifest.json">
     <meta name="theme-color" content="#f0a030">
@@ -16,7 +17,7 @@
         <header>
             <a href="/" class="back-link">← New Chart</a>
             <h1>🕉 Kundli</h1>
-            <a href="javascript:void(0)" class="back-link" onclick="window.location='/?tab=match'">Match ↗</a>
+            <a href="/?tab=match" class="back-link">Match ↗</a>
             <!-- Language Toggle -->
             <div class="lang-toggle">
                 <button id="btn-hindu" class="lang-btn active" onclick="setLang('hindu')">संस्कृत</button>
@@ -44,7 +45,7 @@
                 <div><span class="label">Place</span><span class="value">{{ location }} ({{ "%.4f"|format(lat) }}°, {{ "%.4f"|format(lon) }}°)</span></div>
                 <div><span class="label">Lagna</span><span class="value lagna"><span class="t" data-h="{{ lagna.sign }}" data-e="{{ sign_names[lagna.sign] }}">{{ lagna.sign }}</span> {{ "%.2f"|format(lagna.degree) }}°</span></div>
                 {% if current_dasha %}
-                <div><span class="label">Dasha</span><span class="value dasha-active"><span class="t" data-h="{{ current_dasha }}" data-e="{{ planet_names[current_dasha] }}">{{ current_dasha }}</span> › {% for d in dashas if d.start <= now and now <= d.end %}{% for ad in d.antardasha if ad.start <= now and now <= ad.end %}<span class="t" data-h="{{ ad.lord }}" data-e="{{ planet_names[ad.lord] }}">{{ ad.lord }}</span> › {% for pr in ad.pratyantar if pr.start <= now and now <= pr.end %}<span class="t" data-h="{{ pr.lord }}" data-e="{{ planet_names[pr.lord] }}">{{ pr.lord }}</span>{% endfor %}{% endfor %}{% endfor %}</span></div>
+                <div><span class="label">Dasha</span><span class="value dasha-active"><span class="t" data-h="{{ current_dasha }}" data-e="{{ planet_names[current_dasha] }}">{{ current_dasha }}</span> <small>(MD)</small> › {% for d in dashas if d.start <= now and now <= d.end %}{% for ad in d.antardasha if ad.start <= now and now <= ad.end %}<span class="t" data-h="{{ ad.lord }}" data-e="{{ planet_names[ad.lord] }}">{{ ad.lord }}</span> <small>(AD)</small> › {% for pr in ad.pratyantar if pr.start <= now and now <= pr.end %}<span class="t" data-h="{{ pr.lord }}" data-e="{{ planet_names[pr.lord] }}">{{ pr.lord }}</span> <small>(PR)</small>{% endfor %}{% endfor %}{% endfor %}</span></div>
                 {% endif %}
             </div>
         </section>
@@ -569,6 +570,14 @@
     }
     window.addEventListener('scroll', updateNav);
     updateNav();
+
+    // Loading spinner on form submit
+    document.querySelectorAll('form').forEach(function(f) {
+        f.addEventListener('submit', function() {
+            var btn = f.querySelector('button[type="submit"]');
+            if (btn) { btn.disabled = true; btn.textContent = 'Loading…'; btn.style.opacity = '0.7'; }
+        });
+    });
     </script>
 </body>
 </html>

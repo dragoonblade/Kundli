@@ -6,12 +6,12 @@
     --card-hover: #1c1c28;
     --border: #252535;
     --text: #dcdce5;
-    --text-secondary: #9494a8;
+    --text-secondary: #a8a8bc;
     --accent: #e8a020;
     --accent-dim: rgba(232, 160, 32, 0.12);
     --accent-hover: #d08818;
     --active: #1a3028;
-    --active-border: #38a060;
+    --active-border: #44b870;
     --active-dim: rgba(56, 160, 96, 0.1);
     --planet: #6aacf0;
     --tag-bg: #1e1e2c;
@@ -855,7 +855,7 @@ footer {
     font-size: 0.7rem;
     cursor: pointer;
     transition: all 0.15s ease;
-    min-height: 32px;
+    min-height: 44px;
 }
 .chat-suggestions button:hover {
     border-color: var(--accent);
