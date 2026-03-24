@@ -14,7 +14,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(mess
 from kundli.calc import (
     to_julian, compute_planets, compute_houses,
     compute_dasha, compute_antardasha, compute_pratyantar,
-    compute_aspects, check_yogas, SIGNS,
+    compute_aspects, check_yogas, check_doshas, SIGNS,
     build_planet_house_map, compute_divisional_chart, DIVISIONAL_CHARTS,
 )
 from kundli.readings import build_house_readings
@@ -243,6 +243,7 @@ def index():
     dashas = compute_pratyantar(dashas)
     aspects = compute_aspects(planets)
     yogas = check_yogas(planets, houses)
+    doshas = check_doshas(planets, planet_house_map)
     chart_data = build_chart_data(planets, houses)
     house_readings, current_dasha = build_house_readings(planets, houses, dashas, now, planet_house_map)
     life_areas = generate_life_areas(planets, houses, dashas, current_dasha, planet_house_map)
@@ -286,7 +287,7 @@ def index():
     return render_template("result.html",
         birth_dt=birth_dt, location=location, lat=lat, lon=lon,
         lagna=houses[0], planets=planets, houses=houses,
-        dashas=dashas, aspects=aspects, yogas=yogas,
+        dashas=dashas, aspects=aspects, yogas=yogas, doshas=doshas,
         chart=chart_data, house_readings=house_readings,
         current_dasha=current_dasha, now=now,
         planet_names=PLANET_NAMES, sign_names=SIGN_NAMES,
@@ -322,9 +323,16 @@ def match():
             continue
         jd = to_julian(birth_dt, tz)
         planets = compute_planets(jd)
+        houses = compute_houses(jd, lat, lon)
         moon = next(p for p in planets if p["planet"] == "Chandra")
         nak_idx = int(moon["longitude"] // (360 / 27))
-        people.append({"name": name, "moon_sign": moon["sign"], "nakshatra": moon["nakshatra"], "nak_idx": nak_idx})
+        phm = build_planet_house_map(planets, houses)
+        mars_house = phm.get("Mangal")
+        is_manglik = mars_house in (1, 2, 4, 7, 8, 12)
+        people.append({
+            "name": name, "moon_sign": moon["sign"], "nakshatra": moon["nakshatra"],
+            "nak_idx": nak_idx, "manglik": is_manglik, "mars_house": mars_house,
+        })
 
     if errors:
         return render_template("index.html", match_error="; ".join(errors), tab="match")

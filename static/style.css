@@ -1011,3 +1011,17 @@ footer {
     gap: var(--space-sm);
 }
 .result-page header h1 { flex: 1; text-align: center; }
+
+/* Doshas */
+.dosha-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    padding: var(--space-sm) 0;
+}
+.dosha-item + .dosha-item { border-top: 1px solid var(--border); }
+.dosha-status { font-size: 1.1rem; flex-shrink: 0; line-height: 1.4; }
+.dosha-name { font-weight: 600; display: block; }
+.dosha-detail { font-size: 0.85rem; color: var(--text-secondary); display: block; line-height: 1.5; }
+.dosha-present .dosha-name { color: var(--danger); }
+.dosha-clear .dosha-name { color: var(--active-border); }

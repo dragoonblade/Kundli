@@ -324,6 +324,44 @@ def compute_aspects(planets):
     return results
 
 
+def check_doshas(planets: list, planet_house_map: dict) -> list:
+    """Detect doshas (afflictions) from planetary positions and house placements."""
+    doshas = []
+
+    # Manglik Dosha: Mars in 1, 2, 4, 7, 8, or 12
+    mars_house = planet_house_map.get("Mangal")
+    if mars_house in (1, 2, 4, 7, 8, 12):
+        doshas.append({
+            "name": "Manglik Dosha",
+            "present": True,
+            "detail": f"Mangal (Mars) is in House {mars_house}. Traditionally significant for marriage compatibility.",
+        })
+    else:
+        doshas.append({"name": "Manglik Dosha", "present": False, "detail": "Mangal is not in houses 1/2/4/7/8/12."})
+
+    # Kalsarpa Dosha: all 7 planets (Sun-Saturn) hemmed between Rahu-Ketu axis
+    rahu_lon = _get(planets, "Rahu")["longitude"]
+    ketu_lon = _get(planets, "Ketu")["longitude"]
+    if rahu_lon > ketu_lon:
+        arc_start, arc_end = ketu_lon, rahu_lon
+    else:
+        arc_start, arc_end = rahu_lon, ketu_lon
+    check_planets = [p for p in planets if p["planet"] not in ("Rahu", "Ketu")]
+    all_in_arc = all(arc_start <= p["longitude"] <= arc_end for p in check_planets)
+    all_outside = all(not (arc_start <= p["longitude"] <= arc_end) for p in check_planets)
+    is_kalsarpa = all_in_arc or all_outside
+    if is_kalsarpa:
+        doshas.append({
+            "name": "Kalsarpa Dosha",
+            "present": True,
+            "detail": "All planets are hemmed between the Rahu-Ketu axis. Indicates karmic patterns requiring resolution.",
+        })
+    else:
+        doshas.append({"name": "Kalsarpa Dosha", "present": False, "detail": "Planets are not confined to the Rahu-Ketu axis."})
+
+    return doshas
+
+
 def check_yogas(planets: list, houses: list | None = None) -> list:
     """Detect Vedic yogas from planetary positions."""
     results = [{"name": y["name"], "desc": y["desc"]} for y in YOGAS if y["check"](planets)]

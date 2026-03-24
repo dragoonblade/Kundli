@@ -75,9 +75,12 @@
 
         {% set nadi = result.kootas[7] %}
         {% set bhakoot = result.kootas[6] %}
-        {% if nadi.score == 0 or bhakoot.score == 0 %}
+        {% if nadi.score == 0 or bhakoot.score == 0 or people[0].manglik or people[1].manglik %}
         <section class="card match-warnings">
             <h2>⚠️ Doshas</h2>
+            {% if people[0].manglik or people[1].manglik %}
+            <div class="match-dosha">Manglik Dosha — {% if people[0].manglik and people[1].manglik %}Both {{ people[0].name }} (Mars in House {{ people[0].mars_house }}) and {{ people[1].name }} (Mars in House {{ people[1].mars_house }}) are Manglik. When both partners are Manglik, the dosha is considered neutralized.{% elif people[0].manglik %}{{ people[0].name }} is Manglik (Mars in House {{ people[0].mars_house }}). {{ people[1].name }} is not. This mismatch is traditionally significant for compatibility.{% else %}{{ people[1].name }} is Manglik (Mars in House {{ people[1].mars_house }}). {{ people[0].name }} is not. This mismatch is traditionally significant for compatibility.{% endif %}</div>
+            {% endif %}
             {% if nadi.score == 0 %}
             <div class="match-dosha">Nadi Dosha — Both have {{ nadi.boy }} Nadi. Same Nadi may indicate health concerns in offspring. Consult a Jyotish for remedies.</div>
             {% endif %}

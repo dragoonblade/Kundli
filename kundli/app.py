@@ -6,7 +6,7 @@ from geopy.geocoders import Nominatim
 from kundli.calc import (
     to_julian, compute_planets, compute_houses,
     compute_dasha, compute_antardasha, compute_pratyantar,
-    compute_aspects, check_yogas,
+    compute_aspects, check_yogas, check_doshas,
     build_planet_house_map,
 )
 from kundli.chart import draw_north_indian, draw_south_indian
@@ -159,6 +159,14 @@ def main():
             print(f"  * {y['name']}: {y['desc']}")
     else:
         print("  No major yogas detected.")
+
+    # Doshas
+    print_section("Doshas")
+    doshas = check_doshas(planets, planet_house_map)
+    for d in doshas:
+        status = "⚠ YES" if d["present"] else "✓ No"
+        print(f"  {d['name']:<20} {status}")
+        print(f"    {d['detail']}")
 
     # Vimshottari Dasha
     print_section("Vimshottari Dasha")

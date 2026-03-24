@@ -32,6 +32,7 @@
             <a href="#sec-houses">Houses</a>
             <a href="#sec-aspects">Aspects</a>
             <a href="#sec-yogas">Yogas</a>
+            <a href="#sec-doshas">Doshas</a>
             <a href="#sec-dasha">Dasha</a>
             <a href="#sec-life">Life Areas</a>
             <a href="#sec-readings">Readings</a>
@@ -193,6 +194,22 @@
             <p class="muted">No major yogas detected.</p>
             {% endif %}
         </section>
+
+        <!-- Doshas -->
+        {% if doshas %}
+        <section class="card" id="sec-doshas">
+            <h2>Doshas</h2>
+            {% for d in doshas %}
+            <div class="dosha-item {% if d.present %}dosha-present{% else %}dosha-clear{% endif %}">
+                <span class="dosha-status">{% if d.present %}⚠{% else %}✓{% endif %}</span>
+                <div>
+                    <span class="dosha-name">{{ d.name }}</span>
+                    <span class="dosha-detail">{{ d.detail }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </section>
+        {% endif %}
 
         <!-- Vimshottari Dasha -->
         <section class="card" id="sec-dasha">
