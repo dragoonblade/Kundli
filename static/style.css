@@ -1048,3 +1048,8 @@ footer {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
 }
+
+/* Remedies */
+.dosha-remedies { margin-top: var(--space-sm); padding-top: var(--space-sm); border-top: 1px solid var(--border); }
+.remedy-label { font-size: 0.72rem; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.04em; }
+.remedy-item { font-size: 0.82rem; color: var(--text); line-height: 1.6; margin-top: 2px; }

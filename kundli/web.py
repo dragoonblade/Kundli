@@ -23,6 +23,7 @@ from kundli.chatbot import chat as chatbot_chat
 from kundli.match import compute_ashtakoota
 from kundli.lifeareas import generate_life_areas
 from kundli.pdf import generate_kundli_pdf, generate_match_pdf
+from kundli.remedies import DOSHA_REMEDIES, PLANET_REMEDIES
 
 app = Flask(__name__, template_folder="../templates", static_folder="../static")
 app.secret_key = os.environ.get("KUNDLI_SECRET_KEY", "change-me-in-production")
@@ -302,6 +303,7 @@ def index():
         planet_names=PLANET_NAMES, sign_names=SIGN_NAMES,
         life_areas=life_areas,
         varga_charts=varga_charts,
+        dosha_remedies=DOSHA_REMEDIES, planet_remedies=PLANET_REMEDIES,
     )
 
 

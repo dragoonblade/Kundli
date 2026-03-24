@@ -205,6 +205,14 @@
                 <div>
                     <span class="dosha-name">{{ d.name }}</span>
                     <span class="dosha-detail">{{ d.detail }}</span>
+                    {% if d.present and d.name in dosha_remedies %}
+                    <div class="dosha-remedies">
+                        <span class="remedy-label">Remedies:</span>
+                        {% for r in dosha_remedies[d.name] %}
+                        <div class="remedy-item">• {{ r }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}
