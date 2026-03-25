@@ -197,18 +197,29 @@ _geo_cache = {}
 
 
 def get_coordinates(location):
+    """Geocode a location string to (lat, lon) using Nominatim."""
     normalized = location.strip().lower()
     if normalized in _geo_cache:
+        logging.info(f"Geocode cache hit: {location}")
         return _geo_cache[normalized]
     try:
         geo = Nominatim(user_agent="kundli_app", timeout=10)
         loc = geo.geocode(location)
         if not loc:
+            logging.warning(f"Geocode returned no results for: {location}")
             return None, None
         result = (loc.latitude, loc.longitude)
         _geo_cache[normalized] = result
+        logging.info(f"Geocoded: {location} -> ({result[0]:.4f}, {result[1]:.4f})")
         return result
-    except (GeocoderTimedOut, GeocoderServiceError, GeocoderUnavailable, ValueError, AttributeError):
+    except GeocoderTimedOut:
+        logging.error(f"Geocode timeout for: {location}")
+        return None, None
+    except (GeocoderServiceError, GeocoderUnavailable) as e:
+        logging.error(f"Geocode service error for: {location} ({e})")
+        return None, None
+    except (ValueError, AttributeError) as e:
+        logging.error(f"Geocode unexpected error for: {location} ({e})")
         return None, None
 
 
@@ -329,7 +340,7 @@ def _generate_chart(date_str, time_str, location, tz_str):
 
     lat, lon = get_coordinates(location)
     if lat is None:
-        return render_template("index.html", error=f"Could not find location: {location}")
+        return render_template("index.html", error=f"Could not find location: {location}. Try a nearby major city or check the spelling.")
 
     logging.info(f"Generating chart: {birth_dt.isoformat()} at {location} ({tz})")
     try:
