@@ -250,56 +250,7 @@
         </section>
         {% endif %}
 
-        <!-- Vimshottari Dasha -->
-        <section class="card" id="sec-dasha">
-            <h2>Vimshottari Dasha</h2>
-            <div class="dasha-timeline">
-                {% for d in dashas %}
-                {% set is_current = d.start <= now and now <= d.end %}
-                <div class="dasha-group {% if is_current %}dasha-current{% endif %}">
-                    <div class="dasha-item" tabindex="0" onclick="this.parentElement.classList.toggle('open')" onkeydown="if(event.key==='Enter')this.parentElement.classList.toggle('open')">
-                        <div class="dasha-lord"><span class="t" data-h="{{ d.lord }}" data-e="{{ planet_names[d.lord] }}">{{ d.lord }}</span></div>
-                        <div class="dasha-dates">{{ d.start.strftime('%d %b %Y') }} → {{ d.end.strftime('%d %b %Y') }}</div>
-                        <div class="dasha-years">{{ d.years }} yrs</div>
-                        {% if is_current %}
-                        {% set elapsed = (now - d.start).days %}
-                        {% set total = (d.end - d.start).days %}
-                        <div class="dasha-bar"><div class="dasha-fill" style="width: {{ (elapsed/total*100)|int }}%"></div></div>
-                        <div class="dasha-badge">◄ CURRENT</div>
-                        {% endif %}
-                    </div>
-                    {% if d.antardasha %}
-                    <div class="dasha-sub">
-                        {% for ad in d.antardasha %}
-                        {% set ad_current = ad.start <= now and now <= ad.end %}
-                        <div class="dasha-sub-group {% if ad_current %}dasha-current{% endif %}">
-                            <div class="dasha-sub-item" tabindex="0" onclick="this.parentElement.classList.toggle('open')" onkeydown="if(event.key==='Enter')this.parentElement.classList.toggle('open')">
-                                <span class="dasha-sub-lord"><span class="t" data-h="{{ ad.lord }}" data-e="{{ planet_names[ad.lord] }}">{{ ad.lord }}</span></span>
-                                <span class="dasha-sub-dates">{{ ad.start.strftime('%d %b %Y') }} → {{ ad.end.strftime('%d %b %Y') }}</span>
-                                <span class="dasha-sub-years">{{ ad.years }}y</span>
-                                {% if ad_current %}<span class="dasha-sub-badge">◄</span>{% endif %}
-                            </div>
-                            {% if ad_current and ad.pratyantar %}
-                            <div class="dasha-prat">
-                                {% for pr in ad.pratyantar %}
-                                {% set pr_current = pr.start <= now and now <= pr.end %}
-                                <div class="dasha-prat-item {% if pr_current %}dasha-current{% endif %}">
-                                    <span class="dasha-sub-lord"><span class="t" data-h="{{ pr.lord }}" data-e="{{ planet_names[pr.lord] }}">{{ pr.lord }}</span></span>
-                                    <span class="dasha-sub-dates">{{ pr.start.strftime('%d %b %Y') }} → {{ pr.end.strftime('%d %b %Y') }}</span>
-                                    <span class="dasha-sub-years">{{ pr.years }}y</span>
-                                    {% if pr_current %}<span class="dasha-sub-badge">◄</span>{% endif %}
-                                </div>
-                                {% endfor %}
-                            </div>
-                            {% endif %}
-                        </div>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                </div>
-                {% endfor %}
-            </div>
-        </section>
+        {% include 'includes/sec_dasha.html' %}
 
         <!-- Life Areas Deep Dive -->
         <section class="card" id="sec-life">
@@ -336,95 +287,7 @@
             </div>
         </section>
 
-        <section class="card" id="sec-readings">
-            <div class="readings-header-row">
-                <h2>House Readings</h2>
-                <div class="mode-toggle">
-                    <button id="btn-general" class="mode-btn active" onclick="setMode('general')">🌙 General</button>
-                    <button id="btn-advanced" class="mode-btn" onclick="setMode('advanced')">🔬 Advanced</button>
-                </div>
-            </div>
-            {% if current_dasha %}
-            <p class="dasha-note" id="dasha-note-general">You're currently in the <strong><span class="t" data-h="{{ current_dasha }}" data-e="{{ planet_names[current_dasha] }}">{{ current_dasha }}</span></strong> period. Houses affected by this are marked with ★</p>
-            <p class="dasha-note" id="dasha-note-advanced" style="display:none">Current Mahadasha: <strong><span class="t" data-h="{{ current_dasha }}" data-e="{{ planet_names[current_dasha] }}">{{ current_dasha }}</span></strong>, houses connected are marked with ★</p>
-            {% endif %}
-
-            <div class="readings-grid">
-                {% for r in house_readings %}
-                <div class="reading-card {% if r.dasha_note %}reading-active{% endif %}">
-                    <div class="reading-header">
-                        <span class="house-num">{{ r.num }}</span>
-                        <div>
-                            <h3>{{ r.theme }}</h3>
-                            <span class="reading-sign adv-only"><span class="t" data-h="{{ r.sign }}" data-e="{{ sign_names[r.sign] }}">{{ r.sign }}</span> · Lord: <span class="t" data-h="{{ r.lord }}" data-e="{{ planet_names[r.lord] }}">{{ r.lord }}</span></span>
-                        </div>
-                    </div>
-
-                    <!-- General mode content -->
-                    <div class="gen-only">
-                        <p class="reading-simple">{{ r.simple_summary }}</p>
-                        {% if r.current_influence %}
-                        <div class="current-influence">
-                            <span class="influence-label">🔮 What this means for you now:</span>
-                            <p>{{ r.current_influence }}</p>
-                        </div>
-                        {% endif %}
-                        {% if r.simple_dasha_note %}
-                        <div class="reading-dasha">★ {{ r.simple_dasha_note }}</div>
-                        {% endif %}
-                    </div>
-
-                    <!-- Advanced mode content -->
-                    <div class="adv-only">
-                        <p class="reading-keywords">{{ r.keywords }}</p>
-
-                        {% if r.occupants %}
-                        <div class="reading-section">
-                            <span class="reading-label">Planets here:</span>
-                            <span class="planet-tags">
-                                {% for o in r.occupants %}<span class="tag t" data-h="{{ o }}" data-e="{{ planet_names[o] }}">{{ o }}</span>{% endfor %}
-                            </span>
-                        </div>
-                        {% for pr in r.planet_readings %}
-                        {% if pr.reading %}
-                        <div class="planet-reading">
-                            <span class="planet-name t" data-h="{{ pr.name }}" data-e="{{ planet_names[pr.name] }}">{{ pr.name }}</span>{% if pr.retrograde %} <span class="retro-badge t" data-h="वक्री" data-e="R">वक्री</span>{% endif %}: {{ pr.reading }}
-                            {% if pr.retrograde_text %}<div class="retro-note">↻ {{ pr.retrograde_text }}</div>{% endif %}
-                        </div>
-                        {% endif %}
-                        {% endfor %}
-                        {% else %}
-                        <p class="muted small">No planets, results depend on lord <span class="t" data-h="{{ r.lord }}" data-e="{{ planet_names[r.lord] }}">{{ r.lord }}</span>'s placement in House {{ r.lord_house }}</p>
-                        {% endif %}
-
-                        {% if r.aspectors %}
-                        <div class="reading-section">
-                            <span class="reading-label">Aspected by:</span>
-                            <span class="planet-tags">
-                                {% for a in r.aspectors %}<span class="tag tag-aspect t" data-h="{{ a }}" data-e="{{ planet_names[a] }}">{{ a }}</span>{% endfor %}
-                            </span>
-                        </div>
-                        {% endif %}
-
-                        {% if r.lord_note %}
-                        <div class="reading-note">→ Lord <span class="t" data-h="{{ r.lord }}" data-e="{{ planet_names[r.lord] }}">{{ r.lord }}</span> {{ r.lord_note }}</div>
-                        {% endif %}
-
-                        {% if r.current_influence %}
-                        <div class="current-influence">
-                            <span class="influence-label">🔮 Current Influence:</span>
-                            <p>{{ r.current_influence }}</p>
-                        </div>
-                        {% endif %}
-
-                        {% if r.dasha_note %}
-                        <div class="reading-dasha">★ <span class="t" data-h="{{ current_dasha }}" data-e="{{ planet_names[current_dasha] }}">{{ current_dasha }}</span> {{ r.dasha_note }}</div>
-                        {% endif %}
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </section>
+        {% include 'includes/sec_readings.html' %}
 
         <!-- Divisional Charts (Varga) -->
         <section class="card" id="sec-varga">
