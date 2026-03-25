@@ -197,30 +197,37 @@ _geo_cache = {}
 
 
 def get_coordinates(location):
-    """Geocode a location string to (lat, lon) using Nominatim."""
+    """Geocode a location string to (lat, lon) using Nominatim with retry."""
     normalized = location.strip().lower()
     if normalized in _geo_cache:
         logging.info(f"Geocode cache hit: {location}")
         return _geo_cache[normalized]
-    try:
-        geo = Nominatim(user_agent="kundli_app", timeout=10)
-        loc = geo.geocode(location)
-        if not loc:
-            logging.warning(f"Geocode returned no results for: {location}")
+    for attempt in range(3):
+        try:
+            geo = Nominatim(user_agent=f"kundli_app_{uuid.uuid4().hex[:6]}", timeout=10)
+            loc = geo.geocode(location)
+            if not loc:
+                logging.warning(f"Geocode returned no results for: {location} (attempt {attempt + 1})")
+                if attempt < 2:
+                    _time.sleep(1.5)
+                    continue
+                return None, None
+            result = (loc.latitude, loc.longitude)
+            _geo_cache[normalized] = result
+            logging.info(f"Geocoded: {location} -> ({result[0]:.4f}, {result[1]:.4f})")
+            return result
+        except GeocoderTimedOut:
+            logging.error(f"Geocode timeout for: {location} (attempt {attempt + 1})")
+            if attempt < 2:
+                _time.sleep(1.5)
+        except (GeocoderServiceError, GeocoderUnavailable) as e:
+            logging.error(f"Geocode service error for: {location} ({e})")
+            if attempt < 2:
+                _time.sleep(1.5)
+        except (ValueError, AttributeError) as e:
+            logging.error(f"Geocode unexpected error for: {location} ({e})")
             return None, None
-        result = (loc.latitude, loc.longitude)
-        _geo_cache[normalized] = result
-        logging.info(f"Geocoded: {location} -> ({result[0]:.4f}, {result[1]:.4f})")
-        return result
-    except GeocoderTimedOut:
-        logging.error(f"Geocode timeout for: {location}")
-        return None, None
-    except (GeocoderServiceError, GeocoderUnavailable) as e:
-        logging.error(f"Geocode service error for: {location} ({e})")
-        return None, None
-    except (ValueError, AttributeError) as e:
-        logging.error(f"Geocode unexpected error for: {location} ({e})")
-        return None, None
+    return None, None
 
 
 def build_chart_data(planets, houses):
