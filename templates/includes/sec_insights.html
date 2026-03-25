@@ -1,6 +1,10 @@
 {% if daily_insights %}
 <section class="card" id="sec-insights">
     <h2>Today's Insights</h2>
+    <div class="explainer" tabindex="0" onclick="this.classList.toggle('open')" onkeydown="if(event.key==='Enter')this.classList.toggle('open')">
+        <span class="explainer-toggle">ℹ How are these generated? ▾</span>
+        <p class="explainer-text">These insights are based on where the planets are in the sky right now, mapped to the houses in your birth chart. Each planet activates a different area of your life as it moves through the zodiac.</p>
+    </div>
     <div class="insights-grid">
         {% for ins in daily_insights %}
         <div class="insight-item">

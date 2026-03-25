@@ -1,6 +1,10 @@
 {% if doshas %}
 <section class="card" id="sec-doshas">
     <h2>Doshas</h2>
+    <div class="explainer" tabindex="0" onclick="this.classList.toggle('open')" onkeydown="if(event.key==='Enter')this.classList.toggle('open')">
+        <span class="explainer-toggle">ℹ What are Doshas? ▾</span>
+        <p class="explainer-text">A Dosha is not a curse. It is an area where your chart has extra intensity, like a strong current in a river. With awareness, you can navigate it. Remedies help channel the energy constructively. Many doshas reduce naturally with age.</p>
+    </div>
     {% for d in doshas %}
     <div class="dosha-item {% if d.present %}dosha-present{% else %}dosha-clear{% endif %}">
         <span class="dosha-status">{% if d.present %}⚠{% else %}✓{% endif %}</span>

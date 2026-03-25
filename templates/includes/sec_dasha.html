@@ -1,6 +1,10 @@
 <!-- Vimshottari Dasha -->
 <section class="card" id="sec-dasha">
     <h2>Vimshottari Dasha</h2>
+    <div class="explainer" tabindex="0" onclick="this.classList.toggle('open')" onkeydown="if(event.key==='Enter')this.classList.toggle('open')">
+        <span class="explainer-toggle">ℹ What is a Dasha? ▾</span>
+        <p class="explainer-text">Your life is divided into planetary periods called Dashas. Each planet rules for a specific number of years, and the current ruler influences your life themes. Think of it like seasons. Each one brings different energy. The total cycle is 120 years. Click any period to see sub-periods.</p>
+    </div>
     <div class="dasha-timeline">
         {% for d in dashas %}
         {% set is_current = d.start <= now and now <= d.end %}
