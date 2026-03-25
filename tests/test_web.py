@@ -91,8 +91,14 @@ class TestKundliGeneration:
         body = client.post("/", data=KUNDLI_FORM).data.decode()
         assert "view-toggle" in body
         assert "btn-horoscope" in body
+        assert "btn-study" in body
         assert "btn-full" in body
         assert "setView" in body
+
+    def test_has_study_mode(self, client):
+        body = client.post("/", data=KUNDLI_FORM).data.decode()
+        assert "sec-study" in body
+        assert "Reading a Complete Chart" in body
 
     def test_has_explainers(self, client):
         body = client.post("/", data=KUNDLI_FORM).data.decode()

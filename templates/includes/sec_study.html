@@ -1,0 +1,240 @@
+<!-- Study Mode: Learn to read your Kundli -->
+<section class="card" id="sec-study">
+    <h2>📖 Learn to Read Your Chart</h2>
+    <p class="muted" style="margin-bottom:var(--space-md)">12 lessons using your own chart. By the end, you can read any Kundli independently.</p>
+
+    <div class="study-lessons">
+
+        <!-- Lesson 1 -->
+        <div class="la-card" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+            <div class="la-header"><span class="la-icon">1</span><div><h3>What is a Kundli?</h3><p class="la-desc">Foundations of Vedic astrology</p></div><span class="la-chevron">▾</span></div>
+            <div class="la-body">
+                <div class="la-section"><span class="la-label">Concept</span>
+                    <p>A Kundli is a map of the sky at the exact moment you were born, as seen from your birthplace. It shows where each planet was positioned among the 12 zodiac signs and 12 houses.</p>
+                    <p>Vedic astrology uses the sidereal zodiac (based on actual star positions), not the tropical zodiac used in Western astrology. The difference is called Ayanamsa, currently about 24 degrees.</p>
+                </div>
+                <div class="la-section"><span class="la-label">Your Chart</span>
+                    <p>Your chart was cast for <strong>{{ birth_dt.strftime('%d %B %Y at %I:%M %p') }}</strong>. Your Ascendant (Lagna) is <strong>{{ lagna.sign }}</strong> at {{ "%.2f"|format(lagna.degree) }} degrees. This is the sign that was rising on the eastern horizon at your birth. It shapes how the world sees you.</p>
+                </div>
+                <div class="la-section"><span class="la-label">Key Takeaway</span>
+                    <p>Your Kundli is unique to your birth time and place. Even twins born minutes apart can have different charts. Birth time accuracy matters.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lesson 2 -->
+        <div class="la-card" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+            <div class="la-header"><span class="la-icon">2</span><div><h3>The 12 Signs (Rashis)</h3><p class="la-desc">Characteristics of each zodiac sign</p></div><span class="la-chevron">▾</span></div>
+            <div class="la-body">
+                <div class="la-section"><span class="la-label">Concept</span>
+                    <p>The zodiac is divided into 12 signs of 30 degrees each. Each sign has an element (fire, earth, air, water), a quality (cardinal, fixed, mutable), and a ruling planet.</p>
+                    <p>Fire signs (Mesha, Simha, Dhanu) are energetic. Earth signs (Vrishabha, Kanya, Makara) are practical. Air signs (Mithuna, Tula, Kumbha) are intellectual. Water signs (Karka, Vrishchika, Meena) are emotional.</p>
+                </div>
+                <div class="la-section"><span class="la-label">Your Signs</span>
+                    <p>Your <strong>Lagna (Ascendant)</strong> is {{ lagna.sign }}. This is your outward personality.</p>
+                    <p>Your <strong>Moon sign</strong> is {{ (planets|selectattr('planet', 'equalto', 'Chandra')|first).sign }}. This is your emotional nature and inner self.</p>
+                    <p>Your <strong>Sun sign</strong> is {{ (planets|selectattr('planet', 'equalto', 'Surya')|first).sign }}. This is your core identity and ego.</p>
+                </div>
+                <div class="la-section"><span class="la-label">Key Takeaway</span>
+                    <p>In Vedic astrology, the Moon sign is more important than the Sun sign. Your Moon sign determines your Nakshatra, Dasha starting point, and emotional temperament.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lesson 3 -->
+        <div class="la-card" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+            <div class="la-header"><span class="la-icon">3</span><div><h3>The 9 Planets (Navagraha)</h3><p class="la-desc">What each planet represents</p></div><span class="la-chevron">▾</span></div>
+            <div class="la-body">
+                <div class="la-section"><span class="la-label">Concept</span>
+                    <p>Vedic astrology uses 9 celestial bodies: Sun, Moon, Mars, Mercury, Jupiter, Venus, Saturn, plus Rahu and Ketu (the lunar nodes). Each planet governs specific life areas.</p>
+                    <p>Benefics (Guru, Shukra, Budh) generally bring positive results. Malefics (Shani, Mangal, Rahu, Ketu) bring challenges that build character. Surya and Chandra are luminaries with mixed effects.</p>
+                    <p>A planet is strongest when exalted (in its best sign) and weakest when debilitated. When in its own sign, it is comfortable and effective.</p>
+                </div>
+                <div class="la-section"><span class="la-label">Your Planets</span>
+                    {% for p in planets %}
+                    <p><strong>{{ p.planet }} ({{ planet_names[p.planet] }})</strong> is in {{ p.sign }} at {{ "%.1f"|format(p.degree) }} degrees, in {{ p.nakshatra }} nakshatra.{% if p.retrograde %} This planet is retrograde, meaning its energy is directed inward.{% endif %}</p>
+                    {% endfor %}
+                </div>
+                <div class="la-section"><span class="la-label">Key Takeaway</span>
+                    <p>Each planet colors the sign it sits in. A planet in a friendly sign works well. A planet in an enemy sign struggles. Check which of your planets are in strong or weak positions.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lesson 4 -->
+        <div class="la-card" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+            <div class="la-header"><span class="la-icon">4</span><div><h3>The 12 Houses (Bhavas)</h3><p class="la-desc">What each house governs in your life</p></div><span class="la-chevron">▾</span></div>
+            <div class="la-body">
+                <div class="la-section"><span class="la-label">Concept</span>
+                    <p>The 12 houses represent different areas of life. House 1 is self, House 7 is marriage, House 10 is career, and so on. The sign on each house cusp and the planets inside determine how that area plays out.</p>
+                    <p>Kendras (1, 4, 7, 10) are the pillars of your chart. Trikonas (1, 5, 9) bring luck and merit. Dusthanas (6, 8, 12) bring challenges but also transformation.</p>
+                </div>
+                <div class="la-section"><span class="la-label">Your Houses</span>
+                    {% for h in houses %}
+                    <p><strong>House {{ h.house }}</strong>: {{ h.sign }} at {{ "%.1f"|format(h.degree) }} degrees.{% if h.house == 1 %} This is your Ascendant, the most important point in your chart.{% endif %}{% if h.house == 7 %} This governs marriage and partnerships.{% endif %}{% if h.house == 10 %} This governs career and public reputation.{% endif %}</p>
+                    {% endfor %}
+                </div>
+                <div class="la-section"><span class="la-label">Key Takeaway</span>
+                    <p>To read any house: check the sign on the cusp, find its ruling planet, see where that ruler sits. That connection tells the story. For example, your 7th house sign's ruler placement reveals marriage dynamics.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lesson 5 -->
+        <div class="la-card" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+            <div class="la-header"><span class="la-icon">5</span><div><h3>Planets in Houses</h3><p class="la-desc">How to interpret any placement</p></div><span class="la-chevron">▾</span></div>
+            <div class="la-body">
+                <div class="la-section"><span class="la-label">The Method</span>
+                    <p>To interpret a planet in a house, combine what the planet represents with what the house governs. Mars in House 3 means courage (Mars) applied to communication and siblings (House 3). Jupiter in House 10 means wisdom and expansion (Jupiter) in career (House 10).</p>
+                </div>
+                <div class="la-section"><span class="la-label">Practice With Your Chart</span>
+                    {% for r in house_readings[:6] %}
+                    {% if r.occupants %}
+                    <p><strong>House {{ r.num }} ({{ r.theme }})</strong>: {{ r.occupants|join(', ') }} here. {{ r.simple_summary[:150] }}</p>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="la-section"><span class="la-label">Key Takeaway</span>
+                    <p>Planet + House = Interpretation. Learn what each planet and house means separately, then combine them. This is the core skill of chart reading.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lesson 6 -->
+        <div class="la-card" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+            <div class="la-header"><span class="la-icon">6</span><div><h3>Aspects (Drishti)</h3><p class="la-desc">How planets influence each other</p></div><span class="la-chevron">▾</span></div>
+            <div class="la-body">
+                <div class="la-section"><span class="la-label">Concept</span>
+                    <p>In Vedic astrology, every planet aspects the 7th house from itself (the opposite sign). Mars also aspects the 4th and 8th. Jupiter aspects the 5th and 9th. Saturn aspects the 3rd and 10th. These are called special aspects.</p>
+                </div>
+                <div class="la-section"><span class="la-label">Your Aspects</span>
+                    {% for a in aspects[:5] %}
+                    <p><strong>{{ a.from }}</strong> aspects {{ a.to|join(', ') }} in {{ a.target_sign }}.</p>
+                    {% endfor %}
+                </div>
+                <div class="la-section"><span class="la-label">Key Takeaway</span>
+                    <p>Aspects extend a planet's influence beyond its own house. A planet can affect a house it does not sit in. Always check aspects when reading any house.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lesson 7 -->
+        <div class="la-card" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+            <div class="la-header"><span class="la-icon">7</span><div><h3>Sign Lordship</h3><p class="la-desc">How houses connect through rulers</p></div><span class="la-chevron">▾</span></div>
+            <div class="la-body">
+                <div class="la-section"><span class="la-label">Concept</span>
+                    <p>Each sign has a ruling planet (lord). The lord of a house connects that house to wherever the lord sits. If your 7th lord sits in the 10th house, marriage is connected to career. This is how astrologers trace life patterns.</p>
+                </div>
+                <div class="la-section"><span class="la-label">Your Lordship Chains</span>
+                    {% for r in house_readings[:4] %}
+                    <p><strong>House {{ r.num }} ({{ r.theme }})</strong>: ruled by {{ r.lord }}{% if r.lord_house %}, placed in House {{ r.lord_house }}. {{ r.lord_note }}{% endif %}</p>
+                    {% endfor %}
+                </div>
+                <div class="la-section"><span class="la-label">Key Takeaway</span>
+                    <p>Lordship is the backbone of prediction. Where a house lord sits tells you where that house's energy flows. Trace the chain for any house to understand its full story.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lesson 8 -->
+        <div class="la-card" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+            <div class="la-header"><span class="la-icon">8</span><div><h3>Yogas</h3><p class="la-desc">Special planetary combinations</p></div><span class="la-chevron">▾</span></div>
+            <div class="la-body">
+                <div class="la-section"><span class="la-label">Concept</span>
+                    <p>Yogas are specific planetary combinations that produce results greater than individual placements. Gajakesari Yoga (Jupiter in kendra from Moon) brings wisdom and fame. Raja Yoga (trikona lord with kendra lord) brings power.</p>
+                </div>
+                <div class="la-section"><span class="la-label">Your Yogas</span>
+                    {% if yogas %}
+                    {% for y in yogas %}
+                    <p><strong>{{ y.name }}</strong>: {{ y.desc }}</p>
+                    {% endfor %}
+                    {% else %}
+                    <p>No major yogas detected in your chart. This is normal. Many charts have subtle yogas that require deeper analysis.</p>
+                    {% endif %}
+                </div>
+                <div class="la-section"><span class="la-label">Key Takeaway</span>
+                    <p>Yogas modify the baseline reading. They can elevate or challenge specific areas. Learn the rules for each yoga, then check if your chart meets the conditions.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lesson 9 -->
+        <div class="la-card" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+            <div class="la-header"><span class="la-icon">9</span><div><h3>The Dasha System</h3><p class="la-desc">Timing predictions with planetary periods</p></div><span class="la-chevron">▾</span></div>
+            <div class="la-body">
+                <div class="la-section"><span class="la-label">Concept</span>
+                    <p>Vimshottari Dasha divides your life into 9 planetary periods totaling 120 years. The starting point is determined by your Moon's nakshatra at birth. Each planet's period activates the houses it rules and occupies.</p>
+                </div>
+                <div class="la-section"><span class="la-label">Your Dasha</span>
+                    <p>You are currently in <strong>{{ current_dasha }} ({{ planet_names[current_dasha] }}) Mahadasha</strong>.</p>
+                    <p>This means the houses ruled by {{ current_dasha }} in your chart are especially active right now. Look at where {{ current_dasha }} sits and what houses it rules to understand your current life themes.</p>
+                </div>
+                <div class="la-section"><span class="la-label">Key Takeaway</span>
+                    <p>The chart shows potential. The dasha shows timing. A strong planet gives its best results during its own dasha period. This is how astrologers predict when events will happen.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lesson 10 -->
+        <div class="la-card" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+            <div class="la-header"><span class="la-icon">10</span><div><h3>Doshas and Remedies</h3><p class="la-desc">Challenges and how to address them</p></div><span class="la-chevron">▾</span></div>
+            <div class="la-body">
+                <div class="la-section"><span class="la-label">Concept</span>
+                    <p>A dosha is an area of intensity in your chart. Manglik Dosha (Mars in houses 1, 2, 4, 7, 8, or 12) affects marriage. Kalsarpa Dosha (all planets between Rahu and Ketu) indicates a focused karmic path. Sade Sati is Saturn transiting near your Moon.</p>
+                    <p>Doshas are not curses. They are areas that need awareness and sometimes remedial action.</p>
+                </div>
+                <div class="la-section"><span class="la-label">Your Doshas</span>
+                    {% for d in doshas %}
+                    <p><strong>{{ d.name }}</strong>: {% if d.present %}Present. {{ d.detail }}{% else %}Not present. {{ d.detail }}{% endif %}</p>
+                    {% endfor %}
+                </div>
+                <div class="la-section"><span class="la-label">Key Takeaway</span>
+                    <p>Check for doshas by looking at planet positions. Manglik is the simplest: is Mars in houses 1, 2, 4, 7, 8, or 12? You can now verify this yourself from any chart.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lesson 11 -->
+        <div class="la-card" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+            <div class="la-header"><span class="la-icon">11</span><div><h3>Divisional Charts</h3><p class="la-desc">Going deeper with Navamsa and beyond</p></div><span class="la-chevron">▾</span></div>
+            <div class="la-body">
+                <div class="la-section"><span class="la-label">Concept</span>
+                    <p>The birth chart (D1) is the main chart. Divisional charts zoom into specific life areas. Navamsa (D9) is the most important. It reveals the deeper truth about marriage, dharma, and inner strength. Dasamsa (D10) shows career specifics.</p>
+                    <p>Each divisional chart divides each sign into smaller parts. In Navamsa, each sign is split into 9 parts of 3 degrees 20 minutes each.</p>
+                </div>
+                <div class="la-section"><span class="la-label">Your Navamsa</span>
+                    <p>Compare your D1 (birth chart) planet positions with the Navamsa positions in the Full Chart view. If a planet is strong in both D1 and D9, its results are confirmed. If weak in D9, the D1 promise may not fully deliver.</p>
+                </div>
+                <div class="la-section"><span class="la-label">Key Takeaway</span>
+                    <p>D1 shows the promise. D9 confirms or denies it. Always check Navamsa for marriage questions and D10 for career questions.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lesson 12 -->
+        <div class="la-card" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+            <div class="la-header"><span class="la-icon">12</span><div><h3>Reading a Complete Chart</h3><p class="la-desc">Putting it all together</p></div><span class="la-chevron">▾</span></div>
+            <div class="la-body">
+                <div class="la-section"><span class="la-label">The Full Process</span>
+                    <p>1. Note the Lagna sign and its lord placement. This sets the foundation.</p>
+                    <p>2. Check Moon sign and nakshatra for emotional nature and dasha starting point.</p>
+                    <p>3. See which houses have planets. Those areas are most active in life.</p>
+                    <p>4. Trace lordship chains for key houses (1st, 7th, 10th) to understand self, marriage, career.</p>
+                    <p>5. Check aspects, especially from Saturn, Jupiter, and Mars.</p>
+                    <p>6. Identify yogas for special strengths or challenges.</p>
+                    <p>7. Check doshas for areas needing attention.</p>
+                    <p>8. Look at the current dasha to understand present life themes.</p>
+                    <p>9. Confirm with Navamsa (D9) for marriage and D10 for career.</p>
+                </div>
+                <div class="la-section"><span class="la-label">Your Summary</span>
+                    <p>Your Lagna is <strong>{{ lagna.sign }}</strong>. Your Moon is in <strong>{{ (planets|selectattr('planet', 'equalto', 'Chandra')|first).sign }}</strong>. You are in <strong>{{ current_dasha }}</strong> Mahadasha. You have <strong>{{ yogas|length }}</strong> yoga(s) and <strong>{{ doshas|selectattr('present')|list|length }}</strong> active dosha(s).</p>
+                    <p>Switch to the Full Chart view to practice reading each section yourself. Compare what you see with the readings the app generates.</p>
+                </div>
+                <div class="la-section"><span class="la-label">Congratulations</span>
+                    <p>You now have the foundation to read any Vedic birth chart. The more charts you read, the better you get. Start with family and friends. Every chart teaches you something new.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>

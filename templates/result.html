@@ -28,6 +28,7 @@
 
         <div class="view-toggle" id="view-toggle">
             <button class="view-btn active" id="btn-horoscope" onclick="setView('horoscope')">🌙 My Horoscope</button>
+            <button class="view-btn" id="btn-study" onclick="setView('study')">📖 Study</button>
             <button class="view-btn" id="btn-full" onclick="setView('full')">🔬 Full Chart</button>
         </div>
 
@@ -50,6 +51,7 @@
         </nav>
 
         <div data-view="horoscope full">{% include 'includes/sec_info.html' %}</div>
+        <div data-view="study">{% include 'includes/sec_study.html' %}</div>
         <div data-view="horoscope full">{% include 'includes/sec_insights.html' %}</div>
         <div data-view="full">{% include 'includes/sec_charts.html' %}</div>
         <div data-view="full">{% include 'includes/sec_planets.html' %}</div>

@@ -4,6 +4,7 @@ function setView(view) {
         el.style.display = el.getAttribute('data-view').split(' ').includes(view) ? '' : 'none';
     });
     document.getElementById('btn-horoscope').classList.toggle('active', view === 'horoscope');
+    document.getElementById('btn-study').classList.toggle('active', view === 'study');
     document.getElementById('btn-full').classList.toggle('active', view === 'full');
     localStorage.setItem('kundli-view', view);
 }
