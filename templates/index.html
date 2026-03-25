@@ -155,7 +155,7 @@ if(localStorage.getItem('kundli-theme') === 'light') document.documentElement.cl
             charts.sort(function(a, b) { return b.date.localeCompare(a.date); });
             charts.slice(0, 10).forEach(function(c) {
                 var a = document.createElement('a');
-                a.href = c.id;
+                a.href = (c.url || c.id).replace(/&amp;/g, '&');
                 a.className = 'saved-item';
                 a.textContent = c.label;
                 list.appendChild(a);

@@ -182,9 +182,10 @@ function openDB() {
     });
 }
 function saveChartLocally() {
+    var shareUrl = '{{ share_url|safe }}';
     var data = {
-        id: '{{ share_url|safe }}',
-        html: document.documentElement.outerHTML,
+        id: shareUrl,
+        url: window.location.origin + shareUrl,
         date: new Date().toISOString(),
         label: '{{ birth_dt.strftime("%d %b %Y") }}, {{ location }}'
     };
