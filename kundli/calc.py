@@ -129,11 +129,13 @@ def _has_kemadruma(planets: list) -> bool:
 
 
 def get_sign(longitude):
+    """Return (sign_name, degree_within_sign) for a sidereal longitude."""
     index = int(longitude // 30)
     return SIGNS[index], longitude % 30
 
 
 def get_nakshatra(longitude):
+    """Return (nakshatra_name, pada) for a sidereal longitude."""
     span = 360 / 27
     index = int(longitude // span)
     pada = int((longitude % span) // (span / 4)) + 1
@@ -141,6 +143,7 @@ def get_nakshatra(longitude):
 
 
 def to_julian(dt, tz_offset):
+    """Convert a datetime and timezone offset to Julian Day number."""
     ut_hour = dt.hour + dt.minute / 60.0 + dt.second / 3600.0 - tz_offset
     return swe.julday(dt.year, dt.month, dt.day, ut_hour)
 
@@ -151,6 +154,7 @@ swe.set_sid_mode(swe.SIDM_LAHIRI)
 
 
 def compute_planets(jd):
+    """Compute sidereal positions of all 9 Navagraha for a Julian Day."""
     ayanamsa = swe.get_ayanamsa_ut(jd)
     results = []
     for pid, name in PLANETS.items():
@@ -183,6 +187,7 @@ def compute_planets(jd):
 
 
 def compute_houses(jd, lat, lon):
+    """Compute 12 house cusps using Placidus system."""
     ayanamsa = swe.get_ayanamsa_ut(jd)
     cusps, _ = swe.houses(jd, lat, lon, b'P')
     houses = []
@@ -194,6 +199,7 @@ def compute_houses(jd, lat, lon):
 
 
 def compute_dasha(moon_longitude, birth_dt):
+    """Compute Vimshottari Mahadasha periods from Moon longitude."""
     nak_index = int(moon_longitude // (360 / 27))
     lord = NAKSHATRA_LORDS[nak_index % 9]
     nak_span = 360 / 27
@@ -383,6 +389,7 @@ def get_aspecting_planets(planets, house_sign):
     return aspecting
 
 def compute_aspects(planets):
+    """Compute Vedic planetary aspects between all planets."""
     results = []
     for p in planets:
         p_sign_idx = SIGNS.index(p["sign"])

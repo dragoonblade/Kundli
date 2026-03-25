@@ -2,6 +2,7 @@
 from flask import Flask, render_template, request, jsonify, session as flask_session
 from datetime import datetime, timedelta, timezone
 from geopy.geocoders import Nominatim
+from geopy.exc import GeocoderTimedOut, GeocoderServiceError, GeocoderUnavailable
 import json
 import os
 import tempfile
@@ -98,8 +99,8 @@ class ChartStore:
                 self._redis = redis.from_url(redis_url)
                 self._redis.ping()
                 logging.info("ChartStore: using Redis")
-            except Exception:
-                logging.warning("ChartStore: Redis unavailable, falling back to file-based")
+            except (ImportError, ConnectionError, OSError) as e:
+                logging.warning(f"ChartStore: Redis unavailable ({e}), falling back to file-based")
                 self._redis = None
 
     def set(self, key, value):
@@ -207,7 +208,7 @@ def get_coordinates(location):
         result = (loc.latitude, loc.longitude)
         _geo_cache[normalized] = result
         return result
-    except Exception:
+    except (GeocoderTimedOut, GeocoderServiceError, GeocoderUnavailable, ValueError, AttributeError):
         return None, None
 
 
