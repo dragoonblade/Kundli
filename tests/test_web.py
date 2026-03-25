@@ -185,3 +185,57 @@ class TestChat:
     def test_no_body(self, client):
         r = client.post("/chat", json=None)
         assert r.status_code in (200, 400, 415)
+
+
+# ── New Routes ───────────────────────────────────────
+
+class TestPdfDownload:
+    def test_pdf_after_chart(self, client_with_chart):
+        r = client_with_chart.get("/pdf")
+        assert r.status_code == 200
+        assert r.content_type == "application/pdf"
+        assert r.data[:4] == b"%PDF"
+
+    def test_pdf_without_chart(self, client):
+        r = client.get("/pdf")
+        assert r.status_code == 404
+
+    def test_match_pdf(self, client):
+        client.post("/match", data=MATCH_FORM)
+        r = client.get("/match/pdf")
+        assert r.status_code == 200
+        assert r.data[:4] == b"%PDF"
+
+
+class TestApiChart:
+    def test_success(self, client):
+        r = client.post("/api/chart", json={
+            "date": "1996-09-23", "time": "22:17",
+            "location": "Chandigarh, India", "tz": 5.5,
+        })
+        assert r.status_code == 200
+        data = r.get_json()
+        assert data["lagna"]["sign"] == "Vrishabha"
+        assert len(data["planets"]) == 9
+        assert len(data["houses"]) == 12
+        assert len(data["dashas"]) == 9
+
+    def test_missing_fields(self, client):
+        r = client.post("/api/chart", json={"date": "1996-09-23"})
+        assert r.status_code == 400
+
+    def test_invalid_date(self, client):
+        r = client.post("/api/chart", json={"date": "bad", "time": "22:17", "location": "Delhi", "tz": 5.5})
+        assert r.status_code == 400
+
+
+class TestShareableLink:
+    def test_shareable_link(self, client):
+        r = client.get("/?d=1996-09-23&t=22:17&l=Chandigarh, India&z=5.5")
+        assert r.status_code == 200
+        assert "Vrishabha" in r.data.decode()
+
+    def test_shareable_link_missing_params(self, client):
+        r = client.get("/?d=1996-09-23")
+        # Missing time and location should show error or index
+        assert r.status_code == 200
