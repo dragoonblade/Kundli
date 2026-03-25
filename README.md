@@ -37,3 +37,14 @@ python -m kundli.app \
 | `--location` | Birth place (geocoded via Nominatim)     | required |
 | `--tz`       | Timezone offset from UTC                 | 5.5 (IST) |
 | `--chart`    | Chart style: `north`, `south`, or `both` | both |
+
+
+## Rollback Strategy
+
+If a deployment fails or introduces a regression:
+
+1. **Render**: Go to Dashboard > your service > Events. Click "Rollback" on the last successful deploy.
+2. **Manual**: `git revert HEAD && git push` to revert the last commit and trigger a new deploy.
+3. **Docker**: Tag every release image. Roll back by deploying the previous tag.
+4. **Verify**: After rollback, check `/health` endpoint returns `{"status": "ok"}`.
+5. **Post-mortem**: Document what went wrong in `.kiro/conversations.md` before re-attempting the fix.
