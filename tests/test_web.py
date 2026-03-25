@@ -87,6 +87,24 @@ class TestKundliGeneration:
         body = client.post("/", data=KUNDLI_FORM).data.decode()
         assert "section-nav" in body
 
+    def test_all_section_ids_present(self, client):
+        body = client.post("/", data=KUNDLI_FORM).data.decode()
+        for sec in ["sec-info", "sec-charts", "sec-planets", "sec-strength",
+                     "sec-houses", "sec-aspects", "sec-yogas", "sec-doshas",
+                     "sec-dasha", "sec-life", "sec-readings", "sec-varga", "sec-ashtakavarga"]:
+            assert f'id="{sec}"' in body, f"Missing section: {sec}"
+
+    def test_has_chat_widget(self, client):
+        body = client.post("/", data=KUNDLI_FORM).data.decode()
+        assert "chat-widget" in body
+        assert "chat-input" in body
+
+    def test_has_footer_actions(self, client):
+        body = client.post("/", data=KUNDLI_FORM).data.decode()
+        assert "btn-pdf" in body
+        assert "saveChartLocally" in body
+        assert "share_url" in body or "Copy Share Link" in body
+
     def test_has_dasha_chain_in_header(self, client):
         body = client.post("/", data=KUNDLI_FORM).data.decode()
         assert "›" in body
