@@ -239,3 +239,71 @@ class TestShareableLink:
         r = client.get("/?d=1996-09-23")
         # Missing time and location should show error or index
         assert r.status_code == 200
+
+
+# ── Web.py coverage gaps ─────────────────────────────
+
+class TestChartStore:
+    def test_set_and_get(self, client_with_chart):
+        """Chart store works via the normal flow (POST then chat reads it)."""
+        r = client_with_chart.post("/chat", json={"question": "summary"})
+        assert r.status_code == 200
+        assert len(r.get_json()["answer"]) > 50
+
+    def test_get_missing_key(self, client):
+        """Getting a non-existent chart returns None (chat handles gracefully)."""
+        with client.session_transaction() as sess:
+            sess["chart_id"] = "nonexistent"
+        r = client.post("/chat", json={"question": "career"})
+        assert r.status_code == 200
+        assert "generate a birth chart" in r.get_json()["answer"]
+
+
+class TestHealthEndpoint:
+    def test_health_has_chart_store(self, client):
+        data = client.get("/health").get_json()
+        assert "chart_store" in data
+
+
+class TestMatchValidation:
+    def test_invalid_date_person1(self, client):
+        form = {**MATCH_FORM, "date1": "not-a-date"}
+        r = client.post("/match", data=form)
+        assert r.status_code == 200
+        body = r.data.decode()
+        assert "invalid" in body.lower() or "error" in body.lower()
+
+    def test_invalid_location(self, client):
+        form = {**MATCH_FORM, "location1": "xyznonexistent99999"}
+        r = client.post("/match", data=form)
+        assert r.status_code == 200
+        body = r.data.decode()
+        assert "could not find" in body.lower() or "error" in body.lower()
+
+
+class TestApiChartErrors:
+    def test_bad_location(self, client):
+        r = client.post("/api/chart", json={
+            "date": "1996-09-23", "time": "22:17",
+            "location": "xyznonexistent99999", "tz": 5.5,
+        })
+        assert r.status_code == 400
+        assert "could not find" in r.get_json()["error"].lower()
+
+    def test_no_json_body(self, client):
+        r = client.post("/api/chart")
+        assert r.status_code in (400, 415)
+
+
+class TestShareableLinks:
+    def test_missing_time(self, client):
+        r = client.get("/?d=1996-09-23&l=Delhi")
+        assert r.status_code == 200
+        body = r.data.decode()
+        assert "required" in body.lower() or "error" in body.lower() or "form-kundli" in body
+
+
+class TestPdfNoMatch:
+    def test_match_pdf_no_session(self, client):
+        r = client.get("/match/pdf")
+        assert r.status_code == 404

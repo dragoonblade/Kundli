@@ -37,6 +37,11 @@ app.secret_key = os.environ.get("KUNDLI_SECRET_KEY", "change-me-in-production")
 limiter = Limiter(get_remote_address, app=app, default_limits=["60 per minute"], storage_uri="memory://")
 
 
+@limiter.request_filter
+def _no_limit_in_tests():
+    return app.config.get("TESTING", False)
+
+
 @app.before_request
 def _log_request_start():
     request._start_time = _time.time()
