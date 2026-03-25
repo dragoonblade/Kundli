@@ -10,6 +10,16 @@ import uuid
 import logging
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+if os.environ.get("LOG_FORMAT") == "json":
+    import json as _json
+
+    class _JsonFormatter(logging.Formatter):
+        def format(self, record):
+            return _json.dumps({"ts": self.formatTime(record), "level": record.levelname, "msg": record.getMessage()})
+
+    _handler = logging.StreamHandler()
+    _handler.setFormatter(_JsonFormatter())
+    logging.root.handlers = [_handler]
 
 from kundli.calc import (
     to_julian, compute_planets, compute_houses,
@@ -33,6 +43,8 @@ from flask_limiter.util import get_remote_address
 
 app = Flask(__name__, template_folder="../templates", static_folder="../static")
 app.secret_key = os.environ.get("KUNDLI_SECRET_KEY", "change-me-in-production")
+if app.secret_key == "change-me-in-production":
+    logging.warning("KUNDLI_SECRET_KEY not set. Using insecure fallback. Set it in production.")
 
 limiter = Limiter(get_remote_address, app=app, default_limits=["60 per minute"], storage_uri="memory://")
 
@@ -42,16 +54,30 @@ def _no_limit_in_tests():
     return app.config.get("TESTING", False)
 
 
+@app.after_request
+def _security_headers(response):
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    if not app.debug:
+        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+        response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"
+    return response
+
+
 @app.before_request
 def _log_request_start():
     request._start_time = _time.time()
+    request._request_id = uuid.uuid4().hex[:8]
 
 
 @app.after_request
 def _log_request_end(response):
     duration = _time.time() - getattr(request, "_start_time", _time.time())
+    rid = getattr(request, "_request_id", "-")
     if request.path != "/health":
-        logging.info(f"{request.method} {request.path} {response.status_code} {duration:.3f}s")
+        logging.info(f"[{rid}] {request.method} {request.path} {response.status_code} {duration:.3f}s")
+    response.headers["X-Request-ID"] = rid
     return response
 
 # File-based chart store so it works across multiple gunicorn workers

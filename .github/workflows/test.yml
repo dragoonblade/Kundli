@@ -17,6 +17,10 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          pip install pytest
+          pip install pytest bandit pip-audit
       - name: Run tests
         run: python -m pytest tests/ -v
+      - name: Security scan (Bandit)
+        run: bandit -r kundli/ -s B101 -q
+      - name: Vulnerability scan (pip-audit)
+        run: pip-audit
