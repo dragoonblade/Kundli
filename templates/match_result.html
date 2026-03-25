@@ -23,6 +23,8 @@
 
         <nav class="section-nav" id="section-nav">
             <a href="#sec-score">Score</a>
+            <a href="#sec-compare">Compare</a>
+            <a href="#sec-dasha-compat">Dasha</a>
             <a href="#sec-kootas">Kootas</a>
             <a href="#sec-doshas">Doshas</a>
         </nav>
@@ -53,6 +55,48 @@
                 </div>
             </div>
         </section>
+
+        <!-- Side-by-Side Comparison -->
+        <section class="card" id="sec-compare">
+            <h2>Chart Comparison</h2>
+            <div class="compare-grid">
+                {% for p in people %}
+                <div class="compare-card">
+                    <div class="compare-name">{{ p.name }}</div>
+                    <div class="compare-row"><span class="label">Moon Sign</span><span class="value">{{ p.moon_sign }}</span></div>
+                    <div class="compare-row"><span class="label">Nakshatra</span><span class="value">{{ p.nakshatra }}</span></div>
+                    <div class="compare-row"><span class="label">Sun Sign</span><span class="value">{{ p.sun_sign }}</span></div>
+                    <div class="compare-row"><span class="label">Lagna</span><span class="value">{{ p.lagna }}</span></div>
+                    <div class="compare-row"><span class="label">Manglik</span><span class="value {% if p.manglik %}match-poor{% else %}match-good{% endif %}">{% if p.manglik %}Yes (House {{ p.mars_house }}){% else %}No{% endif %}</span></div>
+                    <div class="compare-row"><span class="label">Current Dasha</span><span class="value">{{ p.current_dasha or 'N/A' }}</span></div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Dasha Compatibility -->
+        {% if people[0].current_dasha and people[1].current_dasha %}
+        <section class="card" id="sec-dasha-compat">
+            <h2>Dasha Compatibility</h2>
+            <p class="muted" style="margin-bottom:var(--space-sm)">Both partners' current planetary periods</p>
+            <div class="dasha-compat">
+                <span class="dasha-compat-person">{{ people[0].name }}: <strong>{{ people[0].current_dasha }} ({{ planet_names[people[0].current_dasha] }})</strong></span>
+                <span class="dasha-compat-vs">+</span>
+                <span class="dasha-compat-person">{{ people[1].name }}: <strong>{{ people[1].current_dasha }} ({{ planet_names[people[1].current_dasha] }})</strong></span>
+            </div>
+            {% set p1d = people[0].current_dasha %}
+            {% set p2d = people[1].current_dasha %}
+            {% if p1d == p2d %}
+            <p class="dasha-compat-note">Both are in the same planetary period. You share similar life themes and energy right now.</p>
+            {% elif p1d in ['Guru', 'Shukra', 'Budh'] and p2d in ['Guru', 'Shukra', 'Budh'] %}
+            <p class="dasha-compat-note">Both are in benefic periods. This is a favorable time for the relationship.</p>
+            {% elif p1d in ['Shani', 'Rahu', 'Ketu'] and p2d in ['Shani', 'Rahu', 'Ketu'] %}
+            <p class="dasha-compat-note">Both are in challenging periods. Supporting each other through difficulties will strengthen the bond.</p>
+            {% else %}
+            <p class="dasha-compat-note">Different planetary energies are active. Balance comes from understanding each other's current life phase.</p>
+            {% endif %}
+        </section>
+        {% endif %}
 
         <section class="card" id="sec-kootas">
             <h2>Koota Breakdown</h2>

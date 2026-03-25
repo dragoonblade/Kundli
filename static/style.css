@@ -1180,3 +1180,17 @@ footer {
 .match-summary { margin-bottom: var(--space-md); padding: var(--space-sm) var(--space-md); background: var(--tag-bg); border-radius: var(--radius); font-size: 0.85rem; }
 .match-strength { color: var(--active-border); margin-bottom: var(--space-xs); }
 .match-challenge { color: var(--accent); }
+
+/* Chart Comparison */
+.compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); }
+@media (max-width: 500px) { .compare-grid { grid-template-columns: 1fr; } }
+.compare-card { background: var(--tag-bg); border-radius: var(--radius); padding: var(--space-md); }
+.compare-name { font-weight: 600; font-size: 1rem; margin-bottom: var(--space-sm); color: var(--accent); }
+.compare-row { display: flex; justify-content: space-between; padding: var(--space-xs) 0; font-size: 0.85rem; border-bottom: 1px solid var(--border); }
+.compare-row:last-child { border-bottom: none; }
+.compare-row .label { color: var(--text-secondary); }
+
+/* Dasha Compatibility */
+.dasha-compat { display: flex; align-items: center; justify-content: center; gap: var(--space-md); margin: var(--space-md) 0; font-size: 0.9rem; }
+.dasha-compat-vs { color: var(--text-secondary); }
+.dasha-compat-note { font-size: 0.85rem; color: var(--text); text-align: center; padding: var(--space-sm); background: var(--tag-bg); border-radius: var(--radius-sm); }

@@ -195,6 +195,17 @@ class TestMatch:
         body = client.post("/match", data=MATCH_FORM).data.decode()
         assert "remedy-item" in body or "dosha-remedies" in body
 
+    def test_has_chart_comparison(self, client):
+        body = client.post("/match", data=MATCH_FORM).data.decode()
+        assert "compare-grid" in body
+        assert "Moon Sign" in body
+        assert "Sun Sign" in body
+        assert "Lagna" in body
+
+    def test_has_dasha_compatibility(self, client):
+        body = client.post("/match", data=MATCH_FORM).data.decode()
+        assert "dasha-compat" in body
+
 
 # ── POST /chat ───────────────────────────────────────
 

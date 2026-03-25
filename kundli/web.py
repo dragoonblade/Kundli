@@ -396,13 +396,20 @@ def match():
         planets = compute_planets(jd)
         houses = compute_houses(jd, lat, lon)
         moon = next(p for p in planets if p["planet"] == "Chandra")
+        sun = next(p for p in planets if p["planet"] == "Surya")
         nak_idx = int(moon["longitude"] // (360 / 27))
         phm = build_planet_house_map(planets, houses)
         mars_house = phm.get("Mangal")
         is_manglik = mars_house in (1, 2, 4, 7, 8, 12)
+        # Current dasha
+        dashas = compute_dasha(moon["longitude"], birth_dt)
+        now_local = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(hours=tz)
+        current_md = next((d["lord"] for d in dashas if d["start"] <= now_local <= d["end"]), None)
         people.append({
             "name": name, "moon_sign": moon["sign"], "nakshatra": moon["nakshatra"],
+            "sun_sign": sun["sign"], "lagna": houses[0]["sign"],
             "nak_idx": nak_idx, "manglik": is_manglik, "mars_house": mars_house,
+            "current_dasha": current_md,
         })
 
     if errors:
