@@ -1173,3 +1173,10 @@ footer {
 .explainer-toggle:hover { color: var(--accent); }
 .explainer-text { display: none; font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6; margin-top: var(--space-xs); padding: var(--space-sm); background: var(--tag-bg); border-radius: var(--radius-sm); }
 .explainer.open .explainer-text { display: block; }
+
+/* Match Improvements */
+.koota-interp { grid-column: 1 / -1; font-size: 0.78rem; color: var(--text-secondary); font-style: italic; line-height: 1.4; }
+.koota-row { grid-template-columns: 1.5fr 1fr 1fr 0.7fr; }
+.match-summary { margin-bottom: var(--space-md); padding: var(--space-sm) var(--space-md); background: var(--tag-bg); border-radius: var(--radius); font-size: 0.85rem; }
+.match-strength { color: var(--active-border); margin-bottom: var(--space-xs); }
+.match-challenge { color: var(--accent); }

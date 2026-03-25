@@ -135,4 +135,23 @@ def compute_ashtakoota(nak1_idx: int, nak2_idx: int) -> dict:
         "score": 0 if n1 == n2 else 8, "boy": _NADI_NAMES[n1], "girl": _NADI_NAMES[n2],
     })
 
-    return {"kootas": kootas, "total": sum(k["score"] for k in kootas), "max": 36}
+    return {"kootas": _add_interpretations(kootas), "total": sum(k["score"] for k in kootas), "max": 36}
+
+
+_INTERP = {
+    "Varna": {True: "Spiritual values are well aligned.", False: "Different spiritual outlooks. Mutual respect helps bridge this."},
+    "Vashya": {True: "Good mutual attraction and influence.", False: "One partner may feel less heard. Open communication is key."},
+    "Tara": {True: "Destiny supports this union.", False: "Some karmic friction. Patience and understanding help."},
+    "Yoni": {True: "Strong physical and emotional compatibility.", False: "Physical compatibility may need conscious effort."},
+    "Graha Maitri": {True: "Minds are in harmony. You think alike.", False: "Different mental wavelengths. Give each other space to think."},
+    "Gana": {True: "Similar temperaments. You get along naturally.", False: "Different natures. One is more intense than the other."},
+    "Bhakoot": {True: "Health and finances are well supported together.", False: "Watch for health or financial stress. Plan together."},
+    "Nadi": {True: "Good genetic and health compatibility.", False: "Same Nadi. Consult an astrologer for Nadi Dosha remedies."},
+}
+
+
+def _add_interpretations(kootas):
+    for k in kootas:
+        good = k["score"] >= k["max"] * 0.5
+        k["interpretation"] = _INTERP.get(k["name"], {}).get(good, "")
+    return kootas

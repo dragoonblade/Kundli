@@ -183,6 +183,18 @@ class TestMatch:
         body = client.post("/match", data=form).data.decode()
         assert "Person 1" in body and "Person 2" in body
 
+    def test_has_interpretations(self, client):
+        body = client.post("/match", data=MATCH_FORM).data.decode()
+        assert "koota-interp" in body
+
+    def test_has_strengths_challenges(self, client):
+        body = client.post("/match", data=MATCH_FORM).data.decode()
+        assert "match-summary" in body
+
+    def test_has_dosha_remedies(self, client):
+        body = client.post("/match", data=MATCH_FORM).data.decode()
+        assert "remedy-item" in body or "dosha-remedies" in body
+
 
 # ── POST /chat ───────────────────────────────────────
 

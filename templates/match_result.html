@@ -56,6 +56,18 @@
 
         <section class="card" id="sec-kootas">
             <h2>Koota Breakdown</h2>
+
+            {% set strengths = [] %}{% set challenges = [] %}
+            {% for k in result.kootas %}
+                {% if k.score >= k.max * 0.75 %}{% if strengths.append(k.name) %}{% endif %}{% endif %}
+                {% if k.score <= k.max * 0.25 %}{% if challenges.append(k.name) %}{% endif %}{% endif %}
+            {% endfor %}
+            {% if strengths or challenges %}
+            <div class="match-summary">
+                {% if strengths %}<p class="match-strength">Strongest areas: {{ strengths|join(', ') }}</p>{% endif %}
+                {% if challenges %}<p class="match-challenge">Watch out for: {{ challenges|join(', ') }}</p>{% endif %}
+            </div>
+            {% endif %}
             <div class="koota-table">
                 <div class="koota-header">
                     <span>Koota</span>
@@ -69,6 +81,7 @@
                     <span class="koota-val">{{ k.boy }}</span>
                     <span class="koota-val">{{ k.girl }}</span>
                     <span class="koota-score">{{ k.score }} / {{ k.max }}</span>
+                    {% if k.interpretation %}<span class="koota-interp">{{ k.interpretation }}</span>{% endif %}
                 </div>
                 {% endfor %}
                 <div class="koota-row koota-total">
@@ -86,13 +99,30 @@
         <section class="card match-warnings" id="sec-doshas">
             <h2>⚠️ Doshas</h2>
             {% if people[0].manglik or people[1].manglik %}
-            <div class="match-dosha">Manglik Dosha — {% if people[0].manglik and people[1].manglik %}Both {{ people[0].name }} (Mars in House {{ people[0].mars_house }}) and {{ people[1].name }} (Mars in House {{ people[1].mars_house }}) are Manglik. When both partners are Manglik, the dosha is considered neutralized.{% elif people[0].manglik %}{{ people[0].name }} is Manglik (Mars in House {{ people[0].mars_house }}). {{ people[1].name }} is not. This mismatch is traditionally significant for compatibility.{% else %}{{ people[1].name }} is Manglik (Mars in House {{ people[1].mars_house }}). {{ people[0].name }} is not. This mismatch is traditionally significant for compatibility.{% endif %}</div>
+            <div class="match-dosha">Manglik Dosha: {% if people[0].manglik and people[1].manglik %}Both {{ people[0].name }} and {{ people[1].name }} are Manglik. When both partners are Manglik, the dosha is considered neutralized.{% elif people[0].manglik %}{{ people[0].name }} is Manglik (Mars in House {{ people[0].mars_house }}). {{ people[1].name }} is not.{% else %}{{ people[1].name }} is Manglik (Mars in House {{ people[1].mars_house }}). {{ people[0].name }} is not.{% endif %}
+                <div class="dosha-remedies"><span class="remedy-label">Remedies:</span>
+                    <div class="remedy-item">• Kumbh Vivah (symbolic marriage to a pot) before the actual wedding</div>
+                    <div class="remedy-item">• Manglik effects reduce significantly after age 28</div>
+                    <div class="remedy-item">• Chant Mangal mantra on Tuesdays and visit Hanuman temple</div>
+                </div>
+            </div>
             {% endif %}
             {% if nadi.score == 0 %}
-            <div class="match-dosha">Nadi Dosha — Both have {{ nadi.boy }} Nadi. Same Nadi may indicate health concerns in offspring. Consult a Jyotish for remedies.</div>
+            <div class="match-dosha">Nadi Dosha: Both have {{ nadi.boy }} Nadi. Same Nadi may indicate health concerns in offspring.
+                <div class="dosha-remedies"><span class="remedy-label">Remedies:</span>
+                    <div class="remedy-item">• Nadi Nivarana Puja at a temple</div>
+                    <div class="remedy-item">• Donate gold, grains, and cloth to a Brahmin couple</div>
+                    <div class="remedy-item">• Mahamrityunjaya Jaap (108 times) for health protection</div>
+                </div>
+            </div>
             {% endif %}
             {% if bhakoot.score == 0 %}
-            <div class="match-dosha">Bhakoot Dosha — {{ bhakoot.boy }} and {{ bhakoot.girl }} are in an unfavorable axis. May indicate challenges in health or finances.</div>
+            <div class="match-dosha">Bhakoot Dosha: {{ bhakoot.boy }} and {{ bhakoot.girl }} are in an unfavorable axis. May indicate challenges in health or finances.
+                <div class="dosha-remedies"><span class="remedy-label">Remedies:</span>
+                    <div class="remedy-item">• Perform Graha Shanti Puja for the lords of both signs</div>
+                    <div class="remedy-item">• Donate food and clothes on auspicious days</div>
+                </div>
+            </div>
             {% endif %}
         </section>
         {% endif %}
