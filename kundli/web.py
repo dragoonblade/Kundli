@@ -8,6 +8,7 @@ import os
 import tempfile
 import time as _time
 import uuid
+from urllib.parse import quote
 import logging
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -415,7 +416,7 @@ def _generate_chart(date_str, time_str, location, tz_str):
         life_areas=life_areas,
         varga_charts=varga_charts,
         dosha_remedies=DOSHA_REMEDIES, planet_remedies=PLANET_REMEDIES,
-        share_url=f"/?d={date_str}&t={time_str}&l={location}&z={tz_str}",
+        share_url=f"/?d={date_str}&t={time_str}&l={quote(location)}&z={tz_str}",
         transits=transits, daily_insights=daily_insights,
     )
 
