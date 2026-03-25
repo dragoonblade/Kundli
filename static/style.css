@@ -141,7 +141,7 @@ header h1 {
     display: grid;
     grid-template-columns: 1fr;
     gap: var(--space-md);
-    margin-bottom: var(--space-lg);
+    margin-bottom: var(--space-xl);
 }
 @media (min-width: 600px) {
     .form-grid { grid-template-columns: 1fr 1fr; }
@@ -909,7 +909,7 @@ footer {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--space-md);
-    margin-bottom: var(--space-lg);
+    margin-bottom: var(--space-xl);
 }
 @media (max-width: 600px) { .match-grid { grid-template-columns: 1fr; } }
 .person-fields {
