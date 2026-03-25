@@ -457,13 +457,17 @@ def api_chart():
     lat, lon = get_coordinates(location)
     if lat is None:
         return jsonify({"error": f"Could not find location: {location}"}), 400
-    jd = to_julian(birth_dt, tz)
-    planets = compute_planets(jd)
-    houses = compute_houses(jd, lat, lon)
-    planet_house_map = build_planet_house_map(planets, houses)
-    moon = next(p for p in planets if p["planet"] == "Chandra")
-    dashas = compute_dasha(moon["longitude"], birth_dt)
-    yogas = check_yogas(planets, houses, planet_house_map)
+    try:
+        jd = to_julian(birth_dt, tz)
+        planets = compute_planets(jd)
+        houses = compute_houses(jd, lat, lon)
+        planet_house_map = build_planet_house_map(planets, houses)
+        moon = next(p for p in planets if p["planet"] == "Chandra")
+        dashas = compute_dasha(moon["longitude"], birth_dt)
+        yogas = check_yogas(planets, houses, planet_house_map)
+    except Exception as e:
+        logging.exception("API chart computation failed")
+        return jsonify({"error": f"Computation failed: {e}"}), 500
     return jsonify({
         "birth": {"date": date_str, "time": time_str, "location": location, "tz": tz, "lat": lat, "lon": lon},
         "lagna": {"sign": houses[0]["sign"], "degree": houses[0]["degree"]},

@@ -49,33 +49,33 @@ SIGN_LORDS_CALC = {
 }
 
 YOGAS = [
-    {"name": "Gajakesari", "desc": "Guru in kendra from Chandra — wisdom, fame, prosperity",
+    {"name": "Gajakesari", "desc": "Guru in kendra from Chandra. Brings wisdom, fame, and prosperity",
      "check": lambda p: _in_kendra(p, "Guru", "Chandra")},
-    {"name": "Budhaditya", "desc": "Surya and Budh in same sign — intelligence, communication skills",
+    {"name": "Budhaditya", "desc": "Surya and Budh in same sign. Brings intelligence and communication skills",
      "check": lambda p: _same_sign(p, "Surya", "Budh")},
-    {"name": "Chandra-Mangal", "desc": "Chandra and Mangal in same sign — wealth through enterprise",
+    {"name": "Chandra-Mangal", "desc": "Chandra and Mangal in same sign. Brings wealth through enterprise",
      "check": lambda p: _same_sign(p, "Chandra", "Mangal")},
-    {"name": "Sunapha", "desc": "Planet (not Sun) in 2nd from Chandra — self-made wealth",
+    {"name": "Sunapha", "desc": "Planet (not Sun) in 2nd from Chandra. Indicates self-made wealth",
      "check": lambda p: _has_planet_offset_from_moon(p, 1)},
-    {"name": "Anapha", "desc": "Planet (not Sun) in 12th from Chandra — spiritual inclination, generosity",
+    {"name": "Anapha", "desc": "Planet (not Sun) in 12th from Chandra. Indicates spiritual inclination and generosity",
      "check": lambda p: _has_planet_offset_from_moon(p, 11)},
-    {"name": "Durudhura", "desc": "Planets on both sides of Chandra — wealth, fame, generous nature",
+    {"name": "Durudhura", "desc": "Planets on both sides of Chandra. Brings wealth, fame, and generous nature",
      "check": lambda p: _has_planet_offset_from_moon(p, 1) and _has_planet_offset_from_moon(p, 11)},
-    {"name": "Voshi", "desc": "Planet (not Moon/Rahu/Ketu) in 12th from Surya — charitable, learned",
+    {"name": "Voshi", "desc": "Planet (not Moon/Rahu/Ketu) in 12th from Surya. Indicates charitable and learned nature",
      "check": lambda p: _has_planet_offset_from_sun(p, 11)},
-    {"name": "Veshi", "desc": "Planet (not Moon/Rahu/Ketu) in 2nd from Surya — eloquent, prosperous",
+    {"name": "Veshi", "desc": "Planet (not Moon/Rahu/Ketu) in 2nd from Surya. Indicates eloquence and prosperity",
      "check": lambda p: _has_planet_offset_from_sun(p, 1)},
-    {"name": "Obhayachari", "desc": "Planets on both sides of Surya — influential, strong personality",
+    {"name": "Obhayachari", "desc": "Planets on both sides of Surya. Indicates influential and strong personality",
      "check": lambda p: _has_planet_offset_from_sun(p, 1) and _has_planet_offset_from_sun(p, 11)},
-    {"name": "Lakshmi", "desc": "Shukra in own or exalted sign — wealth, beauty, fortune",
+    {"name": "Lakshmi", "desc": "Shukra in own or exalted sign. Brings wealth, beauty, and fortune",
      "check": lambda p: _get(p, "Shukra")["sign"] in ("Vrishabha", "Tula", "Meena")},
-    {"name": "Chandra-Budh", "desc": "Chandra and Budh in same sign — sharp mind, good memory",
+    {"name": "Chandra-Budh", "desc": "Chandra and Budh in same sign. Brings sharp mind and good memory",
      "check": lambda p: _same_sign(p, "Chandra", "Budh")},
-    {"name": "Shani-Mangal", "desc": "Shani and Mangal in same sign — determination, technical ability",
+    {"name": "Shani-Mangal", "desc": "Shani and Mangal in same sign. Brings determination and technical ability",
      "check": lambda p: _same_sign(p, "Shani", "Mangal")},
-    {"name": "Surya-Mangal", "desc": "Surya and Mangal in same sign — courage, leadership, authority",
+    {"name": "Surya-Mangal", "desc": "Surya and Mangal in same sign. Brings courage, leadership, and authority",
      "check": lambda p: _same_sign(p, "Surya", "Mangal")},
-    {"name": "Guru-Mangal", "desc": "Guru and Mangal in same sign — righteous action, spiritual courage",
+    {"name": "Guru-Mangal", "desc": "Guru and Mangal in same sign. Brings righteous action and spiritual courage",
      "check": lambda p: _same_sign(p, "Guru", "Mangal")},
 ]
 
@@ -119,7 +119,7 @@ def _in_kendra_from_sign(sign1: str, sign2: str) -> bool:
 
 
 def _has_kemadruma(planets: list) -> bool:
-    """Check Kemadruma — no planet (except Sun, Rahu, Ketu) adjacent to Moon."""
+    """Check Kemadruma. No planet (except Sun, Rahu, Ketu) adjacent to Moon."""
     moon_idx = _sign_index(planets, "Chandra")
     adjacent = {(moon_idx - 1) % 12, (moon_idx + 1) % 12}
     excluded = {"Surya", "Rahu", "Ketu", "Chandra"}
@@ -260,7 +260,7 @@ YOGINI_TOTAL = 36
 
 
 def compute_yogini_dasha(moon_longitude: float, birth_dt) -> list[dict]:
-    """Compute Yogini Dasha — 36-year cycle, 8 yoginis."""
+    """Compute Yogini Dasha, a 36-year cycle with 8 yoginis."""
     nak_index = int(moon_longitude // (360 / 27))
     start_idx = (nak_index + 3) % 8
     nak_span = 360 / 27
@@ -481,7 +481,7 @@ def check_doshas(planets: list, planet_house_map: dict, current_saturn_sign: str
         doshas.append({
             "name": "Kalsarpa Dosha",
             "present": True,
-            "detail": "All planets are between the Rahu-Ketu axis. This indicates a focused karmic path — with awareness and remedies, it brings deep spiritual growth and eventual success.",
+            "detail": "All planets are between the Rahu-Ketu axis. This indicates a focused karmic path. With awareness and remedies, it brings deep spiritual growth and eventual success.",
         })
     else:
         doshas.append({"name": "Kalsarpa Dosha", "present": False, "detail": "Planets are not confined to the Rahu-Ketu axis."})
@@ -496,7 +496,7 @@ def check_doshas(planets: list, planet_house_map: dict, current_saturn_sign: str
             doshas.append({
                 "name": "Sade Sati",
                 "present": True,
-                "detail": f"Saturn is transiting {current_saturn_sign} — {phase}. This 7.5-year period builds resilience, discipline, and lasting achievements through patience.",
+                "detail": f"Saturn is transiting {current_saturn_sign}, {phase}. This 7.5-year period builds resilience, discipline, and lasting achievements through patience.",
             })
         else:
             doshas.append({"name": "Sade Sati", "present": False, "detail": f"Saturn is in {current_saturn_sign}, not adjacent to your Moon sign."})
@@ -509,16 +509,16 @@ def check_yogas(planets: list, houses: list | None = None, planet_house_map: dic
     results = [{"name": y["name"], "desc": y["desc"]} for y in YOGAS if y["check"](planets)]
 
     if _has_kemadruma(planets):
-        results.append({"name": "Kemadruma", "desc": "No planets adjacent to Chandra — emotional isolation, self-reliance"})
+        results.append({"name": "Kemadruma", "desc": "No planets adjacent to Chandra. Indicates emotional isolation and self-reliance"})
 
     if houses:
         lagna_sign = houses[0]["sign"]
         mahapurusha = {
-            "Mangal": ("Ruchaka", "Mangal in own/exalted sign in kendra — courage, leadership, physical strength"),
-            "Budh": ("Bhadra", "Budh in own/exalted sign in kendra — intellect, communication, business acumen"),
-            "Guru": ("Hamsa", "Guru in own/exalted sign in kendra — wisdom, spirituality, good fortune"),
-            "Shukra": ("Malavya", "Shukra in own/exalted sign in kendra — beauty, luxury, artistic talent"),
-            "Shani": ("Sasa", "Shani in own/exalted sign in kendra — discipline, authority, longevity"),
+            "Mangal": ("Ruchaka", "Mangal in own or exalted sign in kendra. Brings courage, leadership, and physical strength"),
+            "Budh": ("Bhadra", "Budh in own or exalted sign in kendra. Brings intellect, communication, and business acumen"),
+            "Guru": ("Hamsa", "Guru in own or exalted sign in kendra. Brings wisdom, spirituality, and good fortune"),
+            "Shukra": ("Malavya", "Shukra in own or exalted sign in kendra. Brings beauty, luxury, and artistic talent"),
+            "Shani": ("Sasa", "Shani in own or exalted sign in kendra. Brings discipline, authority, and longevity"),
         }
         for planet, (name, desc) in mahapurusha.items():
             sign = _get(planets, planet)["sign"]
@@ -541,7 +541,7 @@ def check_yogas(planets: list, houses: list | None = None, planet_house_map: dic
         if h2 and h11:
             diff = (h11 - h2) % 12
             if diff in (0, 3, 4, 6, 8, 9):  # kendra or trikona
-                results.append({"name": "Dhana", "desc": f"Lords of 2nd ({lord2}) and 11th ({lord11}) in mutual kendra/trikona — wealth and prosperity"})
+                results.append({"name": "Dhana", "desc": f"Lords of 2nd ({lord2}) and 11th ({lord11}) in mutual kendra/trikona. Brings wealth and prosperity"})
 
         # Raja Yoga: lord of trikona (1,5,9) conjunct lord of kendra (1,4,7,10)
         trikona_lords = {_lord_of_house(h) for h in (1, 5, 9)}
@@ -549,7 +549,7 @@ def check_yogas(planets: list, houses: list | None = None, planet_house_map: dic
         for tl in trikona_lords:
             for kl in kendra_lords:
                 if tl != kl and _house_of(tl) == _house_of(kl) and _house_of(tl) is not None:
-                    results.append({"name": "Raja", "desc": f"{tl} (trikona lord) conjunct {kl} (kendra lord) in House {_house_of(tl)} — power and authority"})
+                    results.append({"name": "Raja", "desc": f"{tl} (trikona lord) conjunct {kl} (kendra lord) in House {_house_of(tl)}. Brings power and authority"})
                     break
             else:
                 continue
@@ -561,7 +561,7 @@ def check_yogas(planets: list, houses: list | None = None, planet_house_map: dic
             lord = _lord_of_house(h)
             lord_h = _house_of(lord)
             if lord_h in dusthana and lord_h != h:
-                results.append({"name": "Viparita Raja", "desc": f"Lord of {h}th ({lord}) in {lord_h}th house — success through adversity"})
+                results.append({"name": "Viparita Raja", "desc": f"Lord of {h}th ({lord}) in {lord_h}th house. Indicates success through adversity"})
                 break
 
         # Adhi Yoga: benefics (Guru, Shukra, Budh) in 6th, 7th, 8th from Moon
@@ -569,7 +569,7 @@ def check_yogas(planets: list, houses: list | None = None, planet_house_map: dic
         benefic_houses = {(moon_sign_idx + offset) % 12 for offset in (5, 6, 7)}  # 6th, 7th, 8th
         benefics_in = sum(1 for p in planets if p["planet"] in ("Guru", "Shukra", "Budh") and SIGNS.index(p["sign"]) in benefic_houses)
         if benefics_in >= 2:
-            results.append({"name": "Adhi", "desc": "Benefics in 6/7/8th from Chandra — leadership, authority, prosperity"})
+            results.append({"name": "Adhi", "desc": "Benefics in 6/7/8th from Chandra. Brings leadership, authority, and prosperity"})
 
         # Amala Yoga: benefic in 10th from Lagna or Moon
         lagna_idx = SIGNS.index(houses[0]["sign"])
@@ -577,7 +577,7 @@ def check_yogas(planets: list, houses: list | None = None, planet_house_map: dic
         tenth_from_moon = (moon_sign_idx + 9) % 12
         for p in planets:
             if p["planet"] in ("Guru", "Shukra", "Budh") and SIGNS.index(p["sign"]) in (tenth_from_lagna, tenth_from_moon):
-                results.append({"name": "Amala", "desc": f"{p['planet']} in 10th — lasting fame, virtuous reputation"})
+                results.append({"name": "Amala", "desc": f"{p['planet']} in 10th. Brings lasting fame and virtuous reputation"})
                 break
 
     return results

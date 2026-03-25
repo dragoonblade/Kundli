@@ -136,11 +136,11 @@ def _build_dasha_answer(dashas, current_dasha, readings, planet_names, tz_offset
         for ad in current.get("antardasha", []):
             if ad["start"] <= now <= ad["end"]:
                 ad_en = planet_names.get(ad["lord"], ad["lord"])
-                answer += f"**Current Antardasha:** {ad['lord']} ({ad_en}) — {ad['start'].strftime('%d %b %Y')} to {ad['end'].strftime('%d %b %Y')}\n\n"
+                answer += f"**Current Antardasha:** {ad['lord']} ({ad_en}), {ad['start'].strftime('%d %b %Y')} to {ad['end'].strftime('%d %b %Y')}\n\n"
                 for pr in ad.get("pratyantar", []):
                     if pr["start"] <= now <= pr["end"]:
                         pr_en = planet_names.get(pr["lord"], pr["lord"])
-                        answer += f"**Current Pratyantar:** {pr['lord']} ({pr_en}) — {pr['start'].strftime('%d %b %Y')} to {pr['end'].strftime('%d %b %Y')}\n\n"
+                        answer += f"**Current Pratyantar:** {pr['lord']} ({pr_en}), {pr['start'].strftime('%d %b %Y')} to {pr['end'].strftime('%d %b %Y')}\n\n"
                         break
                 break
 

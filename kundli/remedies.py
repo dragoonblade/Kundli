@@ -2,7 +2,7 @@
 
 DOSHA_REMEDIES = {
     "Manglik Dosha": [
-        "Chant Mangal (Mars) mantra: 'Om Kraam Kreem Kraum Sah Bhaumaya Namah' — 108 times on Tuesdays",
+        "Chant Mangal (Mars) mantra: 'Om Kraam Kreem Kraum Sah Bhaumaya Namah', 108 times on Tuesdays",
         "Wear a Red Coral (Moonga) gemstone after consulting an astrologer",
         "Fast on Tuesdays and donate red lentils (masoor dal)",
         "Visit Hanuman temple on Tuesdays and offer sindoor",
@@ -10,17 +10,17 @@ DOSHA_REMEDIES = {
     ],
     "Kalsarpa Dosha": [
         "Perform Kalsarpa Shanti Puja at Trimbakeshwar or Kalahasti temple",
-        "Chant Rahu mantra: 'Om Raam Rahave Namah' — 108 times on Saturdays",
+        "Chant Rahu mantra: 'Om Raam Rahave Namah', 108 times on Saturdays",
         "Keep a silver snake idol at home and worship on Nag Panchami",
         "Donate black sesame seeds and dark cloth on Saturdays",
-        "Feed birds daily — especially crows",
+        "Feed birds daily, especially crows",
     ],
     "Sade Sati": [
-        "Chant Shani mantra: 'Om Sham Shanaischaraya Namah' — 108 times on Saturdays",
+        "Chant Shani mantra: 'Om Sham Shanaischaraya Namah', 108 times on Saturdays",
         "Wear a Blue Sapphire (Neelam) or Amethyst only after expert consultation",
         "Light a sesame oil lamp under a Peepal tree on Saturdays",
         "Donate black urad dal, mustard oil, and iron items on Saturdays",
-        "Serve and respect elders and workers — Saturn rewards discipline and humility",
+        "Serve and respect elders and workers. Saturn rewards discipline and humility",
     ],
 }
 
@@ -68,7 +68,7 @@ PLANET_REMEDIES = {
         "practice": "Worship Goddess Lakshmi on Fridays",
     },
     "Shani": {
-        "gemstone": "Blue Sapphire (Neelam) — only after expert consultation",
+        "gemstone": "Blue Sapphire (Neelam), only after expert consultation",
         "mantra": "Om Sham Shanaischaraya Namah",
         "day": "Saturday",
         "donation": "Black sesame, mustard oil, iron items, dark cloth",
