@@ -37,7 +37,7 @@ def generate_kundli_pdf(ctx: dict) -> bytes:
     story = []
 
     # Header
-    story.append(Paragraph("Kundli — Vedic Birth Chart", _TITLE))
+    story.append(Paragraph("Kundli: Vedic Birth Chart", _TITLE))
     birth = ctx.get("birth_dt", "")
     loc = ctx.get("location", "")
     if birth:
@@ -66,7 +66,7 @@ def generate_kundli_pdf(ctx: dict) -> bytes:
     if yogas:
         story.append(Paragraph("Yogas", _H2))
         for y in yogas:
-            story.append(Paragraph(f"<b>{y['name']}</b> — {y['desc']}", _BODY))
+            story.append(Paragraph(f"<b>{y['name']}</b>: {y['desc']}", _BODY))
 
     # Doshas
     doshas = ctx.get("doshas", [])
@@ -74,7 +74,7 @@ def generate_kundli_pdf(ctx: dict) -> bytes:
         story.append(Paragraph("Doshas", _H2))
         for d in doshas:
             status = "⚠ Present" if d["present"] else "✓ Not present"
-            story.append(Paragraph(f"<b>{d['name']}</b>: {status} — {d['detail']}", _BODY))
+            story.append(Paragraph(f"<b>{d['name']}</b>: {status}. {d['detail']}", _BODY))
 
     # Dasha timeline (top level only)
     story.append(Paragraph("Vimshottari Dasha", _H2))
@@ -96,7 +96,7 @@ def generate_match_pdf(result: dict, people: list) -> bytes:
     doc = SimpleDocTemplate(buf, pagesize=A4, topMargin=15 * mm, bottomMargin=15 * mm)
     story = []
 
-    story.append(Paragraph("Kundli Match — Ashtakoota Gun Milan", _TITLE))
+    story.append(Paragraph("Kundli Match: Ashtakoota Gun Milan", _TITLE))
     story.append(Paragraph(
         f"<b>{people[0]['name']}</b> ({people[0]['moon_sign']} / {people[0]['nakshatra']}) &nbsp; ⟷ &nbsp; "
         f"<b>{people[1]['name']}</b> ({people[1]['moon_sign']} / {people[1]['nakshatra']})", _BODY))
@@ -107,12 +107,12 @@ def generate_match_pdf(result: dict, people: list) -> bytes:
     if total >= 32:
         verdict = "Excellent match"
     elif total >= 24:
-        verdict = "Good match — recommended"
+        verdict = "Good match, recommended"
     elif total >= 18:
-        verdict = "Average — proceed with caution"
+        verdict = "Average, proceed with caution"
     else:
         verdict = "Not recommended"
-    story.append(Paragraph(f"<b>Score: {total} / {result['max']}</b> — {verdict}", _BODY))
+    story.append(Paragraph(f"<b>Score: {total} / {result['max']}</b>. {verdict}", _BODY))
     story.append(Spacer(1, 6))
 
     # Koota table
@@ -128,12 +128,12 @@ def generate_match_pdf(result: dict, people: list) -> bytes:
     nadi = result["kootas"][7]
     bhakoot = result["kootas"][6]
     if nadi["score"] == 0:
-        warnings.append(f"Nadi Dosha — Both have {nadi['boy']} Nadi.")
+        warnings.append(f"Nadi Dosha: Both have {nadi['boy']} Nadi.")
     if bhakoot["score"] == 0:
-        warnings.append(f"Bhakoot Dosha — {bhakoot['boy']} and {bhakoot['girl']} are in an unfavorable axis.")
+        warnings.append(f"Bhakoot Dosha: {bhakoot['boy']} and {bhakoot['girl']} are in an unfavorable axis.")
     for p in people:
         if p.get("manglik"):
-            warnings.append(f"Manglik Dosha — {p['name']} has Mars in House {p.get('mars_house')}.")
+            warnings.append(f"Manglik Dosha: {p['name']} has Mars in House {p.get('mars_house')}.")
     if warnings:
         story.append(Paragraph("Doshas", _H2))
         for w in warnings:

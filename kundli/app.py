@@ -61,9 +61,9 @@ def run_match(args):
     if result["total"] >= 32:
         verdict = "Excellent match"
     elif result["total"] >= 24:
-        verdict = "Good match — recommended"
+        verdict = "Good match, recommended"
     elif result["total"] >= 18:
-        verdict = "Average — proceed with caution"
+        verdict = "Average, proceed with caution"
     else:
         verdict = "Not recommended"
     print(f"\n  Verdict: {verdict} ({pct:.0f}%)")
