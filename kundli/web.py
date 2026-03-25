@@ -44,7 +44,7 @@ from flask_limiter.util import get_remote_address
 
 app = Flask(__name__, template_folder="../templates", static_folder="../static")
 app.secret_key = os.environ.get("KUNDLI_SECRET_KEY", "change-me-in-production")
-if app.secret_key == "change-me-in-production":
+if app.secret_key == "change-me-in-production":  # nosec B105
     logging.warning("KUNDLI_SECRET_KEY not set. Using insecure fallback. Set it in production.")
 
 limiter = Limiter(get_remote_address, app=app, default_limits=["60 per minute"], storage_uri="memory://")
