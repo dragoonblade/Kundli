@@ -364,6 +364,20 @@ class TestApiChartErrors:
         assert r.status_code in (400, 415)
 
 
+class TestFaq:
+    def test_faq_page(self, client):
+        r = client.get("/faq")
+        assert r.status_code == 200
+        body = r.data.decode()
+        assert "Chart Basics" in body
+        assert "Matching" in body
+        assert "Doshas" in body
+        assert "Dasha" in body
+        assert "Remedies" in body
+        assert "Technical" in body
+        assert "filterFAQ" in body
+
+
 class TestShareableLinks:
     def test_missing_time(self, client):
         r = client.get("/?d=1996-09-23&l=Delhi")

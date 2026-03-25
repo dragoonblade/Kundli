@@ -368,4 +368,4 @@ def chat(question, chart_context):
             "**Current period:** dasha details, predictions, timing\n\n"
             "**Learn:** explain lagna, dasha, nakshatra, houses, planets, signs\n\n"
             "**Remedies:** general guidance on astrological remedies\n\n"
-            "Try rephrasing your question or pick one of these topics.")
+            "Try rephrasing your question, pick one of these topics, or check the FAQ at /faq.")

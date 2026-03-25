@@ -1,0 +1,123 @@
+{% from 'macros.html' import tz_select %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kundli FAQ</title>
+    <meta name="description" content="Frequently asked questions about Vedic birth charts, Kundli matching, doshas, dasha periods, and remedies.">
+    <link rel="stylesheet" href="/static/style.css">
+    <meta name="theme-color" content="#f0a030">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="/" class="back-link">← Home</a>
+            <h1>🕉 Kundli FAQ</h1>
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode">🌓</button>
+        </header>
+
+        <div class="form-group" style="margin-bottom:var(--space-md)">
+            <input type="text" id="faq-search" placeholder="Search questions..." oninput="filterFAQ(this.value)" style="width:100%">
+        </div>
+
+        <div id="faq-list">
+
+            <section class="card faq-cat">
+                <h2>Chart Basics</h2>
+                <div class="la-card faq-item" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+                    <div class="la-header"><h3>What is a Kundli?</h3><span class="la-chevron">▾</span></div>
+                    <div class="la-body"><p>A Kundli (also called Janam Kundali) is a Vedic birth chart. It is a map of the sky at the exact moment of your birth, showing where each planet was positioned among the 12 zodiac signs and 12 houses. It is used to understand personality, life events, and timing.</p></div>
+                </div>
+                <div class="la-card faq-item" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+                    <div class="la-header"><h3>Why does birth time matter so much?</h3><span class="la-chevron">▾</span></div>
+                    <div class="la-body"><p>The Ascendant (Lagna) changes roughly every 2 hours. Even a few minutes difference can shift the Lagna to a different sign, which changes the entire house structure. Accurate birth time is essential for a reliable chart.</p></div>
+                </div>
+                <div class="la-card faq-item" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+                    <div class="la-header"><h3>What is the difference between Vedic and Western astrology?</h3><span class="la-chevron">▾</span></div>
+                    <div class="la-body"><p>Vedic astrology uses the sidereal zodiac (based on actual star positions), while Western astrology uses the tropical zodiac (based on seasons). The difference is about 24 degrees, called Ayanamsa. This means your Vedic sign may differ from your Western sign.</p></div>
+                </div>
+            </section>
+
+            <section class="card faq-cat">
+                <h2>Matching</h2>
+                <div class="la-card faq-item" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+                    <div class="la-header"><h3>What is a good Gun Milan score?</h3><span class="la-chevron">▾</span></div>
+                    <div class="la-body"><p>The total is out of 36. Below 18 is generally not recommended. 18 to 24 is average. 24 to 32 is good. Above 32 is excellent. However, the total alone does not tell the full story. Check individual Koota scores and doshas too.</p></div>
+                </div>
+                <div class="la-card faq-item" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+                    <div class="la-header"><h3>Does a low score mean the marriage will fail?</h3><span class="la-chevron">▾</span></div>
+                    <div class="la-body"><p>No. Many successful marriages have low Gun Milan scores. Compatibility is built through communication, mutual respect, and shared values. The score is one input, not a verdict. Use it as guidance, not a decision maker.</p></div>
+                </div>
+            </section>
+
+            <section class="card faq-cat">
+                <h2>Doshas</h2>
+                <div class="la-card faq-item" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+                    <div class="la-header"><h3>Am I Manglik? What does it mean?</h3><span class="la-chevron">▾</span></div>
+                    <div class="la-body"><p>You are Manglik if Mars is in houses 1, 2, 4, 7, 8, or 12 in your birth chart. It is traditionally considered significant for marriage compatibility. However, the effects reduce after age 28, and if both partners are Manglik, the dosha is neutralized.</p></div>
+                </div>
+                <div class="la-card faq-item" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+                    <div class="la-header"><h3>What is Sade Sati?</h3><span class="la-chevron">▾</span></div>
+                    <div class="la-body"><p>Sade Sati is a 7.5-year period when Saturn transits through the 12th, 1st, and 2nd signs from your natal Moon. It is a period of challenges that builds resilience, discipline, and lasting achievements. It occurs roughly every 30 years.</p></div>
+                </div>
+            </section>
+
+            <section class="card faq-cat">
+                <h2>Dasha</h2>
+                <div class="la-card faq-item" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+                    <div class="la-header"><h3>What is a Mahadasha?</h3><span class="la-chevron">▾</span></div>
+                    <div class="la-body"><p>A Mahadasha is a major planetary period in the Vimshottari Dasha system. Each planet rules for a specific number of years (Sun 6, Moon 10, Mars 7, etc.). The total cycle is 120 years. Your current Mahadasha lord influences your life themes.</p></div>
+                </div>
+                <div class="la-card faq-item" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+                    <div class="la-header"><h3>What are Antardasha and Pratyantar?</h3><span class="la-chevron">▾</span></div>
+                    <div class="la-body"><p>Each Mahadasha is subdivided into 9 Antardashas (sub-periods), and each Antardasha into 9 Pratyantars (sub-sub-periods). These finer divisions help pinpoint timing of events more precisely.</p></div>
+                </div>
+            </section>
+
+            <section class="card faq-cat">
+                <h2>Remedies</h2>
+                <div class="la-card faq-item" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+                    <div class="la-header"><h3>Do remedies actually work?</h3><span class="la-chevron">▾</span></div>
+                    <div class="la-body"><p>Remedies are a traditional practice meant to channel planetary energy constructively. Whether through mantras, gemstones, or charitable acts, the core idea is mindful action aligned with the planet's nature. Many people find them helpful as a focus for positive intention.</p></div>
+                </div>
+                <div class="la-card faq-item" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+                    <div class="la-header"><h3>Should I wear a gemstone without consulting an astrologer?</h3><span class="la-chevron">▾</span></div>
+                    <div class="la-body"><p>Gemstones amplify a planet's energy. If the planet is well-placed, this is beneficial. If poorly placed, it can increase challenges. It is best to consult a qualified astrologer before wearing gemstones, especially Blue Sapphire (Neelam) and Cat's Eye (Lehsunia).</p></div>
+                </div>
+            </section>
+
+            <section class="card faq-cat">
+                <h2>Technical</h2>
+                <div class="la-card faq-item" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+                    <div class="la-header"><h3>What Ayanamsa does this app use?</h3><span class="la-chevron">▾</span></div>
+                    <div class="la-body"><p>This app uses Lahiri (Chitrapaksha) Ayanamsa, which is the most widely used system in India and the standard recommended by the Indian government's calendar reform committee.</p></div>
+                </div>
+                <div class="la-card faq-item" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+                    <div class="la-header"><h3>What house system is used?</h3><span class="la-chevron">▾</span></div>
+                    <div class="la-body"><p>This app uses the Placidus house system for calculating house cusps. This is the most common system in both Vedic and Western astrology software. Note that Placidus can be unreliable at extreme latitudes (above 66 degrees).</p></div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+<script>
+function filterFAQ(query) {
+    var q = query.toLowerCase();
+    document.querySelectorAll('.faq-item').forEach(function(item) {
+        var text = item.textContent.toLowerCase();
+        item.style.display = !q || text.includes(q) ? '' : 'none';
+    });
+    document.querySelectorAll('.faq-cat').forEach(function(cat) {
+        var visible = cat.querySelectorAll('.faq-item:not([style*="display: none"])').length;
+        cat.style.display = visible > 0 ? '' : 'none';
+    });
+}
+function toggleTheme() {
+    document.documentElement.classList.toggle('light');
+    localStorage.setItem('kundli-theme', document.documentElement.classList.contains('light') ? 'light' : 'dark');
+}
+if(localStorage.getItem('kundli-theme') === 'light') document.documentElement.classList.add('light');
+</script>
+</body>
+</html>

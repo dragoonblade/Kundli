@@ -492,6 +492,11 @@ def api_chart():
         "yogas": yogas,
     })
 
+@app.route("/faq")
+def faq():
+    return render_template("faq.html")
+
+
 @app.route("/chat", methods=["POST"])
 def chat_endpoint():
     data = request.get_json()
