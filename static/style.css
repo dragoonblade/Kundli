@@ -1136,3 +1136,9 @@ footer {
     margin-bottom: var(--space-xs);
 }
 .saved-item:hover { border-color: var(--accent); }
+
+/* Daily Insights */
+.insights-grid { display: flex; flex-direction: column; gap: var(--space-xs); }
+.insight-item { display: flex; align-items: baseline; gap: var(--space-sm); padding: var(--space-sm) 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+.insight-item:last-child { border-bottom: none; }
+.insight-text { color: var(--text); line-height: 1.5; }

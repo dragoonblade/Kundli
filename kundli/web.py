@@ -26,6 +26,7 @@ from kundli.lifeareas import generate_life_areas
 from kundli.pdf import generate_kundli_pdf, generate_match_pdf
 from kundli.remedies import DOSHA_REMEDIES, PLANET_REMEDIES
 from kundli.ashtakavarga import compute_ashtakavarga
+from kundli.insights import generate_daily_insights
 
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -297,6 +298,7 @@ def _generate_chart(date_str, time_str, location, tz_str):
         tp_sign_idx = SIGNS.index(tp["sign"])
         transit_house = (tp_sign_idx - natal_asc_idx) % 12 + 1
         transits.append({"planet": tp["planet"], "sign": tp["sign"], "degree": tp["degree"], "house": transit_house})
+    daily_insights = generate_daily_insights(transits)
     chart_data = build_chart_data(planets, houses)
     house_readings, current_dasha = build_house_readings(planets, houses, dashas, now, planet_house_map)
     life_areas = generate_life_areas(planets, houses, dashas, current_dasha, planet_house_map)
@@ -352,7 +354,7 @@ def _generate_chart(date_str, time_str, location, tz_str):
         varga_charts=varga_charts,
         dosha_remedies=DOSHA_REMEDIES, planet_remedies=PLANET_REMEDIES,
         share_url=f"/?d={date_str}&t={time_str}&l={location}&z={tz_str}",
-        transits=transits,
+        transits=transits, daily_insights=daily_insights,
     )
 
 

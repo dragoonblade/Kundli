@@ -29,6 +29,7 @@
 
         <nav class="section-nav" id="section-nav">
             <a href="#sec-info">Info</a>
+            <a href="#sec-insights">Today</a>
             <a href="#sec-charts">Charts</a>
             <a href="#sec-planets">Planets</a>
             <a href="#sec-strength">Strength</a>
@@ -55,6 +56,21 @@
                 {% endif %}
             </div>
         </section>
+
+        <!-- Daily Insights -->
+        {% if daily_insights %}
+        <section class="card" id="sec-insights">
+            <h2>Today's Insights</h2>
+            <div class="insights-grid">
+                {% for ins in daily_insights %}
+                <div class="insight-item">
+                    <span class="planet-name"><span class="t" data-h="{{ ins.planet }}" data-e="{{ planet_names[ins.planet] }}">{{ ins.planet }}</span></span>
+                    <span class="insight-text">{{ ins.text }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
 
         <!-- Charts Side by Side -->
         <section class="card" id="sec-charts">
