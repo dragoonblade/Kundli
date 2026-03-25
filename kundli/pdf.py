@@ -7,6 +7,8 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import mm
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, HRFlowable
+from reportlab.graphics.shapes import Drawing, Rect, String, Line
+from reportlab.graphics import renderPDF
 
 _STYLES = getSampleStyleSheet()
 _TITLE = ParagraphStyle("KTitle", parent=_STYLES["Heading1"], fontSize=20, spaceAfter=2, textColor=colors.HexColor("#8B4513"))
@@ -29,6 +31,109 @@ PLANET_EN = {
 
 _HR = HRFlowable(width="100%", thickness=0.5, color=_GRID_CLR, spaceAfter=6, spaceBefore=6)
 
+SIGNS_LIST = [
+    "Mesha", "Vrishabha", "Mithuna", "Karka", "Simha", "Kanya",
+    "Tula", "Vrishchika", "Dhanu", "Makara", "Kumbha", "Meena",
+]
+SIGN_ABBR = ["Mes", "Vri", "Mit", "Kar", "Sim", "Kan", "Tul", "Vrs", "Dha", "Mak", "Kum", "Mee"]
+_SI_LAYOUT = [(0, 3, 11), (1, 3, 0), (2, 3, 1), (3, 3, 2), (0, 2, 10), (3, 2, 3), (0, 1, 9), (3, 1, 4), (0, 0, 8), (1, 0, 7), (2, 0, 6), (3, 0, 5)]
+
+
+def _draw_south_indian_chart(planets):
+    """Draw a South Indian style chart as a ReportLab Drawing."""
+    size = 240
+    cell = size / 4
+    d = Drawing(size, size)
+
+    # Build planet lookup by sign
+    planet_abbr = {"Surya": "Su", "Chandra": "Mo", "Mangal": "Ma", "Budh": "Me", "Guru": "Ju", "Shukra": "Ve", "Shani": "Sa", "Rahu": "Ra", "Ketu": "Ke"}
+    sign_planets = {}
+    for p in planets:
+        idx = SIGNS_LIST.index(p["sign"]) if p["sign"] in SIGNS_LIST else -1
+        if idx >= 0:
+            sign_planets.setdefault(idx, []).append(planet_abbr.get(p["planet"], ""))
+
+    # Draw grid (skip center 2x2)
+    for col, row, si in _SI_LAYOUT:
+        x, y = col * cell, (3 - row) * cell
+        d.add(Rect(x, y, cell, cell, fillColor=colors.white, strokeColor=_GRID_CLR, strokeWidth=0.5))
+        d.add(String(x + cell / 2, y + cell - 14, SIGN_ABBR[si], fontSize=8, fillColor=colors.HexColor("#8B4513"), textAnchor="middle"))
+        pls = sign_planets.get(si, [])
+        if pls:
+            d.add(String(x + cell / 2, y + cell / 2 - 4, " ".join(pls), fontSize=7, fillColor=colors.HexColor("#2060b0"), textAnchor="middle"))
+
+    return d
+
+
+def _draw_north_indian_chart(planets, houses):
+    """Draw a North Indian style chart as a ReportLab Drawing."""
+    size = 240
+    d = Drawing(size, size)
+    s = size
+    m = s / 2  # midpoint
+
+    # Outer box
+    d.add(Rect(0, 0, s, s, fillColor=colors.white, strokeColor=_GRID_CLR, strokeWidth=1))
+    # Diagonals
+    d.add(Line(0, 0, m, m, strokeColor=_GRID_CLR, strokeWidth=0.5))
+    d.add(Line(s, 0, m, m, strokeColor=_GRID_CLR, strokeWidth=0.5))
+    d.add(Line(0, s, m, m, strokeColor=_GRID_CLR, strokeWidth=0.5))
+    d.add(Line(s, s, m, m, strokeColor=_GRID_CLR, strokeWidth=0.5))
+    # Cross
+    d.add(Line(m, 0, m, s, strokeColor=_GRID_CLR, strokeWidth=0.5))
+    d.add(Line(0, m, s, m, strokeColor=_GRID_CLR, strokeWidth=0.5))
+
+    # Build planet lookup by house number
+    planet_abbr = {"Surya": "Su", "Chandra": "Mo", "Mangal": "Ma", "Budh": "Me", "Guru": "Ju", "Shukra": "Ve", "Shani": "Sa", "Rahu": "Ra", "Ketu": "Ke"}
+    asc_sign_idx = SIGNS_LIST.index(houses[0]["sign"])
+    house_planets = {}
+    for p in planets:
+        p_sign_idx = SIGNS_LIST.index(p["sign"])
+        h_num = (p_sign_idx - asc_sign_idx) % 12 + 1
+        house_planets.setdefault(h_num, []).append(planet_abbr.get(p["planet"], ""))
+
+    # House positions (x, y) for text center — North Indian layout
+    # House 1=top center, going clockwise
+    pos = {
+        1: (m, s - 25), 2: (s * 0.75, s - 25), 3: (s - 20, m + 30),
+        4: (s - 20, m - 30), 5: (s * 0.75, 25), 6: (m, 25),
+        7: (s * 0.25, 25), 8: (20, m - 30), 9: (20, m + 30),
+        10: (s * 0.25, s - 25), 11: (15, s - 10), 12: (m - 20, m + 40),
+    }
+
+    brown = colors.HexColor("#8B4513")
+    blue = colors.HexColor("#2060b0")
+
+    for h_num in range(1, 13):
+        x, y = pos[h_num]
+        sign_idx = (asc_sign_idx + h_num - 1) % 12
+        d.add(String(x, y, SIGN_ABBR[sign_idx], fontSize=8, fillColor=brown, textAnchor="middle"))
+        pls = house_planets.get(h_num, [])
+        if pls:
+            d.add(String(x, y - 12, " ".join(pls), fontSize=7, fillColor=blue, textAnchor="middle"))
+
+    d.add(String(m, m + 3, "Asc", fontSize=7, fillColor=colors.HexColor("#999999"), textAnchor="middle"))
+
+    return d
+    """Build table style with alternating row colors."""
+    style = [
+        ("BACKGROUND", (0, 0), (-1, 0), _HDR_BG),
+        ("FONTSIZE", (0, 0), (-1, 0), 9),
+        ("FONTSIZE", (0, 1), (-1, -1), 8),
+        ("FONT", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("GRID", (0, 0), (-1, -1), 0.4, _GRID_CLR),
+        ("TOPPADDING", (0, 0), (-1, -1), 4),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+        ("LEFTPADDING", (0, 0), (-1, -1), 6),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+    ]
+    for i in range(1, rows):
+        if i % 2 == 0:
+            style.append(("BACKGROUND", (0, i), (-1, i), _ROW_ALT))
+    return TableStyle(style)
+
+
 
 def _tbl_style(rows):
     """Build table style with alternating row colors."""
@@ -49,7 +154,6 @@ def _tbl_style(rows):
             style.append(("BACKGROUND", (0, i), (-1, i), _ROW_ALT))
     return TableStyle(style)
 
-
 def generate_kundli_pdf(ctx: dict) -> bytes:
     """Generate a PDF for a birth chart from stored chart context."""
     buf = BytesIO()
@@ -69,6 +173,13 @@ def generate_kundli_pdf(ctx: dict) -> bytes:
     info_parts.append(f"<b>Lagna (Ascendant):</b> {lagna['sign']} {lagna['degree']:.2f}")
     story.append(Paragraph(" &nbsp;&nbsp;|&nbsp;&nbsp; ".join(info_parts), _SUBTITLE))
     story.append(_HR)
+
+    # Birth chart diagrams
+    story.append(Paragraph("Birth Chart", _H2))
+    story.append(_draw_north_indian_chart(ctx["planets"], ctx["houses"]))
+    story.append(Spacer(1, 4))
+    story.append(_draw_south_indian_chart(ctx["planets"]))
+    story.append(Spacer(1, 8))
 
     # Planets table
     story.append(Paragraph("Planetary Positions", _H2))
