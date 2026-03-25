@@ -513,7 +513,7 @@ def check_doshas(planets: list, planet_house_map: dict, current_saturn_sign: str
 
 def check_yogas(planets: list, houses: list | None = None, planet_house_map: dict | None = None) -> list:
     """Detect Vedic yogas from planetary positions."""
-    results = [{"name": y["name"], "desc": y["desc"]} for y in YOGAS if y["check"](planets)]
+    results = [{"name": y["name"], "desc": y["desc"]} for y in YOGAS if y["check"](planets)]  # type: ignore[operator]
 
     if _has_kemadruma(planets):
         results.append({"name": "Kemadruma", "desc": "No planets adjacent to Chandra. Indicates emotional isolation and self-reliance"})
