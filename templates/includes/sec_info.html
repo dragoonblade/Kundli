@@ -1,0 +1,10 @@
+<section class="card info-card" id="sec-info">
+    <div class="info-grid">
+        <div><span class="label">Date</span><span class="value">{{ birth_dt.strftime('%d %B %Y, %I:%M %p') }}</span></div>
+        <div><span class="label">Place</span><span class="value">{{ location }} ({{ "%.4f"|format(lat) }}°, {{ "%.4f"|format(lon) }}°)</span></div>
+        <div><span class="label">Lagna</span><span class="value lagna"><span class="t" data-h="{{ lagna.sign }}" data-e="{{ sign_names[lagna.sign] }}">{{ lagna.sign }}</span> {{ "%.2f"|format(lagna.degree) }}°</span></div>
+        {% if current_dasha %}
+        <div><span class="label">Dasha</span><span class="value dasha-active"><span class="t" data-h="{{ current_dasha }}" data-e="{{ planet_names[current_dasha] }}">{{ current_dasha }}</span> <small>(MD)</small> › {% for d in dashas if d.start <= now and now <= d.end %}{% for ad in d.antardasha if ad.start <= now and now <= ad.end %}<span class="t" data-h="{{ ad.lord }}" data-e="{{ planet_names[ad.lord] }}">{{ ad.lord }}</span> <small>(AD)</small> › {% for pr in ad.pratyantar if pr.start <= now and now <= pr.end %}<span class="t" data-h="{{ pr.lord }}" data-e="{{ planet_names[pr.lord] }}">{{ pr.lord }}</span> <small>(PR)</small>{% endfor %}{% endfor %}{% endfor %}</span></div>
+        {% endif %}
+    </div>
+</section>

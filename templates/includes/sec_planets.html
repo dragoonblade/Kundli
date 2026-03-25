@@ -1,0 +1,19 @@
+<section class="card" id="sec-planets">
+    <h2>Planetary Positions</h2>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Planet</th><th>Sign</th><th>Degree</th><th>Nakshatra</th><th>Pada</th></tr></thead>
+            <tbody>
+                {% for p in planets %}
+                <tr>
+                    <td class="planet-name"><span class="t" data-h="{{ p.planet }}" data-e="{{ planet_names[p.planet] }}">{{ p.planet }}</span>{% if p.retrograde %} <span class="badge retro-badge t" data-h="वक्री" data-e="R">वक्री</span>{% endif %}</td>
+                    <td><span class="t" data-h="{{ p.sign }}" data-e="{{ sign_names[p.sign] }}">{{ p.sign }}</span></td>
+                    <td>{{ "%.2f"|format(p.degree) }}°</td>
+                    <td>{{ p.nakshatra }}</td>
+                    <td>{{ p.pada }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>

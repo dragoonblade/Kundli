@@ -1,0 +1,17 @@
+<section class="card" id="sec-houses">
+    <h2>House Cusps</h2>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>House</th><th>Sign</th><th>Degree</th></tr></thead>
+            <tbody>
+                {% for h in houses %}
+                <tr class="{% if h.house == 1 %}highlight{% endif %}">
+                    <td>{{ h.house }}{% if h.house == 1 %} <span class="badge">Asc</span>{% endif %}</td>
+                    <td><span class="t" data-h="{{ h.sign }}" data-e="{{ sign_names[h.sign] }}">{{ h.sign }}</span></td>
+                    <td>{{ "%.2f"|format(h.degree) }}°</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>

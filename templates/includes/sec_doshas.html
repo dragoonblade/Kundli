@@ -1,0 +1,22 @@
+{% if doshas %}
+<section class="card" id="sec-doshas">
+    <h2>Doshas</h2>
+    {% for d in doshas %}
+    <div class="dosha-item {% if d.present %}dosha-present{% else %}dosha-clear{% endif %}">
+        <span class="dosha-status">{% if d.present %}⚠{% else %}✓{% endif %}</span>
+        <div>
+            <span class="dosha-name">{{ d.name }}</span>
+            <span class="dosha-detail">{{ d.detail }}</span>
+            {% if d.present and d.name in dosha_remedies %}
+            <div class="dosha-remedies">
+                <span class="remedy-label">Remedies:</span>
+                {% for r in dosha_remedies[d.name] %}
+                <div class="remedy-item">• {{ r }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</section>
+{% endif %}

@@ -1,0 +1,17 @@
+<section class="card" id="sec-aspects">
+    <h2>Planetary Aspects</h2>
+    {% if aspects %}
+    <div class="aspects-grid">
+        {% for a in aspects %}
+        <div class="aspect-item">
+            <span class="planet-name t" data-h="{{ a.from }}" data-e="{{ planet_names[a.from] }}">{{ a.from }}</span>
+            <span class="arrow">→</span>
+            <span>{% for t in a.to %}<span class="t" data-h="{{ t }}" data-e="{{ planet_names[t] }}">{{ t }}</span>{% if not loop.last %}, {% endif %}{% endfor %}</span>
+            <span class="muted">(in <span class="t" data-h="{{ a.target_sign }}" data-e="{{ sign_names[a.target_sign] }}">{{ a.target_sign }}</span>)</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="muted">No direct planetary aspects found.</p>
+    {% endif %}
+</section>

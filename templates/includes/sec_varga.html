@@ -1,0 +1,35 @@
+<section class="card" id="sec-varga">
+    <h2>Divisional Charts (Varga)</h2>
+    <p class="muted" style="margin-bottom:1rem">Divisional charts reveal deeper layers of your birth chart. Tap any chart to expand.</p>
+    <div class="varga-grid">
+        {% for vc in varga_charts %}
+        <div class="la-card" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+            <div class="la-header">
+                <span class="la-icon varga-key">{{ vc.key }}</span>
+                <div>
+                    <h3>{{ vc.name }}</h3>
+                    <p class="la-desc">{{ vc.desc }}</p>
+                </div>
+                <span class="la-chevron">▾</span>
+            </div>
+            <div class="la-body">
+                {{ south_indian_chart(vc.planets, planet_names, sign_names, 'varga-svg') }}
+                <div class="table-wrap" style="margin-top:0.75rem">
+                    <table>
+                        <thead><tr><th>Planet</th><th>Sign</th><th>Degree</th></tr></thead>
+                        <tbody>
+                            {% for p in vc.planets %}
+                            <tr>
+                                <td class="planet-name"><span class="t" data-h="{{ p.planet }}" data-e="{{ planet_names[p.planet] }}">{{ p.planet }}</span>{% if p.retrograde %} <span class="retro-badge t" data-h="वक्री" data-e="R">वक्री</span>{% endif %}</td>
+                                <td><span class="t" data-h="{{ p.sign }}" data-e="{{ sign_names[p.sign] }}">{{ p.sign }}</span></td>
+                                <td>{{ "%.2f"|format(p.degree) }}°</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>

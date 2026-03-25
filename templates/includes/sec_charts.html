@@ -1,0 +1,31 @@
+<section class="card" id="sec-charts">
+    <h2>Birth Charts</h2>
+    <div class="charts-row">
+        <div class="chart-box">
+            <h3>North Indian</h3>
+            <svg viewBox="0 0 360 360" class="chart-svg" role="img" aria-label="North Indian birth chart diagram">
+                <rect x="5" y="5" width="350" height="350" fill="none" stroke="var(--border)" stroke-width="1.5" rx="4"/>
+                <line x1="5" y1="5" x2="180" y2="180" stroke="var(--border)" stroke-width="1"/>
+                <line x1="355" y1="5" x2="180" y2="180" stroke="var(--border)" stroke-width="1"/>
+                <line x1="5" y1="355" x2="180" y2="180" stroke="var(--border)" stroke-width="1"/>
+                <line x1="355" y1="355" x2="180" y2="180" stroke="var(--border)" stroke-width="1"/>
+                <line x1="180" y1="5" x2="180" y2="355" stroke="var(--border)" stroke-width="1"/>
+                <line x1="5" y1="180" x2="355" y2="180" stroke="var(--border)" stroke-width="1"/>
+                {% set positions = {1:(180,40), 2:(270,40), 3:(310,130), 4:(310,230), 5:(270,320), 6:(180,320), 7:(90,320), 8:(50,230), 9:(50,130), 10:(90,40), 11:(40,20), 12:(130,95)} %}
+                {% for h in range(1,13) %}
+                {% set x, y = positions[h] %}
+                <text x="{{ x }}" y="{{ y }}" class="chart-sign t" data-h="{{ chart[h].sign_h }}" data-e="{{ chart[h].sign_e }}" font-size="11">{{ chart[h].sign_h }}</text>
+                <text x="{{ x }}" y="{{ y + 16 }}" class="chart-planets t" data-h="{{ chart[h].planets_h }}" data-e="{{ chart[h].planets_e }}" font-size="9">{{ chart[h].planets_h }}</text>
+                {% endfor %}
+                <text x="180" y="185" class="chart-asc">Asc</text>
+            </svg>
+        </div>
+        <div class="chart-box">
+            <h3>South Indian</h3>
+            {{ south_indian_chart(planets, planet_names, sign_names) }}
+        </div>
+    </div>
+    <div style="text-align:center;margin-top:var(--space-sm)">
+        <button class="btn-share" onclick="exportChartPNG()">📷 Save Chart as PNG</button>
+    </div>
+</section>

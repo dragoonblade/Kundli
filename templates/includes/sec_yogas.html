@@ -1,0 +1,13 @@
+<section class="card" id="sec-yogas">
+    <h2>Yogas</h2>
+    {% if yogas %}
+    {% for y in yogas %}
+    <div class="yoga-item">
+        <span class="yoga-name">✦ {{ y.name }}</span>
+        <span class="yoga-desc">{{ y.desc }}</span>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p class="muted">No major yogas detected.</p>
+    {% endif %}
+</section>

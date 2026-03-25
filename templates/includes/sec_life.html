@@ -1,0 +1,27 @@
+<section class="card" id="sec-life">
+    <h2>Life Areas</h2>
+    <p class="muted" style="margin-bottom:1rem">Tap any area to see a detailed reading based on your chart</p>
+    <div class="life-areas-grid">
+        {% for la in life_areas %}
+        <div class="la-card" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+            <div class="la-header">
+                <span class="la-icon">{{ la.icon }}</span>
+                <div>
+                    <h3>{{ la.title }}</h3>
+                    <p class="la-desc">{{ la.desc }}</p>
+                </div>
+                <span class="la-chevron">▾</span>
+            </div>
+            <div class="la-body">
+                {% for s in la.sections %}
+                <div class="la-section">
+                    <span class="la-label">{{ s.label }}</span>
+                    {% if s.text is defined %}<p>{{ s.text }}</p>{% endif %}
+                    {% if s.bullets is defined %}{% for item in s.bullets %}<div class="la-item">{{ item }}</div>{% endfor %}{% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>

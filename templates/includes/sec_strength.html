@@ -1,0 +1,17 @@
+{% if shadbala %}
+<section class="card" id="sec-strength">
+    <h2>Planetary Strength</h2>
+    <div class="strength-grid">
+        {% for s in shadbala %}
+        <div class="strength-item">
+            <div class="strength-header">
+                <span class="planet-name"><span class="t" data-h="{{ s.planet }}" data-e="{{ planet_names[s.planet] }}">{{ s.planet }}</span></span>
+                <span class="strength-label strength-{{ s.label|lower }}">{{ s.label }}</span>
+            </div>
+            <div class="strength-bar"><div class="strength-fill strength-{{ s.label|lower }}" style="width: {{ s.strength }}%"></div></div>
+            <span class="strength-val">{{ s.strength }}</span>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
