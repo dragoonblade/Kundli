@@ -241,6 +241,40 @@ def index():
     )
 
 
+def _build_varga_charts(planets):
+    """Build divisional chart data for all Varga charts except D-1."""
+    varga_charts = []
+    for key, info in DIVISIONAL_CHARTS.items():
+        if info["div"] == 1:
+            continue
+        div_planets = compute_divisional_chart(planets, info["div"])
+        chart_cells = {}
+        for si in range(12):
+            sign = SIGNS[si]
+            pls_h = [PLANET_ABBR["hindu"][p["planet"]] for p in div_planets if p["sign"] == sign]
+            pls_e = [PLANET_ABBR["english"][p["planet"]] for p in div_planets if p["sign"] == sign]
+            chart_cells[si] = {
+                "sign_h": sign[:3], "sign_e": SIGN_NAMES.get(sign, sign)[:3],
+                "planets_h": " ".join(pls_h), "planets_e": " ".join(pls_e),
+            }
+        varga_charts.append({"key": key, "name": info["name"], "desc": info["desc"], "planets": div_planets, "chart_cells": chart_cells})
+    return varga_charts
+
+
+def _compute_transits(now, houses):
+    """Compute current transit positions mapped to natal houses."""
+    current_jd = to_julian(now, 0)
+    current_planets = compute_planets(current_jd)
+    natal_asc_idx = SIGNS.index(houses[0]["sign"])
+    transits = []
+    for tp in current_planets:
+        tp_sign_idx = SIGNS.index(tp["sign"])
+        transit_house = (tp_sign_idx - natal_asc_idx) % 12 + 1
+        transits.append({"planet": tp["planet"], "sign": tp["sign"], "degree": tp["degree"], "house": transit_house})
+    current_saturn_sign = next(p["sign"] for p in current_planets if p["planet"] == "Shani")
+    return transits, current_saturn_sign
+
+
 def _generate_chart(date_str, time_str, location, tz_str):
     if not date_str or not time_str or not location:
         return render_template("index.html", error="All fields are required.")
@@ -287,44 +321,13 @@ def _generate_chart(date_str, time_str, location, tz_str):
     shadbala = compute_shadbala(planets, houses, planet_house_map)
     ashtakavarga = compute_ashtakavarga(planets, houses)
     # Current transit positions for Sade Sati + Gochar
-    current_jd = to_julian(now, 0)
-    current_planets = compute_planets(current_jd)
-    current_saturn_sign = next(p["sign"] for p in current_planets if p["planet"] == "Shani")
+    transits, current_saturn_sign = _compute_transits(now, houses)
     doshas = check_doshas(planets, planet_house_map, current_saturn_sign)
-    # Transit: which natal house each transit planet is activating
-    transits = []
-    natal_asc_idx = SIGNS.index(houses[0]["sign"])
-    for tp in current_planets:
-        tp_sign_idx = SIGNS.index(tp["sign"])
-        transit_house = (tp_sign_idx - natal_asc_idx) % 12 + 1
-        transits.append({"planet": tp["planet"], "sign": tp["sign"], "degree": tp["degree"], "house": transit_house})
     daily_insights = generate_daily_insights(transits)
     chart_data = build_chart_data(planets, houses)
     house_readings, current_dasha = build_house_readings(planets, houses, dashas, now, planet_house_map)
     life_areas = generate_life_areas(planets, houses, dashas, current_dasha, planet_house_map)
-
-    # Divisional charts (skip D-1, that's the birth chart)
-    varga_charts = []
-    for key, info in DIVISIONAL_CHARTS.items():
-        if info["div"] == 1:
-            continue
-        div_planets = compute_divisional_chart(planets, info["div"])
-        # Build South Indian style chart data
-        chart_cells = {}
-        for si in range(12):
-            sign = SIGNS[si]
-            pls_h = [PLANET_ABBR["hindu"][p["planet"]] for p in div_planets if p["sign"] == sign]
-            pls_e = [PLANET_ABBR["english"][p["planet"]] for p in div_planets if p["sign"] == sign]
-            chart_cells[si] = {
-                "sign_h": sign[:3],
-                "sign_e": SIGN_NAMES.get(sign, sign)[:3],
-                "planets_h": " ".join(pls_h),
-                "planets_e": " ".join(pls_e),
-            }
-        varga_charts.append({
-            "key": key, "name": info["name"], "desc": info["desc"],
-            "planets": div_planets, "chart_cells": chart_cells,
-        })
+    varga_charts = _build_varga_charts(planets)
 
     # Store chart context for chatbot
     chart_id = uuid.uuid4().hex[:8]
