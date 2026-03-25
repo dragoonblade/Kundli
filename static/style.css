@@ -1222,3 +1222,15 @@ footer {
 }
 .dasha-sub { border-left: 2px solid var(--accent-dim); margin-left: var(--space-sm); }
 .dasha-prat { border-left: 2px solid rgba(106,172,240,0.15); margin-left: var(--space-sm); }
+
+/* Install App Button */
+.btn-install {
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--active);
+    border: 1px solid var(--active-border);
+    border-radius: var(--radius-sm);
+    color: var(--active-border);
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-weight: 600;
+}

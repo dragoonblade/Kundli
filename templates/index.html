@@ -19,6 +19,7 @@
             <h1>🕉 Kundli</h1>
             <p class="subtitle">Vedic Birth Chart Generator</p>
             <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode">🌓</button>
+            <button class="btn-install" id="btn-install" style="display:none" onclick="installApp()">📲 Install App</button>
         </header>
 
         <div class="tab-bar">
@@ -162,6 +163,20 @@ if(localStorage.getItem('kundli-theme') === 'light') document.documentElement.cl
         };
     };
 })();
+
+// PWA install prompt
+var deferredPrompt;
+window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    deferredPrompt = e;
+    document.getElementById('btn-install').style.display = '';
+});
+function installApp() {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(function() { deferredPrompt = null; document.getElementById('btn-install').style.display = 'none'; });
+    }
+}
 </script>
 </body>
 </html>
