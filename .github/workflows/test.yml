@@ -15,12 +15,12 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          pip install pytest bandit pip-audit
+        run: pip install -r requirements.txt
+      - name: Install test tools
+        run: pip install pytest bandit
       - name: Run tests
         run: python -m pytest tests/ -v
       - name: Security scan (Bandit)
         run: bandit -r kundli/ -s B101 -q
       - name: Vulnerability scan (pip-audit)
-        run: pip-audit --ignore-vuln CVE-2026-4539
+        run: pip install pip-audit && pip-audit -r requirements.txt
