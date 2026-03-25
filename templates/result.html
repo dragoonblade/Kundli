@@ -650,7 +650,12 @@
     // Export North Indian chart as PNG
     function exportChartPNG() {
         var svg = document.querySelector('#sec-charts .chart-svg');
-        var svgData = new XMLSerializer().serializeToString(svg);
+        var clone = svg.cloneNode(true);
+        // Inline computed styles since canvas can't read CSS classes
+        clone.querySelectorAll('.chart-sign').forEach(function(el) { el.setAttribute('fill', '#e8a020'); });
+        clone.querySelectorAll('.chart-planets').forEach(function(el) { el.setAttribute('fill', '#6aacf0'); });
+        clone.querySelectorAll('.chart-asc').forEach(function(el) { el.setAttribute('fill', '#a8a8bc'); });
+        var svgData = new XMLSerializer().serializeToString(clone);
         var canvas = document.createElement('canvas');
         canvas.width = 720; canvas.height = 720;
         var ctx = canvas.getContext('2d');
