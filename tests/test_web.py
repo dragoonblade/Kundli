@@ -94,6 +94,14 @@ class TestKundliGeneration:
         assert "btn-full" in body
         assert "setView" in body
 
+    def test_has_explainers(self, client):
+        body = client.post("/", data=KUNDLI_FORM).data.decode()
+        assert body.count("explainer-toggle") == 4
+        assert "What are Yogas" in body
+        assert "What are Doshas" in body
+        assert "What is a Dasha" in body
+        assert "How are these generated" in body
+
     def test_all_section_ids_present(self, client):
         body = client.post("/", data=KUNDLI_FORM).data.decode()
         for sec in ["sec-info", "sec-charts", "sec-planets", "sec-strength",
