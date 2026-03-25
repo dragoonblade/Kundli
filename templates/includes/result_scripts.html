@@ -187,7 +187,7 @@ function openDB() {
 }
 function saveChartLocally() {
     var data = {
-        id: '{{ share_url }}',
+        id: '{{ share_url|safe }}',
         html: document.documentElement.outerHTML,
         date: new Date().toISOString(),
         label: '{{ birth_dt.strftime("%d %b %Y") }}, {{ location }}'

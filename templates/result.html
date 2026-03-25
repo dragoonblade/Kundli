@@ -70,7 +70,7 @@
         <footer>
             <a href="/pdf" class="btn-pdf">📄 Download PDF</a>
             <button class="btn-share" onclick="saveChartLocally()">💾 Save Offline</button>
-            <button class="btn-share" onclick="navigator.clipboard.writeText(window.location.origin+'{{ share_url }}').then(()=>this.textContent='✓ Copied!')">🔗 Copy Share Link</button>
+            <button class="btn-share" onclick="navigator.clipboard.writeText(window.location.origin+'{{ share_url|safe }}').then(()=>this.textContent='✓ Copied!')">🔗 Copy Share Link</button>
             <p>Calculations powered by Swiss Ephemeris · For educational purposes only</p>
         </footer>
     </div>
