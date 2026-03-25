@@ -333,6 +333,17 @@ class TestHealthEndpoint:
         data = client.get("/health").get_json()
         assert "chart_store" in data
 
+    def test_security_headers(self, client):
+        r = client.get("/")
+        assert r.headers.get("X-Frame-Options") == "DENY"
+        assert r.headers.get("X-Content-Type-Options") == "nosniff"
+        assert r.headers.get("Referrer-Policy") == "strict-origin-when-cross-origin"
+
+    def test_request_id_header(self, client):
+        r = client.get("/")
+        rid = r.headers.get("X-Request-ID")
+        assert rid and len(rid) == 8
+
 
 class TestMatchValidation:
     def test_invalid_date_person1(self, client):
