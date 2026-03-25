@@ -1142,3 +1142,27 @@ footer {
 .insight-item { display: flex; align-items: baseline; gap: var(--space-sm); padding: var(--space-sm) 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
 .insight-item:last-child { border-bottom: none; }
 .insight-text { color: var(--text); line-height: 1.5; }
+
+/* View Toggle */
+.view-toggle {
+    display: flex;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-md);
+}
+.view-btn {
+    flex: 1;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.view-btn.active {
+    background: var(--accent-dim);
+    border-color: var(--accent);
+    color: var(--accent);
+    font-weight: 600;
+}

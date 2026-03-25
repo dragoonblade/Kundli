@@ -87,6 +87,13 @@ class TestKundliGeneration:
         body = client.post("/", data=KUNDLI_FORM).data.decode()
         assert "section-nav" in body
 
+    def test_has_view_toggle(self, client):
+        body = client.post("/", data=KUNDLI_FORM).data.decode()
+        assert "view-toggle" in body
+        assert "btn-horoscope" in body
+        assert "btn-full" in body
+        assert "setView" in body
+
     def test_all_section_ids_present(self, client):
         body = client.post("/", data=KUNDLI_FORM).data.decode()
         for sec in ["sec-info", "sec-charts", "sec-planets", "sec-strength",

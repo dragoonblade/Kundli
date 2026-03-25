@@ -1,4 +1,15 @@
 <script>
+function setView(view) {
+    document.querySelectorAll('[data-view]').forEach(function(el) {
+        el.style.display = el.getAttribute('data-view').split(' ').includes(view) ? '' : 'none';
+    });
+    document.getElementById('btn-horoscope').classList.toggle('active', view === 'horoscope');
+    document.getElementById('btn-full').classList.toggle('active', view === 'full');
+    localStorage.setItem('kundli-view', view);
+}
+var savedView = localStorage.getItem('kundli-view') || 'horoscope';
+setView(savedView);
+
 function setLang(lang) {
     document.querySelectorAll('.t').forEach(el => {
         const val = el.getAttribute('data-' + (lang === 'hindu' ? 'h' : 'e'));

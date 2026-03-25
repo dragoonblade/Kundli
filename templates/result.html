@@ -19,7 +19,6 @@
             <a href="/" class="back-link">← New Chart</a>
             <h1>🕉 Kundli</h1>
             <a href="/?tab=match" class="back-link">Match ↗</a>
-            <!-- Language Toggle -->
             <div class="lang-toggle">
                 <button id="btn-hindu" class="lang-btn active" onclick="setLang('hindu')">संस्कृत</button>
                 <button id="btn-english" class="lang-btn" onclick="setLang('english')">English</button>
@@ -27,7 +26,12 @@
             <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode">🌓</button>
         </header>
 
-        <nav class="section-nav" id="section-nav">
+        <div class="view-toggle" id="view-toggle">
+            <button class="view-btn active" id="btn-horoscope" onclick="setView('horoscope')">🌙 My Horoscope</button>
+            <button class="view-btn" id="btn-full" onclick="setView('full')">🔬 Full Chart</button>
+        </div>
+
+        <nav class="section-nav" id="section-nav" data-view="full">
             <a href="#sec-info">Info</a>
             <a href="#sec-insights">Today</a>
             <a href="#sec-charts">Charts</a>
@@ -45,21 +49,21 @@
             <a href="#sec-ashtakavarga">AV</a>
         </nav>
 
-        {% include 'includes/sec_info.html' %}
-        {% include 'includes/sec_insights.html' %}
-        {% include 'includes/sec_charts.html' %}
-        {% include 'includes/sec_planets.html' %}
-        {% include 'includes/sec_strength.html' %}
-        {% include 'includes/sec_houses.html' %}
-        {% include 'includes/sec_aspects.html' %}
-        {% include 'includes/sec_yogas.html' %}
-        {% include 'includes/sec_doshas.html' %}
-        {% include 'includes/sec_transits.html' %}
-        {% include 'includes/sec_dasha.html' %}
-        {% include 'includes/sec_life.html' %}
-        {% include 'includes/sec_readings.html' %}
-        {% include 'includes/sec_varga.html' %}
-        {% include 'includes/sec_ashtakavarga.html' %}
+        <div data-view="horoscope full">{% include 'includes/sec_info.html' %}</div>
+        <div data-view="horoscope full">{% include 'includes/sec_insights.html' %}</div>
+        <div data-view="full">{% include 'includes/sec_charts.html' %}</div>
+        <div data-view="full">{% include 'includes/sec_planets.html' %}</div>
+        <div data-view="full">{% include 'includes/sec_strength.html' %}</div>
+        <div data-view="full">{% include 'includes/sec_houses.html' %}</div>
+        <div data-view="full">{% include 'includes/sec_aspects.html' %}</div>
+        <div data-view="horoscope full">{% include 'includes/sec_yogas.html' %}</div>
+        <div data-view="horoscope full">{% include 'includes/sec_doshas.html' %}</div>
+        <div data-view="full">{% include 'includes/sec_transits.html' %}</div>
+        <div data-view="horoscope full">{% include 'includes/sec_dasha.html' %}</div>
+        <div data-view="horoscope full">{% include 'includes/sec_life.html' %}</div>
+        <div data-view="full">{% include 'includes/sec_readings.html' %}</div>
+        <div data-view="full">{% include 'includes/sec_varga.html' %}</div>
+        <div data-view="full">{% include 'includes/sec_ashtakavarga.html' %}</div>
 
         <footer>
             <a href="/pdf" class="btn-pdf">📄 Download PDF</a>
