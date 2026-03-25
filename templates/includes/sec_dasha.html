@@ -10,7 +10,7 @@
         {% set is_current = d.start <= now and now <= d.end %}
         <div class="dasha-group {% if is_current %}dasha-current{% endif %}">
             <div class="dasha-item" tabindex="0" onclick="this.parentElement.classList.toggle('open')" onkeydown="if(event.key==='Enter')this.parentElement.classList.toggle('open')">
-                <div class="dasha-lord"><span class="t" data-h="{{ d.lord }}" data-e="{{ planet_names[d.lord] }}">{{ d.lord }}</span></div>
+                <div class="dasha-lord"><span class="dasha-level-tag">MD</span> <span class="t" data-h="{{ d.lord }}" data-e="{{ planet_names[d.lord] }}">{{ d.lord }}</span></div>
                 <div class="dasha-dates">{{ d.start.strftime('%d %b %Y') }} → {{ d.end.strftime('%d %b %Y') }}</div>
                 <div class="dasha-years">{{ d.years }} yrs</div>
                 {% if is_current %}
@@ -22,21 +22,23 @@
             </div>
             {% if d.antardasha %}
             <div class="dasha-sub">
+                <div class="dasha-level-label">Antardasha (sub-periods)</div>
                 {% for ad in d.antardasha %}
                 {% set ad_current = ad.start <= now and now <= ad.end %}
                 <div class="dasha-sub-group {% if ad_current %}dasha-current{% endif %}">
                     <div class="dasha-sub-item" tabindex="0" onclick="this.parentElement.classList.toggle('open')" onkeydown="if(event.key==='Enter')this.parentElement.classList.toggle('open')">
-                        <span class="dasha-sub-lord"><span class="t" data-h="{{ ad.lord }}" data-e="{{ planet_names[ad.lord] }}">{{ ad.lord }}</span></span>
+                        <span class="dasha-sub-lord"><span class="dasha-level-tag dasha-tag-ad">AD</span> <span class="t" data-h="{{ ad.lord }}" data-e="{{ planet_names[ad.lord] }}">{{ ad.lord }}</span></span>
                         <span class="dasha-sub-dates">{{ ad.start.strftime('%d %b %Y') }} → {{ ad.end.strftime('%d %b %Y') }}</span>
                         <span class="dasha-sub-years">{{ ad.years }}y</span>
                         {% if ad_current %}<span class="dasha-sub-badge">◄</span>{% endif %}
                     </div>
                     {% if ad_current and ad.pratyantar %}
                     <div class="dasha-prat">
+                        <div class="dasha-level-label">Pratyantar (sub-sub-periods)</div>
                         {% for pr in ad.pratyantar %}
                         {% set pr_current = pr.start <= now and now <= pr.end %}
                         <div class="dasha-prat-item {% if pr_current %}dasha-current{% endif %}">
-                            <span class="dasha-sub-lord"><span class="t" data-h="{{ pr.lord }}" data-e="{{ planet_names[pr.lord] }}">{{ pr.lord }}</span></span>
+                            <span class="dasha-sub-lord"><span class="dasha-level-tag dasha-tag-pr">PR</span> <span class="t" data-h="{{ pr.lord }}" data-e="{{ planet_names[pr.lord] }}">{{ pr.lord }}</span></span>
                             <span class="dasha-sub-dates">{{ pr.start.strftime('%d %b %Y') }} → {{ pr.end.strftime('%d %b %Y') }}</span>
                             <span class="dasha-sub-years">{{ pr.years }}y</span>
                             {% if pr_current %}<span class="dasha-sub-badge">◄</span>{% endif %}

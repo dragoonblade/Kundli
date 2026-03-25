@@ -1196,3 +1196,29 @@ footer {
 .dasha-compat { display: flex; align-items: center; justify-content: center; gap: var(--space-md); margin: var(--space-md) 0; font-size: 0.9rem; }
 .dasha-compat-vs { color: var(--text-secondary); }
 .dasha-compat-note { font-size: 0.85rem; color: var(--text); text-align: center; padding: var(--space-sm); background: var(--tag-bg); border-radius: var(--radius-sm); }
+
+/* Dasha Hierarchy */
+.dasha-level-tag {
+    display: inline-block;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 1px 4px;
+    border-radius: 3px;
+    background: var(--accent-dim);
+    color: var(--accent);
+    vertical-align: middle;
+    margin-right: 2px;
+    letter-spacing: 0.03em;
+}
+.dasha-tag-ad { background: rgba(106,172,240,0.12); color: var(--planet); }
+.dasha-tag-pr { background: rgba(168,168,188,0.12); color: var(--text-secondary); }
+.dasha-level-label {
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: var(--space-xs) 0;
+    margin-bottom: 2px;
+}
+.dasha-sub { border-left: 2px solid var(--accent-dim); margin-left: var(--space-sm); }
+.dasha-prat { border-left: 2px solid rgba(106,172,240,0.15); margin-left: var(--space-sm); }
