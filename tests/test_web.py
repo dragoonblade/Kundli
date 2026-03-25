@@ -212,6 +212,13 @@ class TestMatch:
         body = client.post("/match", data=MATCH_FORM).data.decode()
         assert "dasha-compat" in body
 
+    def test_has_match_study_content(self, client):
+        body = client.post("/match", data=MATCH_FORM).data.decode()
+        assert "How Kundli Matching Works" in body
+        assert "Learn more" in body
+        assert "evaluate holistically" in body
+        assert "Low score does not mean divorce" in body
+
 
 # ── POST /chat ───────────────────────────────────────
 

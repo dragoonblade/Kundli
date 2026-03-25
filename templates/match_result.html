@@ -27,6 +27,7 @@
             <a href="#sec-dasha-compat">Dasha</a>
             <a href="#sec-kootas">Kootas</a>
             <a href="#sec-doshas">Doshas</a>
+            <a href="#sec-guide">Guide</a>
         </nav>
 
         <section class="card match-header" id="sec-score">
@@ -53,6 +54,14 @@
                     <div class="match-person-name">{{ people[1].name }}</div>
                     <div class="match-person-detail">{{ people[1].moon_sign }} · {{ people[1].nakshatra }}</div>
                 </div>
+            </div>
+        </section>
+
+        <!-- How Matching Works -->
+        <section class="card" id="sec-learn-match">
+            <div class="explainer open" tabindex="0" onclick="this.classList.toggle('open')" onkeydown="if(event.key==='Enter')this.classList.toggle('open')">
+                <span class="explainer-toggle">📖 How Kundli Matching Works ▾</span>
+                <p class="explainer-text">Ashtakoota Gun Milan is the traditional Vedic method for evaluating marriage compatibility. It compares the Moon nakshatras (birth stars) of two people across 8 dimensions called Kootas. Each Koota tests a different aspect of the relationship. The total score is out of 36 points. A score of 18 or above is generally considered acceptable. 24 or above is good. 32 or above is excellent. However, the total score is just one factor. Individual Koota scores, doshas, and the overall chart context all matter.</p>
             </div>
         </section>
 
@@ -126,6 +135,20 @@
                     <span class="koota-val">{{ k.girl }}</span>
                     <span class="koota-score">{{ k.score }} / {{ k.max }}</span>
                     {% if k.interpretation %}<span class="koota-interp">{{ k.interpretation }}</span>{% endif %}
+                    <div class="explainer" tabindex="0" onclick="event.stopPropagation();this.classList.toggle('open')" onkeydown="if(event.key==='Enter'){event.stopPropagation();this.classList.toggle('open')}">
+                        <span class="explainer-toggle">Learn more ▾</span>
+                        <p class="explainer-text">
+                        {% if k.name == 'Varna' %}Varna measures spiritual compatibility based on the Moon sign's element. Water signs rank highest (Brahmin), then fire (Kshatriya), earth (Vaishya), and air (Shudra). The boy's Varna should be equal to or higher than the girl's for full points.
+                        {% elif k.name == 'Vashya' %}Vashya measures mutual attraction and influence. Each sign belongs to a group: human, quadruped, water creature, wild animal, or insect. Compatible groups score higher. This Koota indicates who has more natural influence in the relationship.
+                        {% elif k.name == 'Tara' %}Tara measures destiny compatibility using the distance between birth nakshatras. The gap is divided by 9, and even remainders are favorable. It is calculated in both directions and averaged. This Koota reflects how fate supports the union.
+                        {% elif k.name == 'Yoni' %}Yoni measures physical and intimate compatibility. Each nakshatra is assigned an animal symbol. Same animal scores highest. Enemy animal pairs (like cat and rat) score zero. This is one of the more sensitive Kootas in traditional matching.
+                        {% elif k.name == 'Graha Maitri' %}Graha Maitri measures mental compatibility through the friendship between Moon sign lords. If both lords are friends, the score is high. If enemies, it is low. This Koota reflects how well two minds work together day to day.
+                        {% elif k.name == 'Gana' %}Gana measures temperament. There are three types: Deva (gentle), Manushya (moderate), and Rakshasa (intense). Same Gana scores highest. Deva and Rakshasa together score lowest. This reflects how naturally two people get along.
+                        {% elif k.name == 'Bhakoot' %}Bhakoot measures health and financial compatibility based on the Moon sign distance. Certain sign pairs (2/12, 5/9, 6/8 from each other) are considered unfavorable. This is the highest-weighted Koota at 7 points.
+                        {% elif k.name == 'Nadi' %}Nadi measures health and genetic compatibility. There are three Nadis: Aadi, Madhya, and Antya. Same Nadi scores zero (Nadi Dosha) because it may indicate health issues in offspring. This is the most important single Koota at 8 points.
+                        {% endif %}
+                        </p>
+                    </div>
                 </div>
                 {% endfor %}
                 <div class="koota-row koota-total">
@@ -170,6 +193,30 @@
             {% endif %}
         </section>
         {% endif %}
+
+        <!-- Reading Guide + Myths -->
+        <section class="card" id="sec-guide">
+            <h2>📖 Reading Your Match Report</h2>
+            <div class="la-card" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+                <div class="la-header"><span class="la-icon">📋</span><div><h3>How to evaluate holistically</h3><p class="la-desc">The total score is not the whole picture</p></div><span class="la-chevron">▾</span></div>
+                <div class="la-body">
+                    <div class="la-section">
+                        <p>Look at which Kootas scored well and which did not. A score of 20 with strong Nadi and Gana is better than 25 with Nadi Dosha. Pay attention to the top-weighted Kootas: Nadi (8), Bhakoot (7), and Gana (6) carry the most weight. Also consider the overall chart compatibility beyond just nakshatra matching.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="la-card" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+                <div class="la-header"><span class="la-icon">🔍</span><div><h3>Common myths debunked</h3><p class="la-desc">What the numbers really mean</p></div><span class="la-chevron">▾</span></div>
+                <div class="la-body">
+                    <div class="la-section">
+                        <p><strong>Low score does not mean divorce.</strong> Many happy marriages have scores below 18. Compatibility is built through communication, respect, and effort, not just planetary positions.</p>
+                        <p><strong>Manglik after 28 is not automatic.</strong> The belief that Manglik Dosha disappears after age 28 is a simplification. The dosha's intensity may reduce, but it depends on the full chart context.</p>
+                        <p><strong>Both Manglik does not always cancel out.</strong> While two Manglik partners can neutralize the dosha, the specific Mars placements matter. Houses 1 and 7 are more significant than 2 and 12.</p>
+                        <p><strong>Nadi Dosha has exceptions.</strong> If the nakshatras are different even though the Nadi is the same, many astrologers consider the dosha reduced. Always look at the full picture.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <div class="match-actions">
             <a href="/match/pdf" class="btn-pdf">📄 Download PDF</a>
