@@ -909,6 +909,7 @@ footer {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--space-md);
+    margin-bottom: var(--space-lg);
 }
 @media (max-width: 600px) { .match-grid { grid-template-columns: 1fr; } }
 .person-fields {
@@ -1177,6 +1178,7 @@ footer {
 /* Match Improvements */
 .koota-interp { grid-column: 1 / -1; font-size: 0.78rem; color: var(--text-secondary); font-style: italic; line-height: 1.4; }
 .koota-row { grid-template-columns: 1.5fr 1fr 1fr 0.7fr; }
+.koota-row .explainer { grid-column: 1 / -1; }
 .match-summary { margin-bottom: var(--space-md); padding: var(--space-sm) var(--space-md); background: var(--tag-bg); border-radius: var(--radius); font-size: 0.85rem; }
 .match-strength { color: var(--active-border); margin-bottom: var(--space-xs); }
 .match-challenge { color: var(--accent); }

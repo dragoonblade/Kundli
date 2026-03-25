@@ -190,7 +190,7 @@ function saveChartLocally() {
         id: '{{ share_url }}',
         html: document.documentElement.outerHTML,
         date: new Date().toISOString(),
-        label: '{{ birth_dt.strftime("%d %b %Y") }} — {{ location }}'
+        label: '{{ birth_dt.strftime("%d %b %Y") }}, {{ location }}'
     };
     openDB().then(function(db) {
         var tx = db.transaction('charts', 'readwrite');
