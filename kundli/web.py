@@ -294,7 +294,7 @@ def index():
                 request.args.get("d"), request.args.get("t", ""),
                 request.args.get("l", ""), request.args.get("z", "5.5"),
             )
-        return render_template("index.html")
+        return render_template("index.html", last_chart=flask_session.get("last_chart"))
 
     return _generate_chart(
         request.form.get("date", "").strip(),
@@ -410,6 +410,7 @@ def _generate_chart(date_str, time_str, location, tz_str):
         "location": location,
     })
     flask_session["chart_id"] = chart_id
+    flask_session["last_chart"] = {"date": date_str, "time": time_str, "location": location, "tz": tz_str}
 
     return render_template("result.html",
         birth_dt=birth_dt, location=location, lat=lat, lon=lon,
@@ -476,6 +477,7 @@ def match():
             "sun_sign": sun["sign"], "lagna": houses[0]["sign"],
             "nak_idx": nak_idx, "manglik": is_manglik, "mars_house": mars_house,
             "current_dasha": current_md,
+            "chart_url": f"/?d={date_str}&t={time_str}&l={quote(location)}&z={tz_str}",
         })
 
     if errors:

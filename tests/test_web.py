@@ -372,6 +372,32 @@ class TestMatchInputPreservation:
         assert 'value="Chandigarh, India"' in body
 
 
+class TestMatchChartLinks:
+    def test_match_result_has_chart_links(self, client):
+        r = client.post("/match", data=MATCH_FORM)
+        body = r.data.decode()
+        assert "View Full Chart" in body
+        assert "/?d=" in body
+
+    def test_chart_links_per_person(self, client):
+        r = client.post("/match", data=MATCH_FORM)
+        body = r.data.decode()
+        # Both people should have chart links with their dates
+        assert "d=1996-09-23" in body
+        assert "d=1998-03-15" in body
+
+
+class TestMatchAutoFill:
+    def test_last_chart_in_session(self, client):
+        # Generate a chart first
+        client.post("/", data=KUNDLI_FORM)
+        # Visit index — should have last_chart data for auto-fill
+        r = client.get("/")
+        body = r.data.decode()
+        assert "1996-09-23" in body
+        assert "Chandigarh" in body
+
+
 class TestApiChartErrors:
     def test_bad_location(self, client):
         r = client.post("/api/chart", json={

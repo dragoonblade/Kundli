@@ -135,6 +135,20 @@ function switchTab(tab) {
 switchTab('match');
 {% endif %}
 if(new URLSearchParams(location.search).get('tab') === 'match') switchTab('match');
+{% if last_chart %}
+// Auto-fill Person 1 from last generated chart
+(function() {
+    var lc = {{ last_chart|tojson }};
+    var fill = {date1: lc.date, time1: lc.time, location1: lc.location, tz1: lc.tz};
+    for (var k in fill) {
+        var el = document.getElementById(k);
+        if (!el || el.value) continue;
+        if (el.tagName === 'SELECT') {
+            for (var i = 0; i < el.options.length; i++) { if (el.options[i].value === fill[k]) { el.selectedIndex = i; break; } }
+        } else { el.value = fill[k]; }
+    }
+})();
+{% endif %}
 document.querySelectorAll('form').forEach(function(f) {
     f.addEventListener('submit', function() {
         var btn = f.querySelector('button[type="submit"]');

@@ -82,6 +82,7 @@
                     <div class="compare-row"><span class="label">Lagna</span><span class="value">{{ p.lagna }}</span></div>
                     <div class="compare-row"><span class="label">Manglik</span><span class="value {% if p.manglik %}match-poor{% else %}match-good{% endif %}">{% if p.manglik %}Yes (House {{ p.mars_house }}){% else %}No{% endif %}</span></div>
                     <div class="compare-row"><span class="label">Current Dasha</span><span class="value">{{ p.current_dasha or 'N/A' }}</span></div>
+                    {% if p.chart_url %}<a href="{{ p.chart_url }}" class="btn-link" style="margin-top:var(--space-sm);display:inline-block;font-size:0.85rem">View Full Chart →</a>{% endif %}
                 </div>
                 {% endfor %}
             </div>
