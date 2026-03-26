@@ -1234,3 +1234,13 @@ footer {
     cursor: pointer;
     font-weight: 600;
 }
+
+/* Print */
+@media print {
+    .section-nav, .view-toggle, .lang-toggle, .theme-toggle, .back-link,
+    .back-to-top, #chat-toggle, #chat-widget, .btn-pdf, .btn-share,
+    .btn-install, .explainer-toggle, footer button { display: none !important; }
+    body { background: #fff; color: #000; font-size: 12pt; }
+    .card { border: 1px solid #ccc; break-inside: avoid; }
+    .container { max-width: 100%; padding: 0; }
+}

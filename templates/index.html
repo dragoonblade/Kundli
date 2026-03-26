@@ -47,11 +47,11 @@
             <div class="form-grid">
                 <div class="form-group">
                     <label for="date">Birth Date</label>
-                    <input type="date" id="date" name="date" required value="{{ prev_date|default('') }}">
+                    <input type="date" id="date" name="date" required value="{{ prev_date|default('') }}" title="Select your date of birth">
                 </div>
                 <div class="form-group">
                     <label for="time">Birth Time</label>
-                    <input type="time" id="time" name="time" required value="{{ prev_time|default('') }}">
+                    <input type="time" id="time" name="time" required value="{{ prev_time|default('') }}" title="Enter exact birth time in 24-hour format">
                 </div>
                 <div class="form-group">
                     <label for="location">Birth Place</label>
@@ -172,6 +172,23 @@ if(localStorage.getItem('kundli-theme') === 'light') document.documentElement.cl
             });
         };
     };
+})();
+
+// Auto-detect timezone
+(function() {
+    var tzOffsets = {'Pacific/Honolulu':'-10','America/Anchorage':'-9','America/Los_Angeles':'-8','America/Denver':'-7','America/Chicago':'-6','America/New_York':'-5','America/Halifax':'-4','America/Sao_Paulo':'-3','Atlantic/Reykjavik':'0','Europe/London':'0','Europe/Paris':'1','Europe/Helsinki':'2','Europe/Moscow':'3','Asia/Dubai':'4','Asia/Kolkata':'5.5','Asia/Kathmandu':'5.75','Asia/Dhaka':'6','Asia/Bangkok':'7','Asia/Shanghai':'8','Asia/Tokyo':'9','Australia/Sydney':'10','Pacific/Auckland':'12'};
+    try {
+        var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        var offset = tzOffsets[tz];
+        if (!offset) {
+            offset = String(-new Date().getTimezoneOffset() / 60);
+        }
+        document.querySelectorAll('select[name="tz"], select[name="tz1"], select[name="tz2"]').forEach(function(sel) {
+            for (var i = 0; i < sel.options.length; i++) {
+                if (sel.options[i].value === offset) { sel.selectedIndex = i; break; }
+            }
+        });
+    } catch(e) {}
 })();
 
 // PWA install prompt
