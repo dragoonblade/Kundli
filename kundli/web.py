@@ -567,6 +567,16 @@ def robots():
     return app.send_static_file("robots.txt")
 
 
+@app.route("/llms.txt")
+def llms_txt():
+    return app.send_static_file("llms.txt")
+
+
+@app.route("/llms-full.txt")
+def llms_full_txt():
+    return app.send_static_file("llms-full.txt")
+
+
 @app.route("/chat", methods=["POST"])
 def chat_endpoint():
     data = request.get_json()

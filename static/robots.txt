@@ -7,3 +7,8 @@ Disallow: /pdf
 Disallow: /match/pdf
 
 Sitemap: https://kundli-2c3b.onrender.com/static/sitemap.xml
+
+# LLM Discovery
+# See https://llmstxt.org/
+# llms.txt: https://kundli-2c3b.onrender.com/llms.txt
+# llms-full.txt: https://kundli-2c3b.onrender.com/llms-full.txt

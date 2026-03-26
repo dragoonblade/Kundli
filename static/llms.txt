@@ -1,0 +1,41 @@
+# Kundli — Vedic Birth Chart Generator
+
+> Free online Vedic astrology tool for generating birth charts (Kundli), marriage compatibility matching (Gun Milan), and personalized readings.
+
+## What This App Does
+
+Kundli is a web application that generates Vedic birth charts using the Swiss Ephemeris for astronomical calculations. Users enter their birth date, time, and location to receive a complete astrological analysis.
+
+## Features
+
+- Birth chart with North Indian and South Indian diagrams
+- 9 planetary positions (sidereal, Lahiri ayanamsa)
+- 12 house cusps (Placidus system)
+- 3-level Vimshottari Dasha (Mahadasha, Antardasha, Pratyantar)
+- Yogini Dasha (36-year alternative system)
+- 25 yoga detections
+- 3 dosha detections (Manglik, Kalsarpa, Sade Sati) with remedies
+- Shadbala (planetary strength)
+- Ashtakavarga (transit prediction points)
+- 17 divisional charts (D-1 through D-60)
+- Current transits mapped to natal houses
+- Daily personalized insights
+- Ashtakoota Gun Milan (36-point marriage compatibility)
+- PDF export for birth chart and match reports
+- 12-lesson Study Mode teaching users to read charts
+- FAQ with 6 categories
+- REST API at /api/chart
+
+## URLs
+
+- Home: https://kundli-2c3b.onrender.com/
+- FAQ: https://kundli-2c3b.onrender.com/faq
+- API: POST https://kundli-2c3b.onrender.com/api/chart
+
+## API
+
+POST /api/chart with JSON body:
+```json
+{"date": "1996-09-23", "time": "22:17", "location": "Chandigarh, India", "tz": 5.5}
+```
+Returns: planets, houses, dashas, yogas, lagna as JSON.
