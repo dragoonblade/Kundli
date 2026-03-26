@@ -557,6 +557,16 @@ def faq():
     return render_template("faq.html")
 
 
+@app.route("/sitemap.xml")
+def sitemap():
+    return app.send_static_file("sitemap.xml")
+
+
+@app.route("/robots.txt")
+def robots():
+    return app.send_static_file("robots.txt")
+
+
 @app.route("/chat", methods=["POST"])
 def chat_endpoint():
     data = request.get_json()

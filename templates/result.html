@@ -4,8 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kundli. {{ birth_dt.strftime('%d %B %Y') }}</title>
+    <title>Kundli | {{ birth_dt.strftime('%d %B %Y') }} | Vedic Birth Chart</title>
     <meta name="description" content="Vedic birth chart analysis with planetary positions, house readings, dasha timeline, yogas, and life area interpretations.">
+    <meta property="og:title" content="Kundli | {{ birth_dt.strftime('%d %B %Y') }}">
+    <meta property="og:description" content="Vedic birth chart with dasha, yogas, doshas, and personalized readings.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+    <link rel="canonical" href="https://kundli-2c3b.onrender.com{{ share_url|safe }}">
     <link rel="stylesheet" href="/static/style.css">
     <link rel="manifest" href="/static/manifest.json">
     <meta name="theme-color" content="#f0a030">
