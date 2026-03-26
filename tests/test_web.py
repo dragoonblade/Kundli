@@ -389,6 +389,64 @@ class TestFaq:
         assert "filterFAQ" in body
 
 
+class TestSeo:
+    def test_sitemap(self, client):
+        r = client.get("/sitemap.xml")
+        assert r.status_code == 200
+        assert b"urlset" in r.data
+
+    def test_robots(self, client):
+        r = client.get("/robots.txt")
+        assert r.status_code == 200
+        assert b"Sitemap" in r.data
+
+    def test_llms_txt(self, client):
+        r = client.get("/llms.txt")
+        assert r.status_code == 200
+        assert b"Kundli" in r.data
+
+    def test_llms_full_txt(self, client):
+        r = client.get("/llms-full.txt")
+        assert r.status_code == 200
+        assert b"API" in r.data
+
+    def test_og_tags_on_index(self, client):
+        body = client.get("/").data.decode()
+        assert 'og:title' in body
+        assert 'og:description' in body
+        assert 'twitter:card' in body
+        assert 'canonical' in body
+
+    def test_json_ld_on_index(self, client):
+        body = client.get("/").data.decode()
+        assert "SoftwareApplication" in body
+
+    def test_json_ld_on_faq(self, client):
+        body = client.get("/faq").data.decode()
+        assert "FAQPage" in body
+
+    def test_keyword_title(self, client):
+        body = client.get("/").data.decode()
+        assert "Free Kundli Generator" in body
+
+
+class TestUxFeatures:
+    def test_auto_detect_tz(self, client):
+        body = client.get("/").data.decode()
+        assert "Intl.DateTimeFormat" in body
+
+    def test_input_hints(self, client):
+        body = client.get("/").data.decode()
+        assert 'title="Select your date of birth"' in body
+        assert 'title="Enter exact birth time' in body
+
+    def test_preserves_inputs_on_error(self, client):
+        r = client.post("/", data={"date": "1996-09-23", "time": "", "location": "Delhi", "tz": "5.5"})
+        body = r.data.decode()
+        assert "1996-09-23" in body
+        assert 'value="Delhi"' in body
+
+
 class TestShareableLinks:
     def test_missing_time(self, client):
         r = client.get("/?d=1996-09-23&l=Delhi")
