@@ -38,20 +38,20 @@
             <div class="form-grid">
                 <div class="form-group">
                     <label for="date">Birth Date</label>
-                    <input type="date" id="date" name="date" required value="">
+                    <input type="date" id="date" name="date" required value="{{ prev_date|default('') }}">
                 </div>
                 <div class="form-group">
                     <label for="time">Birth Time</label>
-                    <input type="time" id="time" name="time" required value="">
+                    <input type="time" id="time" name="time" required value="{{ prev_time|default('') }}">
                 </div>
                 <div class="form-group">
                     <label for="location">Birth Place</label>
                     <input type="text" id="location" name="location" required
-                           placeholder="e.g. Chandigarh, India" value="">
+                           placeholder="e.g. Chandigarh, India" value="{{ prev_location|default('') }}">
                 </div>
                 <div class="form-group">
                     <label for="tz">Timezone (UTC offset)</label>
-                    {{ tz_select('tz', 'tz') }}
+                    {{ tz_select('tz', 'tz', prev_tz|default('5.5')) }}
                 </div>
             </div>
             <button type="submit">Generate Kundli</button>
@@ -129,6 +129,7 @@ document.querySelectorAll('form').forEach(function(f) {
     f.addEventListener('submit', function() {
         var btn = f.querySelector('button[type="submit"]');
         if (btn) { btn.disabled = true; btn.textContent = 'Loading…'; btn.style.opacity = '0.7'; }
+        document.querySelectorAll('.error').forEach(function(el) { el.remove(); });
     });
 });
 if('serviceWorker' in navigator) navigator.serviceWorker.register('/static/sw.js');

@@ -1,7 +1,7 @@
 """Flask web UI for Kundli."""
 from flask import Flask, render_template, request, jsonify, session as flask_session
 from datetime import datetime, timedelta, timezone
-from geopy.geocoders import Nominatim
+from geopy.geocoders import Nominatim, Photon
 from geopy.exc import GeocoderTimedOut, GeocoderServiceError, GeocoderUnavailable
 import json
 import os
@@ -203,40 +203,43 @@ with open(_CITIES_PATH) as _f:
 
 
 def get_coordinates(location):
-    """Geocode a location string to (lat, lon). Checks builtin cities first, then Nominatim."""
+    """Geocode a location string to (lat, lon). Checks builtin cities, then Photon, then Nominatim."""
     normalized = location.strip().lower()
-    # Check builtin cities first (no API call)
     if normalized in _BUILTIN_COORDS:
         logging.info(f"Geocode builtin: {location}")
         return _BUILTIN_COORDS[normalized]
     if normalized in _geo_cache:
         logging.info(f"Geocode cache hit: {location}")
         return _geo_cache[normalized]
-    for attempt in range(3):
-        try:
-            geo = Nominatim(user_agent=f"kundli_app_{uuid.uuid4().hex[:6]}", timeout=10)
-            loc = geo.geocode(location)
-            if not loc:
-                logging.warning(f"Geocode returned no results for: {location} (attempt {attempt + 1})")
-                if attempt < 2:
-                    _time.sleep(1.5)
-                    continue
-                return None, None
+
+    # Try Photon first (higher rate limit, no key needed)
+    try:
+        geo = Photon(user_agent="kundli_app", timeout=10)
+        loc = geo.geocode(location)
+        if loc:
             result = (loc.latitude, loc.longitude)
             _geo_cache[normalized] = result
-            logging.info(f"Geocoded: {location} -> ({result[0]:.4f}, {result[1]:.4f})")
+            logging.info(f"Geocoded (Photon): {location} -> ({result[0]:.4f}, {result[1]:.4f})")
             return result
-        except GeocoderTimedOut:
-            logging.error(f"Geocode timeout for: {location} (attempt {attempt + 1})")
-            if attempt < 2:
-                _time.sleep(1.5)
-        except (GeocoderServiceError, GeocoderUnavailable) as e:
-            logging.error(f"Geocode service error for: {location} ({e})")
-            if attempt < 2:
-                _time.sleep(1.5)
-        except (ValueError, AttributeError) as e:
-            logging.error(f"Geocode unexpected error for: {location} ({e})")
-            return None, None
+        logging.warning(f"Photon returned no results for: {location}")
+    except (GeocoderTimedOut, GeocoderServiceError, GeocoderUnavailable) as e:
+        logging.warning(f"Photon failed for: {location} ({e})")
+
+    # Fallback to Nominatim
+    try:
+        geo = Nominatim(user_agent=f"kundli_app_{uuid.uuid4().hex[:6]}", timeout=10)
+        loc = geo.geocode(location)
+        if loc:
+            result = (loc.latitude, loc.longitude)
+            _geo_cache[normalized] = result
+            logging.info(f"Geocoded (Nominatim): {location} -> ({result[0]:.4f}, {result[1]:.4f})")
+            return result
+        logging.warning(f"Nominatim returned no results for: {location}")
+    except (GeocoderTimedOut, GeocoderServiceError, GeocoderUnavailable) as e:
+        logging.error(f"Nominatim failed for: {location} ({e})")
+    except (ValueError, AttributeError) as e:
+        logging.error(f"Geocode unexpected error for: {location} ({e})")
+
     return None, None
 
 
@@ -336,8 +339,10 @@ def _compute_transits(now, houses):
 
 
 def _generate_chart(date_str, time_str, location, tz_str):
+    form_vals = {"prev_date": date_str, "prev_time": time_str, "prev_location": location, "prev_tz": tz_str}
+
     if not date_str or not time_str or not location:
-        return render_template("index.html", error="All fields are required.")
+        return render_template("index.html", error="All fields are required.", **form_vals)
 
     try:
         year, month, day = map(int, date_str.split("-"))
@@ -346,18 +351,18 @@ def _generate_chart(date_str, time_str, location, tz_str):
         if not (1 <= year <= 2100):
             raise ValueError("Year out of supported range (1-2100)")
     except (ValueError, TypeError) as e:
-        return render_template("index.html", error=f"Invalid date or time: {e}")
+        return render_template("index.html", error=f"Invalid date or time: {e}", **form_vals)
 
     try:
         tz = float(tz_str)
         if not -12 <= tz <= 14:
             raise ValueError
     except (ValueError, TypeError):
-        return render_template("index.html", error="Invalid timezone offset.")
+        return render_template("index.html", error="Invalid timezone offset.", **form_vals)
 
     lat, lon = get_coordinates(location)
     if lat is None:
-        return render_template("index.html", error=f"Could not find location: {location}. Try a nearby major city or check the spelling.")
+        return render_template("index.html", error=f"Could not find location: {location}. Try a nearby major city or check the spelling.", **form_vals)
 
     logging.info(f"Generating chart: {birth_dt.isoformat()} at {location} ({tz})")
     try:
@@ -366,7 +371,7 @@ def _generate_chart(date_str, time_str, location, tz_str):
         houses = compute_houses(jd, lat, lon)
     except Exception as e:
         logging.exception("Chart computation failed")
-        return render_template("index.html", error=f"Could not compute chart: {e}")
+        return render_template("index.html", error=f"Could not compute chart: {e}", **form_vals)
 
     now = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(hours=tz)
 
