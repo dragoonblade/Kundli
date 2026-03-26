@@ -429,6 +429,12 @@ def _generate_chart(date_str, time_str, location, tz_str):
 @app.route("/match", methods=["POST"])
 @limiter.limit("10 per minute")
 def match():
+    # Preserve form inputs for error redisplay
+    form_vals = {}
+    for i in ("1", "2"):
+        for field in ("name", "date", "time", "location", "tz"):
+            form_vals[f"prev_{field}{i}"] = request.form.get(f"{field}{i}", "").strip()
+
     errors = []
     people = []
     for i in ("1", "2"):
@@ -450,7 +456,7 @@ def match():
             continue
         lat, lon = get_coordinates(location)
         if lat is None:
-            errors.append(f"Could not find location: {location}")
+            errors.append(f"Could not find location: {location}. Try a nearby major city.")
             continue
         jd = to_julian(birth_dt, tz)
         planets = compute_planets(jd)
@@ -473,9 +479,9 @@ def match():
         })
 
     if errors:
-        return render_template("index.html", match_error="; ".join(errors), tab="match")
+        return render_template("index.html", match_error="; ".join(errors), tab="match", **form_vals)
     if len(people) < 2:
-        return render_template("index.html", match_error="Both persons required.", tab="match")
+        return render_template("index.html", match_error="Both persons required.", tab="match", **form_vals)
 
     result = compute_ashtakoota(people[0]["nak_idx"], people[1]["nak_idx"])
     flask_session["match_result"] = {"result": result, "people": people}

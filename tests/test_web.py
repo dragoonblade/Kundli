@@ -361,6 +361,17 @@ class TestMatchValidation:
         assert "could not find" in body.lower() or "error" in body.lower()
 
 
+class TestMatchInputPreservation:
+    def test_preserves_inputs_on_error(self, client):
+        form = {**MATCH_FORM, "location2": "xyznonexistent99999"}
+        r = client.post("/match", data=form)
+        body = r.data.decode()
+        # Person 1 fields should be preserved
+        assert 'value="1996-09-23"' in body
+        assert 'value="22:17"' in body
+        assert 'value="Chandigarh, India"' in body
+
+
 class TestApiChartErrors:
     def test_bad_location(self, client):
         r = client.post("/api/chart", json={

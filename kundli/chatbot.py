@@ -34,6 +34,7 @@ DASHA_KEYWORDS = ["dasha", "mahadasha", "period", "current period", "phase", "ti
 
 # General question patterns
 GENERAL_PATTERNS = [
+    (r"(when.*marr|marriage.*timing|marriage.*when|when.*get.*married|vivah.*kab|shadi.*kab)", "marriage_timing"),
     (r"(good|bad|lucky|unlucky)\s*(time|period|phase)", "timing"),
     (r"(should i|can i|will i|is it good)", "advice"),
     (r"(compatible|compatibility|match)", "compatibility"),
@@ -206,6 +207,55 @@ def _build_manglik_answer(planets, readings):
                 f"Manglik Dosha. Mars needs to be in houses 1, 2, 4, 7, 8, or 12 for Manglik consideration.")
 
 
+def _build_marriage_timing_answer(dashas, planets, houses, current_dasha, planet_names, tz_offset):
+    """Analyze marriage timing from 7th house lord dasha and Venus/Jupiter periods."""
+    from kundli.core import SIGN_LORDS_CALC
+    now = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(hours=tz_offset)
+
+    seventh_sign = houses[6]["sign"]
+    seventh_lord = SIGN_LORDS_CALC[seventh_sign]
+    seventh_lord_en = planet_names.get(seventh_lord, seventh_lord)
+    venus = next(p for p in planets if p["planet"] == "Shukra")
+
+    answer = f"**Marriage Timing Analysis**\n\n"
+    answer += f"Your 7th house (marriage) is in **{seventh_sign}**, ruled by **{seventh_lord} ({seventh_lord_en})**.\n\n"
+
+    # Find dasha/antardasha periods of 7th lord, Venus, Jupiter
+    marriage_planets = {seventh_lord, "Shukra", "Guru"}
+    favorable = []
+    for d in dashas:
+        if d["lord"] in marriage_planets:
+            label = f"{d['lord']} ({planet_names.get(d['lord'], d['lord'])}) Mahadasha"
+            status = "current" if d["start"] <= now <= d["end"] else ("upcoming" if d["start"] > now else "past")
+            favorable.append({"label": label, "start": d["start"], "end": d["end"], "status": status})
+        for ad in d.get("antardasha", []):
+            if ad["lord"] in marriage_planets and d["lord"] not in marriage_planets:
+                label = f"{ad['lord']} ({planet_names.get(ad['lord'], ad['lord'])}) Antardasha in {d['lord']} MD"
+                status = "current" if ad["start"] <= now <= ad["end"] else ("upcoming" if ad["start"] > now else "past")
+                favorable.append({"label": label, "start": ad["start"], "end": ad["end"], "status": status})
+
+    current_periods = [f for f in favorable if f["status"] == "current"]
+    upcoming_periods = [f for f in favorable if f["status"] == "upcoming"]
+
+    if current_periods:
+        answer += "**Currently active favorable periods:**\n"
+        for p in current_periods:
+            answer += f"• {p['label']}: {p['start'].strftime('%b %Y')} to {p['end'].strftime('%b %Y')}\n"
+        answer += "\n"
+
+    if upcoming_periods:
+        answer += "**Upcoming favorable windows:**\n"
+        for p in upcoming_periods[:4]:
+            answer += f"• {p['label']}: {p['start'].strftime('%b %Y')} to {p['end'].strftime('%b %Y')}\n"
+        answer += "\n"
+
+    answer += (f"Periods of **{seventh_lord}** (7th lord), **Shukra** (Venus, natural marriage significator), "
+               f"and **Guru** (Jupiter, blessings) are traditionally considered favorable for marriage. "
+               f"These are tendencies, not certainties. The actual timing also depends on transits and the partner's chart.")
+
+    return answer
+
+
 def _build_strengths(readings):
     parts = ["**Your chart's strengths:**\n"]
     for r in readings:
@@ -268,6 +318,8 @@ def rule_based_answer(question, chart_context):
         return _build_summary(readings, planets, houses, current_dasha, planet_names), 0.9
     if general == "manglik":
         return _build_manglik_answer(planets, readings), 0.9
+    if general == "marriage_timing":
+        return _build_marriage_timing_answer(dashas, planets, houses, current_dasha, planet_names, chart_context.get("tz_offset", 5.5)), 0.9
     if general == "strengths":
         return _build_strengths(readings), 0.8
     if general == "challenges":

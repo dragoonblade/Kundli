@@ -64,6 +64,15 @@ class TestChatRouting:
         answer = chat("what about marriage?", CTX)
         assert len(answer) > 50
 
+    def test_marriage_timing(self):
+        answer = chat("when will I get married?", CTX)
+        assert "7th house" in answer.lower() or "marriage" in answer.lower()
+        assert "Shukra" in answer or "Venus" in answer
+
+    def test_marriage_timing_hindi(self):
+        answer = chat("shadi kab hogi?", CTX)
+        assert "marriage" in answer.lower() or "7th" in answer.lower()
+
     def test_health(self):
         answer = chat("tell me about health", CTX)
         assert len(answer) > 30

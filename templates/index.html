@@ -67,51 +67,52 @@
         </form>
 
         <form method="POST" action="/match" class="form-card" id="form-match" style="display:none">
+            <p class="form-hint" style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:var(--space-sm)">Enter birth details for both people. Person 1's Varna is compared against Person 2's in traditional scoring.</p>
             <div class="match-grid">
                 <fieldset class="person-fields">
                     <legend>Person 1</legend>
                     <div class="form-group">
                         <label for="name1">Name (optional)</label>
-                        <input type="text" id="name1" name="name1" placeholder="e.g. Rahul">
+                        <input type="text" id="name1" name="name1" placeholder="e.g. Rahul" value="{{ prev_name1|default('') }}">
                     </div>
                     <div class="form-group">
                         <label for="date1">Birth Date</label>
-                        <input type="date" id="date1" name="date1" required>
+                        <input type="date" id="date1" name="date1" required value="{{ prev_date1|default('') }}">
                     </div>
                     <div class="form-group">
                         <label for="time1">Birth Time</label>
-                        <input type="time" id="time1" name="time1" required>
+                        <input type="time" id="time1" name="time1" required value="{{ prev_time1|default('') }}">
                     </div>
                     <div class="form-group">
                         <label for="location1">Birth Place</label>
-                        <input type="text" id="location1" name="location1" required placeholder="e.g. Chandigarh, India">
+                        <input type="text" id="location1" name="location1" required placeholder="e.g. Chandigarh, India" value="{{ prev_location1|default('') }}">
                     </div>
                     <div class="form-group">
                         <label for="tz1">Timezone</label>
-                        {{ tz_select('tz1', 'tz1') }}
+                        {{ tz_select('tz1', 'tz1', prev_tz1|default('')) }}
                     </div>
                 </fieldset>
                 <fieldset class="person-fields">
                     <legend>Person 2</legend>
                     <div class="form-group">
                         <label for="name2">Name (optional)</label>
-                        <input type="text" id="name2" name="name2" placeholder="e.g. Priya">
+                        <input type="text" id="name2" name="name2" placeholder="e.g. Priya" value="{{ prev_name2|default('') }}">
                     </div>
                     <div class="form-group">
                         <label for="date2">Birth Date</label>
-                        <input type="date" id="date2" name="date2" required>
+                        <input type="date" id="date2" name="date2" required value="{{ prev_date2|default('') }}">
                     </div>
                     <div class="form-group">
                         <label for="time2">Birth Time</label>
-                        <input type="time" id="time2" name="time2" required>
+                        <input type="time" id="time2" name="time2" required value="{{ prev_time2|default('') }}">
                     </div>
                     <div class="form-group">
                         <label for="location2">Birth Place</label>
-                        <input type="text" id="location2" name="location2" required placeholder="e.g. Delhi, India">
+                        <input type="text" id="location2" name="location2" required placeholder="e.g. Delhi, India" value="{{ prev_location2|default('') }}">
                     </div>
                     <div class="form-group">
                         <label for="tz2">Timezone</label>
-                        {{ tz_select('tz2', 'tz2') }}
+                        {{ tz_select('tz2', 'tz2', prev_tz2|default('')) }}
                     </div>
                 </fieldset>
             </div>
