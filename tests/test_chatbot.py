@@ -101,6 +101,36 @@ class TestChatRouting:
         answer = chat("xyzzy foobar nonsense", CTX)
         assert "topics I can help with" in answer or len(answer) > 20
 
+    def test_exam_timing(self):
+        answer = chat("will I pass my exam?", CTX)
+        assert "House" in answer
+        assert "Timing" in answer or "Mahadasha" in answer or "Antardasha" in answer
+
+    def test_job_interview(self):
+        answer = chat("will I get the job interview?", CTX)
+        assert "House" in answer
+        assert len(answer) > 100
+
+    def test_crush_question(self):
+        answer = chat("does she like me?", CTX)
+        assert len(answer) > 50
+
+    def test_lottery_question(self):
+        answer = chat("will I win the lottery?", CTX)
+        assert "House" in answer
+
+    def test_visa_question(self):
+        answer = chat("will my visa get approved?", CTX)
+        assert len(answer) > 50
+
+    def test_ex_come_back(self):
+        answer = chat("will my ex come back?", CTX)
+        assert len(answer) > 50
+
+    def test_conceive_question(self):
+        answer = chat("will I conceive?", CTX)
+        assert "House" in answer
+
     def test_closing(self):
         answer = chat("thanks bye", None)
         assert len(answer) > 10

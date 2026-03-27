@@ -7,20 +7,28 @@ from kundli.readings import SIMPLE_DASHA_EFFECTS
 # Topic keywords mapped to house numbers
 TOPIC_HOUSES = {
     "career": [10], "job": [10], "work": [10, 6], "profession": [10], "promotion": [10],
+    "interview": [10, 6], "hire": [10], "placement": [10], "transfer": [10],
     "business": [7, 10], "money": [2, 11], "wealth": [2, 11], "finance": [2, 11],
-    "income": [11], "salary": [2, 11],
+    "income": [11], "salary": [2, 11], "invest": [2, 8, 11], "lottery": [5, 8, 11],
+    "stock": [2, 5, 11], "stocks": [2, 5, 11], "loan": [6, 8],
     "marriage": [7], "spouse": [7], "partner": [7], "relationship": [7], "love": [5, 7],
-    "romance": [5], "dating": [5, 7],
+    "romance": [5], "dating": [5, 7], "crush": [5, 7], "propose": [5, 7],
+    "like me": [5, 7], "likes me": [5, 7], "interested in me": [5, 7],
+    "breakup": [7, 12], "divorce": [7, 12], "ex come": [7, 12], "ex back": [7, 12],
     "health": [1, 6], "illness": [6], "disease": [6], "body": [1],
-    "children": [5], "kids": [5], "pregnancy": [5], "baby": [5],
+    "surgery": [6, 8], "recover": [1, 6], "treatment": [6],
+    "children": [5], "kids": [5], "pregnancy": [5], "baby": [5], "conceive": [5],
     "education": [4, 5, 9], "study": [4, 5], "exam": [5], "college": [9], "university": [9],
+    "pass": [5], "result": [5], "upsc": [5, 10], "neet": [5, 10], "jee": [5, 10],
     "travel": [3, 9, 12], "abroad": [9, 12], "foreign": [9, 12], "immigration": [12],
+    "visa": [9, 12], "settle abroad": [9, 12], "relocat": [4, 9, 12],
     "home": [4], "house": [4], "property": [4], "real estate": [4], "vehicle": [4], "car": [4],
     "mother": [4], "father": [9], "parents": [4, 9],
     "sibling": [3], "brother": [3], "sister": [3],
     "spiritual": [9, 12], "religion": [9], "meditation": [12], "moksha": [12],
     "luck": [9], "fortune": [9],
     "enemy": [6], "competition": [6], "legal": [6], "court": [6], "debt": [6],
+    "dispute": [6, 7], "case": [6],
     "personality": [1], "self": [1], "appearance": [1],
     "gain": [11], "friends": [11], "network": [11], "social": [11],
     "loss": [12], "expense": [12], "sleep": [12],
@@ -36,7 +44,7 @@ DASHA_KEYWORDS = ["dasha", "mahadasha", "period", "current period", "phase", "ti
 GENERAL_PATTERNS = [
     (r"(when.*marr|marriage.*timing|marriage.*when|when.*get.*married|vivah.*kab|shadi.*kab)", "marriage_timing"),
     (r"(good|bad|lucky|unlucky)\s*(time|period|phase)", "timing"),
-    (r"(should i|can i|will i|is it good)", "advice"),
+    (r"(should i|can i|will i|will my|will he|will she|will this|will the|is it good|do i|does)", "advice"),
     (r"(compatible|compatibility|match)", "compatibility"),
     (r"(strength|strong|positive|good thing)", "strengths"),
     (r"(weakness|weak|negative|challenge|difficult)", "challenges"),
@@ -76,11 +84,12 @@ META_ANSWERS = {
 
 def _find_topics(question):
     """Find which houses are relevant to the question."""
-    q = question.lower()
+    q = " " + question.lower() + " "
     houses = set()
     matched_topics = []
     for keyword, house_nums in TOPIC_HOUSES.items():
-        if keyword in q:
+        # Use word boundary check to avoid partial matches like "art" in "start"
+        if re.search(r'(?<![a-z])' + re.escape(keyword) + r'(?![a-z])', q):
             houses.update(house_nums)
             matched_topics.append(keyword)
     return sorted(houses), matched_topics
@@ -298,6 +307,57 @@ def _build_retrograde_answer(planets, planet_names):
                "rather than outward, often giving deeper insight and unconventional strengths.")
     return answer
 
+def _build_topic_timing(house_nums, topics, dashas, houses, planet_names, tz_offset):
+    """Build dasha timing analysis for specific life topics."""
+    from kundli.core import SIGN_LORDS_CALC
+    now = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(hours=tz_offset)
+
+    # Find lords of relevant houses
+    relevant_lords = set()
+    house_lord_labels = []
+    for h in house_nums:
+        sign = houses[h - 1]["sign"]
+        lord = SIGN_LORDS_CALC[sign]
+        relevant_lords.add(lord)
+        house_lord_labels.append(f"House {h} lord {lord} ({planet_names.get(lord, lord)})")
+
+    answer = f"**Timing for {', '.join(topics)}:**\n\n"
+    answer += "Relevant house lords: " + ", ".join(house_lord_labels) + "\n\n"
+
+    # Find current and upcoming periods of relevant lords
+    current = []
+    upcoming = []
+    for d in dashas:
+        if d["lord"] in relevant_lords:
+            if d["start"] <= now <= d["end"]:
+                current.append(f"{d['lord']} ({planet_names.get(d['lord'], d['lord'])}) Mahadasha: {d['start'].strftime('%b %Y')} to {d['end'].strftime('%b %Y')}")
+            elif d["start"] > now:
+                upcoming.append(f"{d['lord']} ({planet_names.get(d['lord'], d['lord'])}) Mahadasha: {d['start'].strftime('%b %Y')} to {d['end'].strftime('%b %Y')}")
+        for ad in d.get("antardasha", []):
+            if ad["lord"] in relevant_lords and d["lord"] not in relevant_lords:
+                if ad["start"] <= now <= ad["end"]:
+                    current.append(f"{ad['lord']} ({planet_names.get(ad['lord'], ad['lord'])}) Antardasha: {ad['start'].strftime('%b %Y')} to {ad['end'].strftime('%b %Y')}")
+                elif ad["start"] > now and len(upcoming) < 4:
+                    upcoming.append(f"{ad['lord']} ({planet_names.get(ad['lord'], ad['lord'])}) Antardasha: {ad['start'].strftime('%b %Y')} to {ad['end'].strftime('%b %Y')}")
+
+    if current:
+        answer += "**Currently active favorable periods:**\n"
+        for p in current:
+            answer += f"• {p}\n"
+        answer += "\nThe relevant house lord is active right now, which supports progress in this area.\n\n"
+    else:
+        answer += "The relevant house lords are not in their major or sub-period right now.\n\n"
+
+    if upcoming:
+        answer += "**Upcoming favorable windows:**\n"
+        for p in upcoming[:3]:
+            answer += f"• {p}\n"
+        answer += "\n"
+
+    answer += "These are periods when the planetary energy supports this area of life. Results also depend on effort, transits, and overall chart strength."
+    return answer
+
+
 def rule_based_answer(question, chart_context):
     """Try to answer using rules. Returns (answer, confidence)."""
     readings = chart_context["house_readings"]
@@ -339,9 +399,10 @@ def rule_based_answer(question, chart_context):
     house_nums, topics = _find_topics(question)
     if house_nums:
         answer = _build_house_answer(readings, house_nums, current_dasha)
-        if general == "advice" and topics:
-            answer += f"\n\n💡 Based on your chart, this is {'a favorable' if current_dasha else 'an active'} period for matters related to {', '.join(topics)}."
-        return answer, 0.8
+        if general in ("advice", "timing") and topics:
+            answer += "\n\n---\n\n"
+            answer += _build_topic_timing(house_nums, topics, dashas, houses, planet_names, chart_context.get("tz_offset", 5.5))
+        return answer, 0.85
 
     # Timing/advice without specific topic
     if general in ("timing", "advice"):
