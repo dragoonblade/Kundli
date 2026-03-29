@@ -1,7 +1,7 @@
 """CLI application for Kundli generation."""
 import argparse
 from datetime import datetime, timedelta, timezone
-from geopy.geocoders import Nominatim
+from kundli.geo import get_coordinates
 
 from kundli.calc import (
     to_julian, compute_planets, compute_houses,
@@ -14,14 +14,6 @@ from kundli.readings import build_house_readings
 from kundli.match import compute_ashtakoota
 
 
-def get_coordinates(location):
-    geo = Nominatim(user_agent="kundli_app", timeout=10)
-    loc = geo.geocode(location)
-    if not loc:
-        raise ValueError(f"Could not find location: {location}")
-    return loc.latitude, loc.longitude
-
-
 def print_section(title):
     print(f"\n  -- {title} {'─' * (50 - len(title))}")
 
@@ -32,6 +24,8 @@ def _get_moon_info(date_str, time_str, location, tz):
     hour, minute = map(int, time_str.split(":"))
     birth_dt = datetime(year, month, day, hour, minute)
     lat, lon = get_coordinates(location)
+    if lat is None:
+        raise ValueError(f"Could not find location: {location}")
     jd = to_julian(birth_dt, tz)
     planets = compute_planets(jd)
     moon = next(p for p in planets if p["planet"] == "Chandra")
@@ -101,6 +95,9 @@ def main():
     birth_dt = datetime(year, month, day, hour, minute)
 
     lat, lon = get_coordinates(args.location)
+    if lat is None:
+        print(f"Error: Could not find location: {args.location}")
+        return
     jd = to_julian(birth_dt, args.tz)
     planets = compute_planets(jd)
     houses = compute_houses(jd, lat, lon)

@@ -1,11 +1,8 @@
 """Flask web UI for Kundli."""
 from flask import Flask, render_template, request, jsonify, session as flask_session
 from datetime import datetime, timedelta, timezone
-from geopy.geocoders import Nominatim, Photon
-from geopy.exc import GeocoderTimedOut, GeocoderServiceError, GeocoderUnavailable
 import json
 import os
-import tempfile
 import time as _time
 import uuid
 from urllib.parse import quote
@@ -39,6 +36,7 @@ from kundli.pdf import generate_kundli_pdf, generate_match_pdf
 from kundli.remedies import DOSHA_REMEDIES, PLANET_REMEDIES, UNIVERSAL_REMEDIES
 from kundli.ashtakavarga import compute_ashtakavarga
 from kundli.insights import generate_daily_insights
+from kundli.geo import get_coordinates
 from kundli.predictor import compute_event_periods
 from kundli.prashna import analyze_prashna
 
@@ -52,11 +50,12 @@ if app.secret_key == "change-me-in-production":  # nosec B105
 
 limiter = Limiter(get_remote_address, app=app, default_limits=["60 per minute"], storage_uri="memory://")
 GA4_ID = os.environ.get("GA4_ID", "")
+SITE_URL = os.environ.get("SITE_URL", "https://kundli-2c3b.onrender.com")
 
 
 @app.context_processor
 def _inject_globals():
-    return {"ga4_id": GA4_ID, "universal_remedies": UNIVERSAL_REMEDIES}
+    return {"ga4_id": GA4_ID, "universal_remedies": UNIVERSAL_REMEDIES, "site_url": SITE_URL}
 
 
 @limiter.request_filter
@@ -90,165 +89,9 @@ def _log_request_end(response):
     response.headers["X-Request-ID"] = rid
     return response
 
-# File-based chart store so it works across multiple gunicorn workers
-_CHART_DIR = os.path.join(tempfile.gettempdir(), "kundli_charts")
-os.makedirs(_CHART_DIR, exist_ok=True)
-_CHART_TTL = 3600  # 1 hour
-
-
-class ChartStore:
-    """TTL cache for chart contexts. Uses Redis if REDIS_URL is set, else file-based."""
-
-    def __init__(self):
-        self._redis = None
-        redis_url = os.environ.get("REDIS_URL")
-        if redis_url:
-            try:
-                import redis
-                self._redis = redis.from_url(redis_url)
-                self._redis.ping()
-                logging.info("ChartStore: using Redis")
-            except (ImportError, ConnectionError, OSError) as e:
-                logging.warning(f"ChartStore: Redis unavailable ({e}), falling back to file-based")
-                self._redis = None
-
-    def set(self, key, value):
-        payload = json.dumps({"data": self._serialize(value)})
-        if self._redis:
-            self._redis.setex(f"kundli:{key}", _CHART_TTL, payload)
-            return
-        self._evict()
-        path = os.path.join(_CHART_DIR, f"{key}.json")
-        with open(path, "w") as f:
-            json.dump({"data": self._serialize(value), "ts": _time.time()}, f)
-
-    def get(self, key):
-        if self._redis:
-            raw = self._redis.get(f"kundli:{key}")
-            if not raw:
-                return None
-            return self._deserialize(json.loads(raw)["data"])
-        path = os.path.join(_CHART_DIR, f"{key}.json")
-        if not os.path.exists(path):
-            return None
-        try:
-            with open(path) as f:
-                payload = json.load(f)
-        except (json.JSONDecodeError, OSError):
-            return None
-        if _time.time() - payload.get("ts", 0) > _CHART_TTL:
-            os.remove(path)
-            return None
-        return self._deserialize(payload["data"])
-
-    def _evict(self):
-        now = _time.time()
-        try:
-            entries = sorted(
-                ((f, os.path.join(_CHART_DIR, f)) for f in os.listdir(_CHART_DIR) if f.endswith(".json")),
-                key=lambda x: os.path.getmtime(x[1]),
-            )
-        except OSError:
-            return
-        for name, path in entries:
-            try:
-                if now - os.path.getmtime(path) > _CHART_TTL:
-                    os.remove(path)
-            except OSError:
-                pass
-        # Cap at 100 entries
-        remaining = [p for _, p in entries if os.path.exists(p)]
-        while len(remaining) > 100:
-            try:
-                os.remove(remaining.pop(0))
-            except OSError:
-                pass
-
-    @staticmethod
-    def _serialize(ctx):
-        """Convert chart context to JSON-safe dict (datetimes → ISO strings)."""
-        out = dict(ctx)
-        out["planets"] = ctx["planets"]
-        out["houses"] = ctx["houses"]
-
-        def _ser_period(d):
-            s = {**d, "start": d["start"].isoformat(), "end": d["end"].isoformat()}
-            if "antardasha" in d:
-                s["antardasha"] = [_ser_period(a) for a in d["antardasha"]]
-            if "pratyantar" in d:
-                s["pratyantar"] = [_ser_period(p) for p in d["pratyantar"]]
-            return s
-
-        out["dashas"] = [_ser_period(d) for d in ctx["dashas"]]
-        return out
-
-    @staticmethod
-    def _deserialize(data):
-        """Restore chart context from JSON (ISO strings → datetimes)."""
-
-        def _deser_period(d):
-            d["start"] = datetime.fromisoformat(d["start"])
-            d["end"] = datetime.fromisoformat(d["end"])
-            if "antardasha" in d:
-                d["antardasha"] = [_deser_period(a) for a in d["antardasha"]]
-            if "pratyantar" in d:
-                d["pratyantar"] = [_deser_period(p) for p in d["pratyantar"]]
-            return d
-
-        data["dashas"] = [_deser_period(d) for d in data["dashas"]]
-        return data
-
+from kundli.store import ChartStore, _CHART_DIR
 
 _chart_store = ChartStore()
-
-
-_geo_cache = {}
-
-# Common cities to avoid Nominatim rate limiting
-_CITIES_PATH = os.path.join(os.path.dirname(__file__), "cities.json")
-with open(_CITIES_PATH) as _f:
-    _BUILTIN_COORDS = {k: tuple(v) for k, v in json.load(_f).items()}
-
-
-def get_coordinates(location):
-    """Geocode a location string to (lat, lon). Checks builtin cities, then Photon, then Nominatim."""
-    normalized = location.strip().lower()
-    if normalized in _BUILTIN_COORDS:
-        logging.info(f"Geocode builtin: {location}")
-        return _BUILTIN_COORDS[normalized]
-    if normalized in _geo_cache:
-        logging.info(f"Geocode cache hit: {location}")
-        return _geo_cache[normalized]
-
-    # Try Photon first (higher rate limit, no key needed)
-    try:
-        geo = Photon(user_agent="kundli_app", timeout=10)
-        loc = geo.geocode(location)
-        if loc:
-            result = (loc.latitude, loc.longitude)
-            _geo_cache[normalized] = result
-            logging.info(f"Geocoded (Photon): {location} -> ({result[0]:.4f}, {result[1]:.4f})")
-            return result
-        logging.warning(f"Photon returned no results for: {location}")
-    except (GeocoderTimedOut, GeocoderServiceError, GeocoderUnavailable) as e:
-        logging.warning(f"Photon failed for: {location} ({e})")
-
-    # Fallback to Nominatim
-    try:
-        geo = Nominatim(user_agent=f"kundli_app_{uuid.uuid4().hex[:6]}", timeout=10)
-        loc = geo.geocode(location)
-        if loc:
-            result = (loc.latitude, loc.longitude)
-            _geo_cache[normalized] = result
-            logging.info(f"Geocoded (Nominatim): {location} -> ({result[0]:.4f}, {result[1]:.4f})")
-            return result
-        logging.warning(f"Nominatim returned no results for: {location}")
-    except (GeocoderTimedOut, GeocoderServiceError, GeocoderUnavailable) as e:
-        logging.error(f"Nominatim failed for: {location} ({e})")
-    except (ValueError, AttributeError) as e:
-        logging.error(f"Geocode unexpected error for: {location} ({e})")
-
-    return None, None
 
 
 def build_chart_data(planets, houses):

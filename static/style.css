@@ -153,6 +153,14 @@ header h1 {
     margin-bottom: var(--space-xs);
     text-transform: uppercase;
     letter-spacing: 0.06em;
+}
+.chip-row { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+.chip {
+    padding: 4px 12px; font-size: 0.8rem; border-radius: 999px;
+    background: var(--tag-bg); border: 1px solid var(--border);
+    color: var(--text-secondary); cursor: pointer; transition: all 0.15s;
+}
+.chip:hover { border-color: var(--accent); color: var(--accent); }
     font-weight: 500;
 }
 .form-group input,

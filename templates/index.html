@@ -9,11 +9,11 @@
     <meta property="og:title" content="Free Kundli Generator Online | Vedic Birth Chart">
     <meta property="og:description" content="Generate your Vedic birth chart instantly. Planetary positions, dasha periods, yogas, doshas, remedies, and marriage compatibility matching.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://kundli-2c3b.onrender.com/">
+    <meta property="og:url" content="{{ site_url }}/">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Free Kundli Generator Online">
     <meta name="twitter:description" content="Vedic birth chart with dasha, yogas, doshas, remedies, and Ashtakoota marriage matching.">
-    <link rel="canonical" href="https://kundli-2c3b.onrender.com/">
+    <link rel="canonical" href="{{ site_url }}/">
     <link rel="stylesheet" href="/static/style.css">
     <link rel="manifest" href="/static/manifest.json">
     <meta name="theme-color" content="#f0a030">
@@ -132,7 +132,7 @@
                 </div>
                 <div class="form-group">
                     <label for="category">Category</label>
-                    <select id="category" name="category">
+                    <select id="category" name="category" onchange="showExamples(this.value)">
                         <option value="career">Career/Job</option>
                         <option value="education">Education/Exams</option>
                         <option value="relationship">Relationships/Marriage</option>
@@ -146,6 +146,9 @@
                         <option value="lost">Lost/Missing</option>
                         <option value="general">General Timing</option>
                     </select>
+                </div>
+                <div class="form-group" style="grid-column:1/-1" id="example-chips">
+                    <div class="chip-row" id="chip-row"></div>
                 </div>
                 <div class="form-group">
                     <label for="prashna_location">Your Current Location</label>
@@ -255,6 +258,35 @@ if(localStorage.getItem('kundli-theme') === 'light') document.documentElement.cl
 })();
 
 // PWA install prompt
+// Prashna example questions per category
+var _examples = {
+    career: ["Will I get this job?", "Will I pass the interview?", "Should I change jobs?", "Will I get a promotion?"],
+    education: ["Will I pass my exam?", "Will I clear UPSC/NEET/JEE?", "Will I get into this college?", "Should I pursue higher studies?"],
+    relationship: ["Will he/she propose?", "When will I get married?", "Is this the right person?", "Love or arranged marriage?"],
+    breakup: ["Will my ex come back?", "Will we reconcile?", "Should I forgive and go back?", "Is this separation permanent?"],
+    finance: ["Will I get the loan?", "Will this investment pay off?", "Will I get a salary hike?", "When will finances improve?"],
+    business: ["Will my business succeed?", "Should I start this business?", "Will this deal go through?", "Should I take this risk?"],
+    children: ["Will I conceive?", "Will the pregnancy be safe?", "Will IVF work?", "When will I get pregnant?"],
+    health: ["Will I recover?", "Is this treatment right?", "Will the surgery succeed?", "Will my family member recover?"],
+    travel: ["Will my visa get approved?", "Should I move abroad?", "Will I settle in a foreign country?", "Will this trip go well?"],
+    legal: ["Will I win this case?", "Will the dispute settle?", "Will I get my property back?", "Will the case be resolved?"],
+    lost: ["Will my lost item be found?", "Where is my lost item?", "Will the missing person return?", "Will I recover stolen property?"],
+    general: ["Is this the right time?", "Will I get the property?", "Should I sign this contract?", "Is today auspicious?"]
+};
+function showExamples(cat) {
+    var row = document.getElementById('chip-row');
+    row.innerHTML = '';
+    (_examples[cat] || []).forEach(function(q) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'chip';
+        btn.textContent = q;
+        btn.onclick = function() { document.getElementById('question').value = q; };
+        row.appendChild(btn);
+    });
+}
+showExamples('career');
+
 var deferredPrompt;
 window.addEventListener('beforeinstallprompt', function(e) {
     e.preventDefault();
