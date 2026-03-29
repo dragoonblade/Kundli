@@ -3,36 +3,35 @@
 ## Open
 
 ### Retention & Engagement
-- [ ] **Email capture for dasha change alerts** — collect email on chart generation, notify when Mahadasha or Antardasha changes. Lightweight, no auth needed.
+- [ ] **Email capture for dasha change alerts** — collect email on chart generation, notify when Mahadasha, Antardasha, or Pratyantar changes. Design doc below.
 
-## Completed (47 items)
+#### Design: Dasha Change Alerts
 
-### SEO (6/6)
-Structured data, sitemap, robots.txt, OG/Twitter meta, canonical URLs, keyword titles.
+**Email provider:** Brevo (formerly Sendinblue). 9,000 emails/month free, 100K contacts, Python SDK. SendGrid killed free tier May 2025. Resend (3K/mo) and SMTP2GO (1K/mo) are too low.
 
-### User Friendliness (9/9)
-Auto-detect TZ, recent charts, print CSS, geocoding errors, input hints, match form preservation, match order hint, auto-fill Person 1, chart links in match result.
+**Storage:** Brevo contact list (not local files). Add contacts via Brevo API with custom attributes (next_md_lord, next_md_date, next_ad_lord, next_ad_date, next_pr_lord, next_pr_date, chart_url). Survives deploys, zero local persistence needed. 100K contacts free.
 
-### Features (4/4)
-Event Predictor (6 life events), Prashna Kundli (12 categories, 60 questions), Side Navigation (desktop sidebar), Daily Panchang (5 elements + auspiciousness).
+**Cron:** GitHub Actions scheduled workflow (free, 2K min/month). Runs daily, queries Brevo for contacts with dasha changes within 7 days, sends notification email. Move to Render Cron on paid plan.
 
-### Chatbot (6/6)
-Marriage timing, dasha timing for all topics, 20+ keywords, broadened patterns, word boundaries, explain rashi/graha.
+**Notification frequency:**
+- Mahadasha change: always notify (every few years)
+- Antardasha change: always notify (every few months)
+- Pratyantar change: opt-in only (every 2-4 weeks), off by default, checkbox on form
 
-### Search-Driven Gaps (5/5)
-Love vs arranged, marriage delay, foreign settlement, business vs job, FAQ expansion (18 questions).
+**User flow:**
+1. Optional email field on Kundli form: "Get notified when your dasha changes (optional)"
+2. On chart generation, if email provided, call Brevo API to upsert contact with dasha dates
+3. Result page shows confirmation: "We will email you when your dasha period changes"
+4. Cron job sends email 7 days before change with chart link
+5. Every email has unsubscribe link (Brevo handles this natively)
 
-### Global Audience (5/5)
-Western zodiac comparison, Why Vedic explainer, universal remedies, English default, cultural assumptions removed.
+**Module:** `kundli/alerts.py` (~40 lines), thin wrapper around Brevo REST API. Env var: `BREVO_API_KEY`.
 
-### Analytics (5/5)
-GA4 scaffolding, event tracking (6 events), conversion funnel, demographics, chatbot logging.
+**Privacy:** Email stored in Brevo only. Helper text: "We only use this to notify you about dasha changes. No spam." Brevo handles unsubscribe/GDPR compliance natively.
 
-### UX Polish (3/3)
-Prashna example chips, Prashna share link, hardcoded domain cleanup (SITE_URL).
+**New dependency:** None (use `requests` or `urllib` for Brevo API, no SDK needed).
 
-### Refactoring (4/4)
-calc.py modularized (7 modules), geocoding extracted (geo.py), ChartStore extracted (store.py), chatbot split (routing + builders).
+**Effort:** ~2 hours (form + alerts.py + Brevo integration + GitHub Actions workflow + tests).
 
 ## Out of Scope (for now)
 - Muhurt (Choghadiya, Rahukalam) — same reasoning
