@@ -24,7 +24,7 @@
 ### Features
 - [x] **Event Predictor** — timeline of favorable periods for major life events (marriage, children, career, wealth) based on dasha lord + house lordship. Shows past periods as "strong period for X" and future as "upcoming favorable window." Framed as tendencies, not certainties. Complements Life Areas (what) with timing (when).
 - [x] **Prashna Kundli (Horary)** — third tab on landing page alongside Kundli and Match. Cast a chart for the current moment to answer a specific question. No birth time needed.
-  - [ ] Question categories with example questions (12 categories, ~60 questions):
+  - [x] Question categories with example questions (12 categories, ~60 questions):
     - Career/Job: "Will I get this job?", "Will I pass the interview?", "Should I change jobs?", "Will I get a promotion?", "Will I get a transfer?", "Will I get selected for government job?", "Is AI going to take my job?", "Should I quit my job?"
     - Education/Exams: "Will I pass my exam?", "Will I get into this college?", "Will I clear the competitive exam (UPSC, NEET, JEE)?", "Will I get the scholarship?", "Should I pursue higher studies or work?"
     - Relationships/Marriage: "Will he/she propose?", "Will this relationship work out?", "When will I get married?", "Love marriage or arranged marriage?", "Should I trust this person?", "Is this the right person for me?"
@@ -37,7 +37,7 @@
     - Legal/Disputes: "Will I win this court case?", "Will the dispute settle?", "Will I get my property back?", "Will the police case be resolved?"
     - Lost/Missing: "Will my lost item be found?", "Where is my lost item?", "Will the missing person return?", "Will I recover my stolen property?"
     - General Timing: "Is this the right time to start?", "Will I get the house/property?", "Should I sign this contract?", "Will this plan work out?", "Is today auspicious for this decision?"
-  - [ ] House mapping per category:
+  - [x] House mapping per category:
     - Career/Job: 10th house (profession), 6th (service/competition)
     - Education/Exams: 5th house (intellect), 4th (education), 9th (higher learning)
     - Relationships/Marriage: 7th house (partner), 5th (romance)
@@ -50,12 +50,12 @@
     - Legal/Disputes: 6th house (litigation), 7th (opponent)
     - Lost/Missing: 2nd house (possessions), 4th (home), 7th (thief), ruler of item's house
     - General Timing: relevant house based on question context
-  - [ ] Chart cast for current datetime + user's location
-  - [ ] Check Lagna lord strength, Moon placement, relevant house lord and occupants
-  - [ ] Show favorable/unfavorable indicators with constructive framing
-  - [ ] "Indicators suggest..." not "The answer is yes/no"
-  - [ ] Reuses existing compute_planets, compute_houses, build_planet_house_map
-  - [ ] New /prashna route, prashna form tab, prashna result template
+  - [x] Chart cast for current datetime + user's location
+  - [x] Check Lagna lord strength, Moon placement, relevant house lord and occupants
+  - [x] Show favorable/unfavorable indicators with constructive framing
+  - [x] "Indicators suggest..." not "The answer is yes/no"
+  - [x] Reuses existing compute_planets, compute_houses, build_planet_house_map
+  - [x] New /prashna route, prashna form tab, prashna result template
 - [x] **Side navigation for Full Chart view** — sticky vertical nav on desktop (left sidebar) replacing horizontal scroll nav. Collapses to horizontal on mobile. Shows all 16 section links without scrolling.
 
 ### Refactoring
