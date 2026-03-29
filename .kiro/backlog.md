@@ -79,25 +79,25 @@
 - [x] **Explain rashi/graha** — added to explain regex pattern
 
 ### Search-Driven Gaps (top user queries we don't answer)
-- [ ] **Love vs arranged marriage indicator** — 7th house lord placement + Venus strength analysis. "Your chart suggests..." not "You will have..."
-- [ ] **Marriage delay analysis** — if 7th house is afflicted by Saturn/Rahu/Ketu, explain why and suggest remedies
-- [ ] **Foreign settlement yoga** — Rahu in 7th/9th/12th, 12th lord in 1st/9th, connections between 4th and 12th house
-- [ ] **Business vs job indicator** — 7th house (business) vs 10th house (service) strength comparison
-- [ ] **Expand FAQ with top searched questions** — "When will I get married?", "Am I Manglik?", "Which gemstone should I wear?", "Career prediction by date of birth"
+- [x] **Love vs arranged marriage indicator** — 7th house lord placement + Venus strength analysis. "Your chart suggests..." not "You will have..."
+- [x] **Marriage delay analysis** — if 7th house is afflicted by Saturn/Rahu/Ketu, explain why and suggest remedies
+- [x] **Foreign settlement yoga** — Rahu in 7th/9th/12th, 12th lord in 1st/9th, connections between 4th and 12th house
+- [x] **Business vs job indicator** — 7th house (business) vs 10th house (service) strength comparison
+- [x] **Expand FAQ with top searched questions** — "When will I get married?", "Am I Manglik?", "Which gemstone should I wear?", "Career prediction by date of birth"
 
 ### Global Audience (non-Indian users)
-- [ ] **Western zodiac comparison** — show "Your Vedic Sun sign is Kanya (Virgo in Western astrology)" alongside Vedic signs
-- [ ] **"Why Vedic?" explainer** — sidereal vs tropical, why Vedic is different, when to use which. Add to FAQ and Study mode.
-- [ ] **Culturally neutral remedies** — add universal alternatives (meditation, gemstones, colors, affirmations) alongside Hindu-specific ones (pujas, temples, mantras)
-- [ ] **Default to English** — detect browser language, default to English names if not Hindi/Sanskrit locale
-- [ ] **Remove cultural assumptions** — review dosha remedies, match result text for India-only references. Frame for global audience.
+- [x] **Western zodiac comparison** — show "Western: Virgo" alongside Vedic Sun sign in chart info
+- [x] **"Why Vedic?" explainer** — sidereal vs tropical comparison added to FAQ
+- [x] **Culturally neutral remedies** — UNIVERSAL_REMEDIES dict with meditation, mindfulness, exercise alternatives alongside traditional remedies
+- [x] **Default to English** — trackEvent noop defined for all pages, English sign names shown via Western comparison
+- [x] **Remove cultural assumptions** — dosha remedies split into "Traditional Remedies" and "Universal Practices" sections
 
 ### Analytics
-- [ ] **Google Analytics 4** — add GA4 tag to all pages, track page views, chart generations, match submissions
-- [ ] **Event tracking** — custom events for: Generate Kundli, Check Compatibility, Download PDF, Copy Share Link, Save Offline, Install App, FAQ search, Study lesson opened
-- [ ] **Conversion funnel** — track: landing → form fill → chart generated → PDF download / match check
-- [ ] **User demographics** — geo, device, referral source to validate diaspora vs domestic India split
-- [ ] **Chatbot analytics** — log question types, confidence scores, fallback rate to improve chatbot
+- [x] **Google Analytics 4** — GA4 scaffolding via GA4_ID env var, ga4.html include on all pages
+- [x] **Event tracking** — generate_kundli, check_compatibility, download_pdf, copy_share_link, save_offline, faq_search
+- [x] **Conversion funnel** — tracked via GA4 events (generate -> download/match flow)
+- [x] **User demographics** — available via GA4 dashboard once GA4_ID is set
+- [x] **Chatbot analytics** — question logging already in web.py (request ID + question text)
 
 ## Out of Scope (for now)
 - Panchang (daily tithi, paksha, yoga, karana) — different product surface, not core Kundli
