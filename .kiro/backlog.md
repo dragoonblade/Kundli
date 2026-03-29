@@ -101,7 +101,7 @@
 
 ### Retention & Engagement
 - [ ] **Email capture for dasha change alerts** — collect email on chart generation, notify when Mahadasha or Antardasha changes. Lightweight, no auth needed.
-- [ ] **Daily horoscope / panchang** — daily Moon sign transit reading on the homepage. Brings users back daily. Could be a simple "Today for your Moon sign" card.
+- [x] **Daily horoscope / panchang** — daily Moon sign transit reading on the homepage. Brings users back daily. Could be a simple "Today for your Moon sign" card.
 
 ### UX Polish
 - [x] **Prashna example questions** — show 3-4 clickable question chips per category when dropdown changes. The 60 curated questions from the backlog are the source. Reduces blank-page anxiety.
