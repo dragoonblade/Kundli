@@ -1,8 +1,8 @@
 """Deep life area readings combining multiple houses into cohesive narratives."""
 from kundli.calc import build_planet_house_map, get_aspecting_planets
 from kundli.readings import (
-    HOUSE_THEMES, PLANET_IN_HOUSE, SIMPLE_PLANET_IN_HOUSE,
-    DASHA_HOUSE_INFLUENCE, SIMPLE_DASHA_EFFECTS,
+    HOUSE_THEMES, SIMPLE_PLANET_IN_HOUSE,
+    DASHA_HOUSE_INFLUENCE,
 )
 from kundli.names import PLANET_NAMES, SIGN_LORDS
 

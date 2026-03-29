@@ -279,7 +279,7 @@ def _get_phm(planets, houses, planet_house_map=None):
 
 def _build_love_arranged_answer(planets, houses, planet_names, planet_house_map=None):
     """Analyze love vs arranged marriage indicators."""
-    from kundli.core import SIGN_LORDS_CALC, EXALTATION, OWN_SIGNS, SIGNS, _get
+    from kundli.core import SIGN_LORDS_CALC, EXALTATION, OWN_SIGNS, _get
     phm = _get_phm(planets, houses, planet_house_map)
     venus = _get(planets, "Shukra")
     lord7 = SIGN_LORDS_CALC[houses[6]["sign"]]
@@ -310,7 +310,7 @@ def _build_love_arranged_answer(planets, houses, planet_names, planet_house_map=
 
 def _build_marriage_delay_answer(planets, houses, planet_names, planet_house_map=None):
     """Analyze factors that may delay marriage."""
-    from kundli.core import SIGN_LORDS_CALC, SIGNS, _get
+    from kundli.core import SIGN_LORDS_CALC, _get
     from kundli.planets import get_aspecting_planets
     phm = _get_phm(planets, houses, planet_house_map)
     seventh_sign = houses[6]["sign"]
@@ -367,7 +367,7 @@ def _build_foreign_settlement_answer(planets, houses, planet_names, planet_house
 
 def _build_business_vs_job_answer(planets, houses, planet_names, planet_house_map=None):
     """Compare business vs service indicators."""
-    from kundli.core import SIGN_LORDS_CALC, EXALTATION, OWN_SIGNS
+    from kundli.core import SIGN_LORDS_CALC
     phm = _get_phm(planets, houses, planet_house_map)
     lord7 = SIGN_LORDS_CALC[houses[6]["sign"]]
     lord10 = SIGN_LORDS_CALC[houses[9]["sign"]]

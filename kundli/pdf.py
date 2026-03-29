@@ -8,7 +8,6 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import mm
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, HRFlowable
 from reportlab.graphics.shapes import Drawing, Rect, String, Line
-from reportlab.graphics import renderPDF
 
 _STYLES = getSampleStyleSheet()
 _TITLE = ParagraphStyle("KTitle", parent=_STYLES["Heading1"], fontSize=20, spaceAfter=2, textColor=colors.HexColor("#8B4513"))

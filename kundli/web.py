@@ -40,7 +40,7 @@ from kundli.remedies import DOSHA_REMEDIES, PLANET_REMEDIES, UNIVERSAL_REMEDIES
 from kundli.ashtakavarga import compute_ashtakavarga
 from kundli.insights import generate_daily_insights
 from kundli.predictor import compute_event_periods
-from kundli.prashna import CATEGORIES as PRASHNA_CATEGORIES, analyze_prashna
+from kundli.prashna import analyze_prashna
 
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address

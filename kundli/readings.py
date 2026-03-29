@@ -2,7 +2,6 @@
 import json
 import os
 
-from kundli.calc import SIGNS
 from kundli.names import SIGN_LORDS
 
 _DATA_PATH = os.path.join(os.path.dirname(__file__), "readings_data.json")
