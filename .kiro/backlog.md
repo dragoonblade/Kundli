@@ -22,8 +22,8 @@
 - [x] **Chart links in match result** — "View Full Chart" link for each person in comparison cards
 
 ### Features
-- [ ] **Event Predictor** — timeline of favorable periods for major life events (marriage, children, career, wealth) based on dasha lord + house lordship. Shows past periods as "strong period for X" and future as "upcoming favorable window." Framed as tendencies, not certainties. Complements Life Areas (what) with timing (when).
-- [ ] **Prashna Kundli (Horary)** — third tab on landing page alongside Kundli and Match. Cast a chart for the current moment to answer a specific question. No birth time needed.
+- [x] **Event Predictor** — timeline of favorable periods for major life events (marriage, children, career, wealth) based on dasha lord + house lordship. Shows past periods as "strong period for X" and future as "upcoming favorable window." Framed as tendencies, not certainties. Complements Life Areas (what) with timing (when).
+- [x] **Prashna Kundli (Horary)** — third tab on landing page alongside Kundli and Match. Cast a chart for the current moment to answer a specific question. No birth time needed.
   - [ ] Question categories with example questions (12 categories, ~60 questions):
     - Career/Job: "Will I get this job?", "Will I pass the interview?", "Should I change jobs?", "Will I get a promotion?", "Will I get a transfer?", "Will I get selected for government job?", "Is AI going to take my job?", "Should I quit my job?"
     - Education/Exams: "Will I pass my exam?", "Will I get into this college?", "Will I clear the competitive exam (UPSC, NEET, JEE)?", "Will I get the scholarship?", "Should I pursue higher studies or work?"
@@ -56,7 +56,7 @@
   - [ ] "Indicators suggest..." not "The answer is yes/no"
   - [ ] Reuses existing compute_planets, compute_houses, build_planet_house_map
   - [ ] New /prashna route, prashna form tab, prashna result template
-- [ ] **Side navigation for Full Chart view** — sticky vertical nav on desktop (left sidebar) replacing horizontal scroll nav. Collapses to horizontal on mobile. Shows all 15 section links without scrolling.
+- [x] **Side navigation for Full Chart view** — sticky vertical nav on desktop (left sidebar) replacing horizontal scroll nav. Collapses to horizontal on mobile. Shows all 16 section links without scrolling.
 
 ### Refactoring
 - [x] **Modularize calc.py** — split 590-line monolith into 7 focused modules:
