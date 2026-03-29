@@ -39,6 +39,7 @@ from kundli.insights import generate_daily_insights
 from kundli.geo import get_coordinates
 from kundli.predictor import compute_event_periods
 from kundli.prashna import analyze_prashna
+from kundli.panchang import compute_panchang
 
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -136,16 +137,25 @@ def health():
     return jsonify(checks), status_code
 
 
+def _get_panchang():
+    """Compute today's panchang."""
+    from kundli.core import to_julian
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
+    jd = to_julian(now, 0)
+    panchang = compute_panchang(jd)
+    return panchang, now.strftime("%d %B %Y")
+
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "GET":
-        # Handle shareable link: /?d=DATE&t=TIME&l=LOCATION&z=TZ
         if request.args.get("d"):
             return _generate_chart(
                 request.args.get("d"), request.args.get("t", ""),
                 request.args.get("l", ""), request.args.get("z", "5.5"),
             )
-        return render_template("index.html", last_chart=flask_session.get("last_chart"))
+        panchang, today_str = _get_panchang()
+        return render_template("index.html", last_chart=flask_session.get("last_chart"), panchang=panchang, today_str=today_str)
 
     return _generate_chart(
         request.form.get("date", "").strip(),

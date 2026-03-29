@@ -1,0 +1,23 @@
+{% if panchang %}
+<div class="card panchang-card">
+    <div class="panchang-header">
+        <span>📅 Today's Panchang</span>
+        <span class="muted" style="font-size:0.8rem">{{ today_str }}</span>
+    </div>
+    <div class="panchang-grid">
+        <div><span class="label">Tithi</span><span class="value">{{ panchang.tithi }} ({{ panchang.paksha }})</span></div>
+        <div><span class="label">Nakshatra</span><span class="value">{{ panchang.nakshatra }}</span></div>
+        <div><span class="label">Yoga</span><span class="value">{{ panchang.yoga }}</span></div>
+        <div><span class="label">Karana</span><span class="value">{{ panchang.karana }}</span></div>
+        <div><span class="label">Moon Sign</span><span class="value">{{ panchang.moon_sign }}</span></div>
+    </div>
+    <div class="panchang-auspicious panchang-{{ panchang.auspicious }}">
+        {% if panchang.auspicious == 'good' %}🟢{% elif panchang.auspicious == 'caution' %}🟡{% else %}⚪{% endif %}
+        {{ panchang.auspicious_text }}
+    </div>
+    <div class="explainer" tabindex="0" onclick="this.classList.toggle('open')" onkeydown="if(event.key==='Enter')this.classList.toggle('open')">
+        <span class="explainer-toggle" style="font-size:0.75rem">What is Panchang? ▾</span>
+        <p class="explainer-text">Panchang means "five limbs" and tracks five daily astronomical elements: Tithi (lunar day), Nakshatra (Moon's star), Yoga (Sun-Moon combination), Karana (half-tithi), and Paksha (lunar phase). It is used to determine auspicious timing for important activities.</p>
+    </div>
+</div>
+{% endif %}

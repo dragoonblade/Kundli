@@ -274,3 +274,29 @@ class TestPrashnaAnalysis:
         result = analyze_prashna(PLANETS, HOUSES, "general")
         assert result["lagna"] in SIGNS
         assert result["moon_sign"] in SIGNS
+
+
+class TestPanchang:
+    def test_compute_panchang(self):
+        from kundli.panchang import compute_panchang
+        result = compute_panchang(JD)
+        assert "tithi" in result
+        assert "nakshatra" in result
+        assert "yoga" in result
+        assert "karana" in result
+        assert "paksha" in result
+        assert "moon_sign" in result
+        assert "auspicious" in result
+        assert result["auspicious"] in ("good", "caution", "neutral")
+
+    def test_tithi_in_range(self):
+        from kundli.panchang import compute_panchang, TITHI_NAMES
+        result = compute_panchang(JD)
+        assert result["tithi"] in TITHI_NAMES
+        assert 1 <= result["tithi_num"] <= 15
+
+    def test_nakshatra_valid(self):
+        from kundli.panchang import compute_panchang
+        from kundli.core import NAKSHATRAS
+        result = compute_panchang(JD)
+        assert result["nakshatra"] in NAKSHATRAS

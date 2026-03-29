@@ -38,6 +38,8 @@
             <button class="tab-btn" id="tab-prashna" onclick="switchTab('prashna')">🔮 Prashna</button>
         </div>
 
+        {% include 'includes/panchang_card.html' %}
+
         {% if error %}
         <div class="error">{{ error }}</div>
         {% endif %}

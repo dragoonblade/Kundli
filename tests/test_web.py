@@ -633,3 +633,17 @@ class TestSideNavigation:
         body = r.data.decode()
         assert "section-nav" in body
         assert "sec-events" in body
+
+
+class TestPanchang:
+    def test_index_has_panchang(self, client):
+        r = client.get("/")
+        body = r.data.decode()
+        assert "Panchang" in body
+        assert "Tithi" in body
+        assert "Nakshatra" in body
+
+    def test_panchang_has_auspicious(self, client):
+        r = client.get("/")
+        body = r.data.decode()
+        assert "🟢" in body or "🟡" in body or "⚪" in body
