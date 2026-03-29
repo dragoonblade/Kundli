@@ -23,8 +23,13 @@ Kundli is a web application that generates Vedic birth charts using the Swiss Ep
 - Ashtakoota Gun Milan (36-point marriage compatibility)
 - PDF export for birth chart and match reports
 - 12-lesson Study Mode teaching users to read charts
-- FAQ with 6 categories
+- FAQ with 6 categories, 18 questions
 - REST API at /api/chart
+- Marriage timing analysis via chatbot
+- Love vs arranged marriage, foreign settlement, business vs job indicators
+- Culturally neutral universal remedies alongside traditional ones
+- Western zodiac comparison shown alongside Vedic signs
+- Google Analytics 4 integration (optional, via GA4_ID env var)
 
 ## URLs
 

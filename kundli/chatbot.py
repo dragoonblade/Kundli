@@ -43,6 +43,10 @@ DASHA_KEYWORDS = ["dasha", "mahadasha", "period", "current period", "phase", "ti
 # General question patterns
 GENERAL_PATTERNS = [
     (r"(when.*marr|marriage.*timing|marriage.*when|when.*get.*married|vivah.*kab|shadi.*kab)", "marriage_timing"),
+    (r"(love.*marr|arranged.*marr|love.*arranged)", "love_arranged"),
+    (r"(marriage.*delay|late.*marr|delay.*marr|why.*not.*married)", "marriage_delay"),
+    (r"(foreign.*settl|settle.*abroad|foreign.*yoga|move.*abroad.*perman)", "foreign_settlement"),
+    (r"(business.*job|job.*business|own.*business|service.*business|start.*business.*or)", "business_vs_job"),
     (r"(good|bad|lucky|unlucky)\s*(time|period|phase)", "timing"),
     (r"(should i|can i|will i|will my|will he|will she|will this|will the|is it good|do i|does)", "advice"),
     (r"(compatible|compatibility|match)", "compatibility"),
@@ -265,6 +269,137 @@ def _build_marriage_timing_answer(dashas, planets, houses, current_dasha, planet
     return answer
 
 
+def _get_phm(planets, houses, planet_house_map=None):
+    """Get or build planet_house_map."""
+    if planet_house_map:
+        return planet_house_map
+    from kundli.planets import build_planet_house_map
+    return build_planet_house_map(planets, houses)
+
+
+def _build_love_arranged_answer(planets, houses, planet_names, planet_house_map=None):
+    """Analyze love vs arranged marriage indicators."""
+    from kundli.core import SIGN_LORDS_CALC, EXALTATION, OWN_SIGNS, SIGNS, _get
+    phm = _get_phm(planets, houses, planet_house_map)
+    venus = _get(planets, "Shukra")
+    lord7 = SIGN_LORDS_CALC[houses[6]["sign"]]
+    lord5 = SIGN_LORDS_CALC[houses[4]["sign"]]
+    rahu_house = phm.get("Rahu")
+    venus_strong = venus["sign"] in (EXALTATION.get("Shukra", ""), *OWN_SIGNS.get("Shukra", []))
+    lord5_house = phm.get(lord5)
+    lord7_house = phm.get(lord7)
+    indicators = []
+    if lord5_house == lord7_house:
+        indicators.append("5th lord (romance) and 7th lord (marriage) are in the same house, suggesting love leading to marriage")
+    if rahu_house == 7:
+        indicators.append("Rahu in 7th house suggests an unconventional or cross-cultural partnership")
+    if venus_strong:
+        indicators.append(f"Venus is strong in {venus['sign']}, supporting romantic fulfillment")
+    if phm.get("Shukra") in (5, 7):
+        indicators.append(f"Venus in House {phm['Shukra']} strengthens romantic connections")
+    answer = "**Love vs Arranged Marriage Indicators**\n\n"
+    answer += f"7th house lord: **{lord7} ({planet_names.get(lord7, lord7)})** in House {lord7_house}\n"
+    answer += f"5th house lord: **{lord5} ({planet_names.get(lord5, lord5)})** in House {lord5_house}\n\n"
+    if indicators:
+        answer += "Your chart suggests:\n" + "\n".join(f"- {i}" for i in indicators) + "\n\n"
+    else:
+        answer += "No strong indicators either way. Both paths are equally supported.\n\n"
+    answer += "These are tendencies, not certainties. Personal choice always matters most."
+    return answer
+
+
+def _build_marriage_delay_answer(planets, houses, planet_names, planet_house_map=None):
+    """Analyze factors that may delay marriage."""
+    from kundli.core import SIGN_LORDS_CALC, SIGNS, _get
+    from kundli.planets import get_aspecting_planets
+    phm = _get_phm(planets, houses, planet_house_map)
+    seventh_sign = houses[6]["sign"]
+    lord7 = SIGN_LORDS_CALC[seventh_sign]
+    lord7_house = phm.get(lord7)
+    aspecting = get_aspecting_planets(planets, seventh_sign)
+    factors = []
+    if phm.get("Shani") == 7 or "Shani" in aspecting:
+        factors.append("Saturn influences the 7th house, often indicating a mature, deliberate approach to marriage")
+    if phm.get("Rahu") == 7 or "Rahu" in aspecting:
+        factors.append("Rahu's influence on the 7th house suggests unconventional timing or partner selection")
+    if phm.get("Ketu") == 7 or "Ketu" in aspecting:
+        factors.append("Ketu in the 7th house indicates a spiritual or detached approach to partnerships")
+    if lord7_house in (6, 8, 12):
+        factors.append(f"7th lord {lord7} is in House {lord7_house} (a challenging house), which can delay but also deepen the eventual bond")
+    sun = _get(planets, "Surya")
+    venus = _get(planets, "Shukra")
+    if abs(sun["longitude"] - venus["longitude"]) < 10:
+        factors.append("Venus is close to the Sun (combust), which may temporarily dim relationship energy")
+    answer = "**Marriage Timing Factors**\n\n"
+    if factors:
+        answer += "Your chart shows these influences:\n" + "\n".join(f"- {i}" for i in factors) + "\n\n"
+        answer += "These placements often indicate a more thoughtful path to marriage, not denial of it. Late marriages are frequently the most stable."
+    else:
+        answer += "No major delay factors found. The 7th house and its lord are relatively unafflicted."
+    return answer
+
+
+def _build_foreign_settlement_answer(planets, houses, planet_names, planet_house_map=None):
+    """Analyze foreign settlement yoga indicators."""
+    from kundli.core import SIGN_LORDS_CALC
+    phm = _get_phm(planets, houses, planet_house_map)
+    lord12 = SIGN_LORDS_CALC[houses[11]["sign"]]
+    lord4 = SIGN_LORDS_CALC[houses[3]["sign"]]
+    lord9 = SIGN_LORDS_CALC[houses[8]["sign"]]
+    indicators = []
+    rahu_house = phm.get("Rahu")
+    if rahu_house in (7, 9, 12):
+        indicators.append(f"Rahu in House {rahu_house}, a classic indicator of foreign connections")
+    if phm.get(lord12) in (1, 9):
+        indicators.append(f"12th lord ({lord12}) in House {phm[lord12]}, linking foreign lands to self/fortune")
+    if phm.get(lord4) == 12 or phm.get(lord12) == 4:
+        indicators.append("Connection between 4th house (homeland) and 12th house (foreign lands)")
+    if phm.get(lord9) in (3, 9, 12):
+        indicators.append(f"9th lord ({lord9}) supports long-distance travel and foreign residence")
+    answer = "**Foreign Settlement Yoga Analysis**\n\n"
+    if indicators:
+        answer += "Your chart shows these foreign settlement indicators:\n" + "\n".join(f"- {i}" for i in indicators) + "\n\n"
+        answer += f"Strength: {len(indicators)} of 4 indicators present. " + ("Strong" if len(indicators) >= 3 else "Moderate" if len(indicators) >= 2 else "Mild") + " foreign settlement yoga."
+    else:
+        answer += "No strong foreign settlement indicators found. Your chart favors staying closer to your place of birth."
+    return answer
+
+
+def _build_business_vs_job_answer(planets, houses, planet_names, planet_house_map=None):
+    """Compare business vs service indicators."""
+    from kundli.core import SIGN_LORDS_CALC, EXALTATION, OWN_SIGNS
+    phm = _get_phm(planets, houses, planet_house_map)
+    lord7 = SIGN_LORDS_CALC[houses[6]["sign"]]
+    lord10 = SIGN_LORDS_CALC[houses[9]["sign"]]
+    biz_score, job_score = 0, 0
+    # 7th house strength (business)
+    if phm.get(lord7) in (1, 4, 7, 10):
+        biz_score += 2
+    biz_planets = [p for p in planets if phm.get(p["planet"]) == 7 and p["planet"] not in ("Rahu", "Ketu")]
+    biz_score += len(biz_planets)
+    # 10th house strength (service)
+    if phm.get(lord10) in (1, 4, 7, 10):
+        job_score += 2
+    job_planets = [p for p in planets if phm.get(p["planet"]) == 10 and p["planet"] not in ("Rahu", "Ketu")]
+    job_score += len(job_planets)
+    # Mercury/Jupiter boost for business
+    if phm.get("Budh") in (7, 10, 11):
+        biz_score += 1
+    if phm.get("Guru") in (7, 9, 11):
+        biz_score += 1
+    answer = "**Business vs Job Analysis**\n\n"
+    answer += f"7th house (business) lord: **{lord7}** in House {phm.get(lord7)} (score: {biz_score})\n"
+    answer += f"10th house (career) lord: **{lord10}** in House {phm.get(lord10)} (score: {job_score})\n\n"
+    if biz_score > job_score:
+        answer += "Your chart shows stronger indicators for **independent business or partnerships**."
+    elif job_score > biz_score:
+        answer += "Your chart shows stronger indicators for **professional service or employment**."
+    else:
+        answer += "Both paths are equally supported. You could succeed in either."
+    answer += "\n\nThis is a tendency, not a rule. Many successful entrepreneurs have strong 10th houses and vice versa."
+    return answer
+
+
 def _build_strengths(readings):
     parts = ["**Your chart's strengths:**\n"]
     for r in readings:
@@ -380,6 +515,14 @@ def rule_based_answer(question, chart_context):
         return _build_manglik_answer(planets, readings), 0.9
     if general == "marriage_timing":
         return _build_marriage_timing_answer(dashas, planets, houses, current_dasha, planet_names, chart_context.get("tz_offset", 5.5)), 0.9
+    if general == "love_arranged":
+        return _build_love_arranged_answer(planets, houses, planet_names, planet_house_map=chart_context.get("planet_house_map")), 0.9
+    if general == "marriage_delay":
+        return _build_marriage_delay_answer(planets, houses, planet_names, planet_house_map=chart_context.get("planet_house_map")), 0.9
+    if general == "foreign_settlement":
+        return _build_foreign_settlement_answer(planets, houses, planet_names, planet_house_map=chart_context.get("planet_house_map")), 0.9
+    if general == "business_vs_job":
+        return _build_business_vs_job_answer(planets, houses, planet_names, planet_house_map=chart_context.get("planet_house_map")), 0.9
     if general == "strengths":
         return _build_strengths(readings), 0.8
     if general == "challenges":

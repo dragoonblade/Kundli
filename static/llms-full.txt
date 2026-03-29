@@ -56,11 +56,29 @@ Kundli is a free, open-source Vedic Birth Chart (Kundli) generator web applicati
 
 ## Technical Details
 - Python 3.12, Flask, Swiss Ephemeris (pyswisseph)
-- 190 tests, 94% code coverage
+- 252 tests, 83% code coverage
 - Docker deployment, non-root container
 - Rate limiting (60/min default)
 - Redis-backed chart store (optional)
 - Security headers (HSTS, CSP, X-Frame-Options)
+- Google Analytics 4 integration (optional, via GA4_ID env var)
+
+## Chatbot
+The built-in chatbot answers questions about the user's chart:
+- Marriage timing (7th lord dasha periods, Venus/Jupiter windows)
+- Career, exam, relationship, finance timing via house lord dasha analysis
+- Manglik dosha check
+- Love vs arranged marriage indicators
+- Marriage delay analysis
+- Foreign settlement yoga analysis
+- Business vs job indicators
+- Chart summary, strengths, challenges
+- Explain concepts (lagna, dasha, nakshatra, houses, planets, signs, rashi)
+
+## Global Audience
+- Western zodiac comparison shown alongside Vedic signs
+- Culturally neutral universal remedies alongside traditional Hindu remedies
+- "Why Vedic?" explainer in FAQ comparing sidereal vs tropical systems
 
 ## API Usage
 POST /api/chart

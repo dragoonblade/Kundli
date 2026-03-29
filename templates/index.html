@@ -21,6 +21,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="/static/icon-192.png">
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Kundli","description":"Free Vedic birth chart generator with planetary positions, dasha, yogas, doshas, and marriage compatibility matching.","applicationCategory":"Lifestyle","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+    {% include 'includes/ga4.html' %}
 </head>
 <body>
     <div class="container">
@@ -151,6 +152,8 @@ if(new URLSearchParams(location.search).get('tab') === 'match') switchTab('match
 {% endif %}
 document.querySelectorAll('form').forEach(function(f) {
     f.addEventListener('submit', function() {
+        var isMatch = f.id === 'form-match';
+        trackEvent(isMatch ? 'check_compatibility' : 'generate_kundli');
         var btn = f.querySelector('button[type="submit"]');
         if (btn) { btn.disabled = true; btn.textContent = 'Loading…'; btn.style.opacity = '0.7'; }
         document.querySelectorAll('.error').forEach(function(el) { el.remove(); });

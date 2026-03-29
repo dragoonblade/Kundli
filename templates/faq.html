@@ -13,7 +13,8 @@
     <link rel="canonical" href="https://kundli-2c3b.onrender.com/faq">
     <link rel="stylesheet" href="/static/style.css">
     <meta name="theme-color" content="#f0a030">
-    <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a Kundli?","acceptedAnswer":{"@type":"Answer","text":"A Kundli is a Vedic birth chart mapping planetary positions at the time of birth, used to understand personality, life events, and timing."}},{"@type":"Question","name":"What is a good Gun Milan score?","acceptedAnswer":{"@type":"Answer","text":"Out of 36 total, below 18 is not recommended, 18-24 is average, 24-32 is good, above 32 is excellent."}},{"@type":"Question","name":"Am I Manglik?","acceptedAnswer":{"@type":"Answer","text":"You are Manglik if Mars is in houses 1, 2, 4, 7, 8, or 12 in your birth chart. Effects reduce after age 28."}},{"@type":"Question","name":"What is Sade Sati?","acceptedAnswer":{"@type":"Answer","text":"Sade Sati is a 7.5-year period when Saturn transits through the 12th, 1st, and 2nd signs from your natal Moon."}}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a Kundli?","acceptedAnswer":{"@type":"Answer","text":"A Kundli is a Vedic birth chart mapping planetary positions at the time of birth, used to understand personality, life events, and timing."}},{"@type":"Question","name":"What is a good Gun Milan score?","acceptedAnswer":{"@type":"Answer","text":"Out of 36 total, below 18 is not recommended, 18-24 is average, 24-32 is good, above 32 is excellent."}},{"@type":"Question","name":"Am I Manglik?","acceptedAnswer":{"@type":"Answer","text":"You are Manglik if Mars is in houses 1, 2, 4, 7, 8, or 12 in your birth chart. Effects reduce after age 28."}},{"@type":"Question","name":"What is Sade Sati?","acceptedAnswer":{"@type":"Answer","text":"Sade Sati is a 7.5-year period when Saturn transits through the 12th, 1st, and 2nd signs from your natal Moon."}},{"@type":"Question","name":"When will I get married?","acceptedAnswer":{"@type":"Answer","text":"Marriage timing depends on the 7th house lord dasha period, Venus and Jupiter transits, and the overall strength of the 7th house."}},{"@type":"Question","name":"Which gemstone should I wear?","acceptedAnswer":{"@type":"Answer","text":"The right gemstone depends on which planet you want to strengthen. Never wear Blue Sapphire or Cat's Eye without expert consultation."}},{"@type":"Question","name":"Can astrology predict my career?","acceptedAnswer":{"@type":"Answer","text":"Your 10th house, its lord, and planets placed there indicate career tendencies. The current dasha period shows which professional themes are active."}},{"@type":"Question","name":"Why use Vedic astrology instead of Western?","acceptedAnswer":{"@type":"Answer","text":"Vedic astrology tracks actual star positions using the sidereal zodiac and includes the Dasha timing system, Nakshatras, and divisional charts."}}]}</script>
+    {% include 'includes/ga4.html' %}
 </head>
 <body>
     <div class="container">
@@ -24,7 +25,7 @@
         </header>
 
         <div class="form-group" style="margin-bottom:var(--space-md)">
-            <input type="text" id="faq-search" placeholder="Search questions..." oninput="filterFAQ(this.value)" style="width:100%">
+            <input type="text" id="faq-search" placeholder="Search questions..." oninput="filterFAQ(this.value)" onblur="if(this.value) trackEvent('faq_search', {query: this.value})" style="width:100%">
         </div>
 
         <div id="faq-list">
@@ -43,6 +44,14 @@
                     <div class="la-header"><h3>What is the difference between Vedic and Western astrology?</h3><span class="la-chevron">▾</span></div>
                     <div class="la-body"><p>Vedic astrology uses the sidereal zodiac (based on actual star positions), while Western astrology uses the tropical zodiac (based on seasons). The difference is about 24 degrees, called Ayanamsa. This means your Vedic sign may differ from your Western sign.</p></div>
                 </div>
+                <div class="la-card faq-item" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+                    <div class="la-header"><h3>Why use Vedic astrology instead of Western?</h3><span class="la-chevron">▾</span></div>
+                    <div class="la-body"><p>Vedic (Jyotish) astrology tracks actual star positions using the sidereal zodiac. Western astrology uses the tropical zodiac tied to seasons. Due to precession, these systems have drifted apart by about 24 degrees, so your Vedic Sun sign may be one sign earlier than your Western sign. Vedic astrology also uses the Dasha system for timing predictions, Nakshatras (27 lunar mansions) for deeper personality analysis, and divisional charts for specific life areas. Neither system is better. They offer different perspectives. Many practitioners use both.</p></div>
+                </div>
+                <div class="la-card faq-item" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+                    <div class="la-header"><h3>Can astrology predict my career?</h3><span class="la-chevron">▾</span></div>
+                    <div class="la-body"><p>Your 10th house, its lord, and planets placed there indicate career tendencies. The current dasha period shows which professional themes are active. Generate your Kundli and check the Career life area or ask the chatbot about your career for a detailed analysis.</p></div>
+                </div>
             </section>
 
             <section class="card faq-cat">
@@ -55,6 +64,14 @@
                     <div class="la-header"><h3>Does a low score mean the marriage will fail?</h3><span class="la-chevron">▾</span></div>
                     <div class="la-body"><p>No. Many successful marriages have low Gun Milan scores. Compatibility is built through communication, mutual respect, and shared values. The score is one input, not a verdict. Use it as guidance, not a decision maker.</p></div>
                 </div>
+                <div class="la-card faq-item" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+                    <div class="la-header"><h3>When will I get married?</h3><span class="la-chevron">▾</span></div>
+                    <div class="la-body"><p>Marriage timing depends on the 7th house lord's dasha period, Venus and Jupiter transits, and the overall strength of the 7th house. Generate your Kundli and ask the chatbot "when will I get married?" for a personalized timing analysis based on your dasha periods.</p></div>
+                </div>
+                <div class="la-card faq-item" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+                    <div class="la-header"><h3>Does person order matter in matching?</h3><span class="la-chevron">▾</span></div>
+                    <div class="la-body"><p>Yes. In traditional Ashtakoota matching, Person 1's Varna is compared against Person 2's. If Person 1's Varna is equal to or higher than Person 2's, full points are awarded. Swapping the order may change the Varna score by 1 point.</p></div>
+                </div>
             </section>
 
             <section class="card faq-cat">
@@ -66,6 +83,10 @@
                 <div class="la-card faq-item" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
                     <div class="la-header"><h3>What is Sade Sati?</h3><span class="la-chevron">▾</span></div>
                     <div class="la-body"><p>Sade Sati is a 7.5-year period when Saturn transits through the 12th, 1st, and 2nd signs from your natal Moon. It is a period of challenges that builds resilience, discipline, and lasting achievements. It occurs roughly every 30 years.</p></div>
+                </div>
+                <div class="la-card faq-item" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+                    <div class="la-header"><h3>Which gemstone should I wear?</h3><span class="la-chevron">▾</span></div>
+                    <div class="la-body"><p>The right gemstone depends on which planet you want to strengthen. Generally, strengthen your Lagna lord or the lord of a beneficial house. Never wear Blue Sapphire or Cat's Eye without expert consultation. Generate your chart to see your planetary strengths, then consult an astrologer for personalized gemstone advice.</p></div>
                 </div>
             </section>
 

@@ -17,6 +17,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="/static/icon-192.png">
+    {% include 'includes/ga4.html' %}
 </head>
 <body>
     <div class="container result-page">
@@ -73,9 +74,9 @@
         <div data-view="full">{% include 'includes/sec_ashtakavarga.html' %}</div>
 
         <footer>
-            <a href="/pdf" class="btn-pdf">📄 Download PDF</a>
-            <button class="btn-share" onclick="saveChartLocally()">💾 Save Offline</button>
-            <button class="btn-share" onclick="navigator.clipboard.writeText(window.location.origin+'{{ share_url|safe }}').then(()=>this.textContent='✓ Copied!')">🔗 Copy Share Link</button>
+            <a href="/pdf" class="btn-pdf" onclick="trackEvent('download_pdf')">📄 Download PDF</a>
+            <button class="btn-share" onclick="trackEvent('save_offline');saveChartLocally()">💾 Save Offline</button>
+            <button class="btn-share" onclick="trackEvent('copy_share_link');navigator.clipboard.writeText(window.location.origin+'{{ share_url|safe }}').then(()=>this.textContent='✓ Copied!')">🔗 Copy Share Link</button>
             <p>Calculations powered by Swiss Ephemeris · For educational purposes only</p>
         </footer>
     </div>

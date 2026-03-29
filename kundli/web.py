@@ -36,7 +36,7 @@ from kundli.chatbot import chat as chatbot_chat
 from kundli.match import compute_ashtakoota
 from kundli.lifeareas import generate_life_areas
 from kundli.pdf import generate_kundli_pdf, generate_match_pdf
-from kundli.remedies import DOSHA_REMEDIES, PLANET_REMEDIES
+from kundli.remedies import DOSHA_REMEDIES, PLANET_REMEDIES, UNIVERSAL_REMEDIES
 from kundli.ashtakavarga import compute_ashtakavarga
 from kundli.insights import generate_daily_insights
 
@@ -49,6 +49,12 @@ if app.secret_key == "change-me-in-production":  # nosec B105
     logging.warning("KUNDLI_SECRET_KEY not set. Using insecure fallback. Set it in production.")
 
 limiter = Limiter(get_remote_address, app=app, default_limits=["60 per minute"], storage_uri="memory://")
+GA4_ID = os.environ.get("GA4_ID", "")
+
+
+@app.context_processor
+def _inject_globals():
+    return {"ga4_id": GA4_ID, "universal_remedies": UNIVERSAL_REMEDIES}
 
 
 @limiter.request_filter
@@ -63,7 +69,7 @@ def _security_headers(response):
     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
     if not app.debug:
         response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
-        response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"
+        response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://www.google-analytics.com;"
     return response
 
 

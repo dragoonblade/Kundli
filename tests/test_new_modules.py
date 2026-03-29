@@ -185,6 +185,18 @@ class TestRemedies:
             assert all(k in remedy for k in ["gemstone", "mantra", "day", "donation", "practice"]), f"{planet} missing keys"
 
 
+class TestUniversalRemediesData:
+    def test_keys_match_dosha_remedies(self):
+        from kundli.remedies import UNIVERSAL_REMEDIES
+        for key in UNIVERSAL_REMEDIES:
+            assert key in DOSHA_REMEDIES, f"{key} not in DOSHA_REMEDIES"
+
+    def test_non_empty(self):
+        from kundli.remedies import UNIVERSAL_REMEDIES
+        for name, items in UNIVERSAL_REMEDIES.items():
+            assert len(items) >= 3, f"{name} has too few universal remedies"
+
+
 class TestLifeAreas:
     def setup_method(self):
         moon = next(p for p in PLANETS if p["planet"] == "Chandra")

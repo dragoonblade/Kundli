@@ -167,3 +167,19 @@ class TestChatRouting:
     def test_closing(self):
         answer = chat("thanks bye", None)
         assert len(answer) > 10
+
+    def test_love_arranged(self):
+        answer = chat("will I have love marriage or arranged?", CTX)
+        assert "7th house" in answer.lower() or "love" in answer.lower()
+
+    def test_marriage_delay(self):
+        answer = chat("why is my marriage delayed?", CTX)
+        assert "marriage" in answer.lower() or "7th" in answer.lower()
+
+    def test_foreign_settlement(self):
+        answer = chat("will I settle abroad?", CTX)
+        assert "foreign" in answer.lower() or "settlement" in answer.lower()
+
+    def test_business_vs_job(self):
+        answer = chat("should I do business or job?", CTX)
+        assert "business" in answer.lower() or "7th house" in answer.lower()

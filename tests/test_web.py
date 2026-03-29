@@ -529,3 +529,38 @@ class TestYearOutOfRange:
         r = client.post("/", data={**KUNDLI_FORM, "date": "0000-06-15"})
         body = r.data.decode()
         assert "invalid" in body.lower() or "error" in body.lower()
+
+
+class TestGa4:
+    def test_ga4_not_present_by_default(self, client):
+        r = client.get("/")
+        assert "googletagmanager" not in r.data.decode()
+
+    def test_trackEvent_always_defined(self, client):
+        r = client.get("/")
+        assert "trackEvent" in r.data.decode()
+
+
+class TestUniversalRemedies:
+    def test_result_has_remedy_labels(self, client):
+        r = client.post("/", data=KUNDLI_FORM)
+        body = r.data.decode()
+        # Either traditional or universal should appear if any dosha is present
+        assert "Traditional Remedies" in body or "Universal Practices" in body or "dosha-clear" in body
+
+
+class TestWesternZodiac:
+    def test_result_has_western_sign(self, client):
+        r = client.post("/", data=KUNDLI_FORM)
+        body = r.data.decode()
+        assert "Western:" in body
+
+
+class TestExpandedFaq:
+    def test_faq_has_new_questions(self, client):
+        r = client.get("/faq")
+        body = r.data.decode()
+        assert "When will I get married?" in body
+        assert "Which gemstone should I wear?" in body
+        assert "Why use Vedic" in body
+        assert "career" in body.lower()

@@ -1,0 +1,12 @@
+{% if ga4_id %}
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ ga4_id }}"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '{{ ga4_id }}');
+function trackEvent(name, params) { gtag('event', name, params || {}); }
+</script>
+{% else %}
+<script>function trackEvent(){}</script>
+{% endif %}

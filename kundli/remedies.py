@@ -89,3 +89,24 @@ PLANET_REMEDIES = {
         "practice": "Worship Lord Ganesha, practice meditation and detachment",
     },
 }
+
+UNIVERSAL_REMEDIES = {
+    "Manglik Dosha": [
+        "Practice calming meditation or breathwork to channel Mars energy constructively",
+        "Wear red or coral-colored clothing on Tuesdays as a mindful reminder",
+        "Engage in physical exercise or competitive sports to express Mars energy",
+        "Volunteer for community service projects that require courage and initiative",
+    ],
+    "Kalsarpa Dosha": [
+        "Practice daily meditation focusing on releasing fear and embracing change",
+        "Keep a journal to process intense emotions and karmic patterns",
+        "Engage in acts of service, especially feeding animals or birds",
+        "Wear a silver pendant or ring as a grounding talisman",
+    ],
+    "Sade Sati": [
+        "Embrace discipline and structure in daily routines",
+        "Practice patience through mindfulness or yoga",
+        "Wear dark blue or black on Saturdays as a mindful practice",
+        "Serve elders and those less fortunate. Saturn rewards humility and hard work",
+    ],
+}

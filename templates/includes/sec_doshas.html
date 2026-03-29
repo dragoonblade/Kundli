@@ -13,8 +13,16 @@
             <span class="dosha-detail">{{ d.detail }}</span>
             {% if d.present and d.name in dosha_remedies %}
             <div class="dosha-remedies">
-                <span class="remedy-label">Remedies:</span>
+                <span class="remedy-label">Traditional Remedies:</span>
                 {% for r in dosha_remedies[d.name] %}
+                <div class="remedy-item">• {{ r }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% if d.present and d.name in universal_remedies %}
+            <div class="dosha-remedies">
+                <span class="remedy-label">Universal Practices:</span>
+                {% for r in universal_remedies[d.name] %}
                 <div class="remedy-item">• {{ r }}</div>
                 {% endfor %}
             </div>
