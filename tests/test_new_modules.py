@@ -1,13 +1,17 @@
-"""Unit tests for new modules: doshas, shadbala, yogini dasha, ashtakavarga, insights, remedies."""
+"""Unit tests for new modules: doshas, shadbala, yogini dasha, ashtakavarga, insights, remedies, lifeareas."""
 from datetime import datetime
 
 from kundli.calc import (
     compute_planets, compute_houses, to_julian, build_planet_house_map,
     check_doshas, compute_shadbala, compute_yogini_dasha, SIGNS,
+    compute_dasha, compute_antardasha,
 )
 from kundli.ashtakavarga import compute_ashtakavarga
 from kundli.insights import generate_daily_insights
 from kundli.remedies import DOSHA_REMEDIES, PLANET_REMEDIES
+from kundli.lifeareas import generate_life_areas
+from kundli.readings import build_house_readings
+from kundli.names import PLANET_NAMES
 
 # Reference data
 BIRTH = datetime(1996, 9, 23, 22, 17)
@@ -179,3 +183,29 @@ class TestRemedies:
     def test_planet_remedy_structure(self):
         for planet, remedy in PLANET_REMEDIES.items():
             assert all(k in remedy for k in ["gemstone", "mantra", "day", "donation", "practice"]), f"{planet} missing keys"
+
+
+class TestLifeAreas:
+    def setup_method(self):
+        moon = next(p for p in PLANETS if p["planet"] == "Chandra")
+        dashas = compute_antardasha(compute_dasha(moon["longitude"], BIRTH))
+        now = datetime(2026, 3, 26, 12, 0)
+        readings, current_dasha = build_house_readings(PLANETS, HOUSES, dashas, now, PHM)
+        self.life_areas = generate_life_areas(PLANETS, HOUSES, dashas, current_dasha, PHM)
+
+    def test_returns_list(self):
+        assert isinstance(self.life_areas, list)
+        assert len(self.life_areas) >= 6
+
+    def test_area_structure(self):
+        for la in self.life_areas:
+            assert "id" in la
+            assert "title" in la
+            assert "icon" in la
+            assert "sections" in la
+            assert len(la["sections"]) >= 1
+
+    def test_has_career_and_love(self):
+        ids = {la["id"] for la in self.life_areas}
+        assert "career" in ids
+        assert "love" in ids

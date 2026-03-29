@@ -131,6 +131,39 @@ class TestChatRouting:
         answer = chat("will I conceive?", CTX)
         assert "House" in answer
 
+    def test_explain_nakshatra(self):
+        answer = chat("explain what nakshatra means", CTX)
+        assert "Shravana" in answer or "nakshatra" in answer.lower()
+
+    def test_explain_planet(self):
+        answer = chat("what is a planet in astrology?", CTX)
+        assert "Navagraha" in answer
+
+    def test_explain_sign(self):
+        answer = chat("explain what rashi means", CTX)
+        assert "Mesha" in answer
+
+    def test_explain_lagna(self):
+        answer = chat("explain lagna", CTX)
+        assert "Ascendant" in answer or "Lagna" in answer
+
+    def test_compatibility_question(self):
+        answer = chat("are we compatible?", CTX)
+        assert len(answer) > 20
+
+    def test_manglik_positive(self):
+        """Test Manglik detection when Mars IS in a Manglik house."""
+        # Override readings so Mars appears in house 7
+        modified_readings = []
+        for r in READINGS:
+            if r["num"] == 7:
+                modified_readings.append({**r, "occupants": ["Mangal"]})
+            else:
+                modified_readings.append({**r, "occupants": [o for o in r["occupants"] if o != "Mangal"]})
+        ctx = {**CTX, "house_readings": modified_readings}
+        answer = chat("am I manglik?", ctx)
+        assert "Manglik Dosha" in answer or "House 7" in answer
+
     def test_closing(self):
         answer = chat("thanks bye", None)
         assert len(answer) > 10

@@ -496,3 +496,36 @@ class TestPdfNoMatch:
     def test_match_pdf_no_session(self, client):
         r = client.get("/match/pdf")
         assert r.status_code == 404
+
+
+class TestApiChartResponse:
+    def test_response_has_all_fields(self, client):
+        r = client.post("/api/chart", json={
+            "date": "1996-09-23", "time": "22:17",
+            "location": "Chandigarh, India", "tz": 5.5,
+        })
+        data = r.get_json()
+        assert "birth" in data
+        assert data["birth"]["lat"] is not None
+        assert data["birth"]["lon"] is not None
+        assert "yogas" in data
+        assert isinstance(data["yogas"], list)
+
+    def test_api_invalid_tz(self, client):
+        r = client.post("/api/chart", json={
+            "date": "1996-09-23", "time": "22:17",
+            "location": "Chandigarh", "tz": "bad",
+        })
+        assert r.status_code == 400
+
+
+class TestYearOutOfRange:
+    def test_year_too_high(self, client):
+        r = client.post("/", data={**KUNDLI_FORM, "date": "2200-01-01"})
+        body = r.data.decode()
+        assert "out of supported range" in body.lower() or "invalid" in body.lower()
+
+    def test_year_zero(self, client):
+        r = client.post("/", data={**KUNDLI_FORM, "date": "0000-06-15"})
+        body = r.data.decode()
+        assert "invalid" in body.lower() or "error" in body.lower()

@@ -52,7 +52,7 @@ GENERAL_PATTERNS = [
     (r"(manglik|mangal dosha)", "manglik"),
     (r"(who are you|what are you|what can you do|help|hi$|hello|hey)", "greeting"),
     (r"(thank|thanks|ok|okay|bye|goodbye)", "closing"),
-    (r"(what is|explain|meaning of).*(house|planet|sign|nakshatra|dasha|lagna|ascendant)", "explain"),
+    (r"(what is|explain|meaning of).*(house|planet|sign|rashi|nakshatra|dasha|lagna|ascendant|graha)", "explain"),
     (r"(future|prediction|predict|next year|coming year|2026|2027)", "future"),
     (r"(remedy|remedies|solution|fix|improve|upay)", "remedies"),
     (r"(retrograde|vakri)", "retrograde"),
