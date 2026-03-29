@@ -99,6 +99,20 @@
 - [x] **User demographics** — available via GA4 dashboard once GA4_ID is set
 - [x] **Chatbot analytics** — question logging already in web.py (request ID + question text)
 
+### Retention & Engagement
+- [ ] **Email capture for dasha change alerts** — collect email on chart generation, notify when Mahadasha or Antardasha changes. Lightweight, no auth needed.
+- [ ] **Daily horoscope / panchang** — daily Moon sign transit reading on the homepage. Brings users back daily. Could be a simple "Today for your Moon sign" card.
+
+### UX Polish
+- [ ] **Prashna example questions** — show 3-4 clickable question chips per category when dropdown changes. The 60 curated questions from the backlog are the source. Reduces blank-page anxiety.
+- [ ] **Prashna share/PDF** — add "Copy Share Link" and "Download PDF" to prashna_result.html, matching the Kundli and Match result pages.
+- [ ] **Hardcoded domain cleanup** — 16 references to `kundli-2c3b.onrender.com` across templates and static files. Extract to a single `SITE_URL` env var or Flask config, inject via context processor.
+
+### Refactoring
+- [ ] **Extract geocoding to `kundli/geo.py`** — `get_coordinates()` is duplicated in web.py (Photon+Nominatim+builtin) and app.py (Nominatim only). Consolidate into one module, both import from it.
+- [ ] **Extract ChartStore to `kundli/store.py`** — web.py is 651 lines. ChartStore class + serialization is ~100 lines that can live independently. Reduces web.py to pure route handlers.
+- [ ] **Split chatbot.py** — 627 lines. Extract answer builders into `kundli/chatbot_builders.py`, keep routing and pattern matching in chatbot.py.
+
 ## Out of Scope (for now)
 - Panchang (daily tithi, paksha, yoga, karana) — different product surface, not core Kundli
 - Muhurt (Choghadiya, Rahukalam) — same reasoning
