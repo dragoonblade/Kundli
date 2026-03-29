@@ -221,3 +221,56 @@ class TestLifeAreas:
         ids = {la["id"] for la in self.life_areas}
         assert "career" in ids
         assert "love" in ids
+
+
+class TestEventPredictor:
+    def test_returns_list(self):
+        from kundli.predictor import compute_event_periods
+        moon = next(p for p in PLANETS if p["planet"] == "Chandra")
+        dashas = compute_antardasha(compute_dasha(moon["longitude"], BIRTH))
+        result = compute_event_periods(dashas, HOUSES, 5.5)
+        assert isinstance(result, list)
+        assert len(result) == 6
+
+    def test_event_structure(self):
+        from kundli.predictor import compute_event_periods
+        moon = next(p for p in PLANETS if p["planet"] == "Chandra")
+        dashas = compute_antardasha(compute_dasha(moon["longitude"], BIRTH))
+        for ev in compute_event_periods(dashas, HOUSES, 5.5):
+            assert "key" in ev
+            assert "label" in ev
+            assert "lords" in ev
+            assert "past" in ev
+            assert "future" in ev
+            assert "active" in ev
+
+    def test_has_marriage_and_career(self):
+        from kundli.predictor import compute_event_periods
+        moon = next(p for p in PLANETS if p["planet"] == "Chandra")
+        dashas = compute_antardasha(compute_dasha(moon["longitude"], BIRTH))
+        keys = {ev["key"] for ev in compute_event_periods(dashas, HOUSES, 5.5)}
+        assert "marriage" in keys
+        assert "career" in keys
+
+
+class TestPrashnaAnalysis:
+    def test_analyze_returns_dict(self):
+        from kundli.prashna import analyze_prashna
+        result = analyze_prashna(PLANETS, HOUSES, "career")
+        assert isinstance(result, dict)
+        assert "tendency" in result
+        assert result["tendency"] in ("favorable", "mixed", "challenging")
+
+    def test_all_categories(self):
+        from kundli.prashna import analyze_prashna, CATEGORIES
+        for cat in CATEGORIES:
+            result = analyze_prashna(PLANETS, HOUSES, cat)
+            assert "summary" in result
+            assert "favorable" in result
+            assert "unfavorable" in result
+
+    def test_has_lagna_and_moon(self):
+        from kundli.prashna import analyze_prashna
+        result = analyze_prashna(PLANETS, HOUSES, "general")
+        assert result["lagna"] in SIGNS
+        assert result["moon_sign"] in SIGNS

@@ -39,6 +39,8 @@ from kundli.pdf import generate_kundli_pdf, generate_match_pdf
 from kundli.remedies import DOSHA_REMEDIES, PLANET_REMEDIES, UNIVERSAL_REMEDIES
 from kundli.ashtakavarga import compute_ashtakavarga
 from kundli.insights import generate_daily_insights
+from kundli.predictor import compute_event_periods
+from kundli.prashna import CATEGORIES as PRASHNA_CATEGORIES, analyze_prashna
 
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -395,6 +397,7 @@ def _generate_chart(date_str, time_str, location, tz_str):
     transits, current_saturn_sign = _compute_transits(now, houses)
     doshas = check_doshas(planets, planet_house_map, current_saturn_sign)
     daily_insights = generate_daily_insights(transits)
+    event_periods = compute_event_periods(dashas, houses, tz)
     chart_data = build_chart_data(planets, houses)
     house_readings, current_dasha = build_house_readings(planets, houses, dashas, now, planet_house_map)
     life_areas = generate_life_areas(planets, houses, dashas, current_dasha, planet_house_map)
@@ -430,6 +433,7 @@ def _generate_chart(date_str, time_str, location, tz_str):
         dosha_remedies=DOSHA_REMEDIES, planet_remedies=PLANET_REMEDIES,
         share_url=f"/?d={date_str}&t={time_str}&l={quote(location)}&z={tz_str}",
         transits=transits, daily_insights=daily_insights,
+        event_periods=event_periods,
     )
 
 
@@ -565,6 +569,40 @@ def api_chart():
         "dashas": [{"lord": d["lord"], "start": d["start"].isoformat(), "end": d["end"].isoformat(), "years": d["years"]} for d in dashas],
         "yogas": yogas,
     })
+
+@app.route("/prashna", methods=["POST"])
+@limiter.limit("10 per minute")
+def prashna():
+    """Prashna Kundli: cast chart for current moment to answer a question."""
+    question = request.form.get("question", "").strip()
+    category = request.form.get("category", "general").strip()
+    location = request.form.get("prashna_location", "").strip()
+    tz_str = request.form.get("prashna_tz", "5.5").strip()
+
+    if not question or not location:
+        return render_template("index.html", prashna_error="Question and location are required.", tab="prashna")
+
+    try:
+        tz = float(tz_str)
+    except (ValueError, TypeError):
+        return render_template("index.html", prashna_error="Invalid timezone.", tab="prashna")
+
+    lat, lon = get_coordinates(location)
+    if lat is None:
+        return render_template("index.html", prashna_error=f"Could not find location: {location}. Try a nearby major city.", tab="prashna")
+
+    now = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(hours=tz)
+    jd = to_julian(now, tz)
+    planets = compute_planets(jd)
+    houses = compute_houses(jd, lat, lon)
+    result = analyze_prashna(planets, houses, category)
+
+    return render_template("prashna_result.html",
+        result=result, question=question, cast_time=now, location=location,
+        planets=planets, houses=houses,
+        planet_names=PLANET_NAMES, sign_names=SIGN_NAMES,
+    )
+
 
 @app.route("/faq")
 def faq():

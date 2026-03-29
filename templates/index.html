@@ -35,6 +35,7 @@
         <div class="tab-bar">
             <button class="tab-btn active" id="tab-kundli" onclick="switchTab('kundli')">🪐 Kundli</button>
             <button class="tab-btn" id="tab-match" onclick="switchTab('match')">💑 Match</button>
+            <button class="tab-btn" id="tab-prashna" onclick="switchTab('prashna')">🔮 Prashna</button>
         </div>
 
         {% if error %}
@@ -42,6 +43,9 @@
         {% endif %}
         {% if match_error %}
         <div class="error">{{ match_error }}</div>
+        {% endif %}
+        {% if prashna_error %}
+        <div class="error">{{ prashna_error }}</div>
         {% endif %}
 
         <form method="POST" action="/" class="form-card" id="form-kundli">
@@ -120,6 +124,42 @@
             <button type="submit">Check Compatibility</button>
         </form>
 
+        <form method="POST" action="/prashna" class="form-card" id="form-prashna" style="display:none">
+            <div class="form-grid">
+                <div class="form-group" style="grid-column:1/-1">
+                    <label for="question">Your Question</label>
+                    <input type="text" id="question" name="question" required placeholder="e.g. Will I get the job?">
+                </div>
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" name="category">
+                        <option value="career">Career/Job</option>
+                        <option value="education">Education/Exams</option>
+                        <option value="relationship">Relationships/Marriage</option>
+                        <option value="breakup">Breakup/Reconciliation</option>
+                        <option value="finance">Finance/Wealth</option>
+                        <option value="business">Business</option>
+                        <option value="children">Pregnancy/Children</option>
+                        <option value="health">Health/Recovery</option>
+                        <option value="travel">Travel/Relocation</option>
+                        <option value="legal">Legal/Disputes</option>
+                        <option value="lost">Lost/Missing</option>
+                        <option value="general">General Timing</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="prashna_location">Your Current Location</label>
+                    <input type="text" id="prashna_location" name="prashna_location" required placeholder="e.g. Mumbai, India">
+                </div>
+                <div class="form-group">
+                    <label for="prashna_tz">Timezone</label>
+                    {{ tz_select('prashna_tz', 'prashna_tz') }}
+                </div>
+            </div>
+            <p class="form-hint" style="color:var(--text-secondary);font-size:0.8rem;margin-bottom:var(--space-sm)">No birth time needed. The chart is cast for this exact moment to answer your question.</p>
+            <button type="submit">Ask the Stars</button>
+        </form>
+
         <div id="saved-charts" style="display:none">
             <h3 style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:var(--space-sm)">💾 Saved Charts</h3>
             <div id="saved-list"></div>
@@ -129,13 +169,18 @@
 function switchTab(tab) {
     document.getElementById('form-kundli').style.display = tab === 'kundli' ? '' : 'none';
     document.getElementById('form-match').style.display = tab === 'match' ? '' : 'none';
+    document.getElementById('form-prashna').style.display = tab === 'prashna' ? '' : 'none';
     document.getElementById('tab-kundli').classList.toggle('active', tab === 'kundli');
     document.getElementById('tab-match').classList.toggle('active', tab === 'match');
+    document.getElementById('tab-prashna').classList.toggle('active', tab === 'prashna');
 }
 {% if tab == 'match' %}
 switchTab('match');
+{% elif tab == 'prashna' %}
+switchTab('prashna');
 {% endif %}
-if(new URLSearchParams(location.search).get('tab') === 'match') switchTab('match');
+var _urlTab = new URLSearchParams(location.search).get('tab');
+if(_urlTab === 'match' || _urlTab === 'prashna') switchTab(_urlTab);
 {% if last_chart %}
 // Auto-fill Person 1 from last generated chart
 (function() {

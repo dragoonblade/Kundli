@@ -1,0 +1,75 @@
+{% from 'macros.html' import south_indian_chart %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prashna Kundli | Horary Astrology Answer</title>
+    <meta name="description" content="Prashna Kundli horary astrology analysis for your question based on the current planetary positions.">
+    <link rel="stylesheet" href="/static/style.css">
+    <meta name="theme-color" content="#f0a030">
+    {% include 'includes/ga4.html' %}
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="/?tab=prashna" class="back-link">← New Question</a>
+            <h1>🕉 Prashna Kundli</h1>
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode">🌓</button>
+        </header>
+
+        <section class="card match-header">
+            <div class="match-score">
+                <div class="match-score-num" style="font-size:2rem">{{ result.icon }} {{ result.category }}</div>
+                <div class="match-bar"><div class="match-fill {% if result.tendency == 'favorable' %}match-good{% elif result.tendency == 'mixed' %}match-avg{% else %}match-poor{% endif %}" style="width: {% if result.tendency == 'favorable' %}80{% elif result.tendency == 'mixed' %}50{% else %}30{% endif %}%"></div></div>
+                <div class="match-verdict {% if result.tendency == 'favorable' %}match-good{% elif result.tendency == 'mixed' %}match-avg{% else %}match-poor{% endif %}">{{ result.summary }}</div>
+            </div>
+            <div class="match-people" style="margin-top:var(--space-sm)">
+                <div class="match-person"><div class="match-person-name">Lagna: {{ result.lagna }}</div><div class="match-person-detail">Lord: {{ result.lagna_lord }}</div></div>
+                <div class="match-vs">·</div>
+                <div class="match-person"><div class="match-person-name">Moon: {{ result.moon_sign }}</div><div class="match-person-detail">{{ question }}</div></div>
+            </div>
+        </section>
+
+        {% if result.favorable %}
+        <section class="card">
+            <h2>Favorable Indicators</h2>
+            {% for f in result.favorable %}
+            <div class="la-item" style="color:var(--accent)">✓ {{ f }}</div>
+            {% endfor %}
+        </section>
+        {% endif %}
+
+        {% if result.unfavorable %}
+        <section class="card">
+            <h2>Challenging Indicators</h2>
+            {% for u in result.unfavorable %}
+            <div class="la-item" style="opacity:0.8">⚠ {{ u }}</div>
+            {% endfor %}
+        </section>
+        {% endif %}
+
+        <section class="card">
+            <h2>Chart Details</h2>
+            <p class="muted">Chart cast for {{ cast_time.strftime('%d %B %Y, %I:%M %p') }} at {{ location }}</p>
+            {{ south_indian_chart(planets, planet_names, sign_names) }}
+        </section>
+
+        <section class="card" style="opacity:0.8">
+            <p>Prashna Kundli reads the planetary positions at the moment of asking. These are indicators and tendencies, not certainties. Your actions, effort, and choices always play the most important role.</p>
+        </section>
+
+        <div class="match-actions">
+            <a href="/?tab=prashna" class="btn-link">← Ask Another Question</a>
+            <a href="/" class="btn-link">Generate Full Kundli</a>
+        </div>
+    </div>
+<script>
+function toggleTheme() {
+    document.documentElement.classList.toggle('light');
+    localStorage.setItem('kundli-theme', document.documentElement.classList.contains('light') ? 'light' : 'dark');
+}
+if(localStorage.getItem('kundli-theme') === 'light') document.documentElement.classList.add('light');
+</script>
+</body>
+</html>

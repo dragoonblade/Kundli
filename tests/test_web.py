@@ -102,7 +102,7 @@ class TestKundliGeneration:
 
     def test_has_explainers(self, client):
         body = client.post("/", data=KUNDLI_FORM).data.decode()
-        assert body.count("explainer-toggle") == 4
+        assert body.count("explainer-toggle") >= 4
         assert "What are Yogas" in body
         assert "What are Doshas" in body
         assert "What is a Dasha" in body
@@ -564,3 +564,72 @@ class TestExpandedFaq:
         assert "Which gemstone should I wear?" in body
         assert "Why use Vedic" in body
         assert "career" in body.lower()
+
+
+class TestEventPredictor:
+    def test_result_has_event_section(self, client):
+        r = client.post("/", data=KUNDLI_FORM)
+        body = r.data.decode()
+        assert "sec-events" in body
+        assert "Event Predictor" in body
+
+    def test_event_has_life_areas(self, client):
+        r = client.post("/", data=KUNDLI_FORM)
+        body = r.data.decode()
+        assert "Marriage" in body
+        assert "Career Growth" in body
+
+    def test_section_nav_has_events(self, client):
+        r = client.post("/", data=KUNDLI_FORM)
+        assert "Events" in r.data.decode()
+
+
+class TestPrashna:
+    def test_prashna_success(self, client):
+        r = client.post("/prashna", data={
+            "question": "Will I get the job?",
+            "category": "career",
+            "prashna_location": "Delhi, India",
+            "prashna_tz": "5.5",
+        })
+        assert r.status_code == 200
+        body = r.data.decode()
+        assert "Career/Job" in body
+        assert "Lagna" in body
+
+    def test_prashna_missing_fields(self, client):
+        r = client.post("/prashna", data={"question": "", "prashna_location": ""})
+        body = r.data.decode()
+        assert "required" in body.lower()
+
+    def test_prashna_bad_location(self, client):
+        r = client.post("/prashna", data={
+            "question": "test", "category": "general",
+            "prashna_location": "xyznonexistent99999", "prashna_tz": "5.5",
+        })
+        body = r.data.decode()
+        assert "could not find" in body.lower()
+
+    def test_prashna_has_indicators(self, client):
+        r = client.post("/prashna", data={
+            "question": "Will I pass my exam?",
+            "category": "education",
+            "prashna_location": "Mumbai, India",
+            "prashna_tz": "5.5",
+        })
+        body = r.data.decode()
+        assert "Favorable" in body or "Challenging" in body
+
+    def test_index_has_prashna_tab(self, client):
+        r = client.get("/")
+        body = r.data.decode()
+        assert "Prashna" in body
+        assert "form-prashna" in body
+
+
+class TestSideNavigation:
+    def test_result_has_section_nav(self, client):
+        r = client.post("/", data=KUNDLI_FORM)
+        body = r.data.decode()
+        assert "section-nav" in body
+        assert "sec-events" in body

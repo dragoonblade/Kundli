@@ -998,6 +998,25 @@ footer {
 .section-nav a:hover { border-color: var(--accent); color: var(--text); }
 .section-nav a.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); font-weight: 600; }
 
+/* Desktop: side navigation */
+@media (min-width: 1024px) {
+    .result-page { display: grid; grid-template-columns: 160px 1fr; gap: var(--space-md); }
+    .result-page > header { grid-column: 1 / -1; }
+    .result-page > .view-toggle { grid-column: 1 / -1; }
+    .result-page > footer { grid-column: 1 / -1; }
+    .section-nav {
+        grid-column: 1; grid-row: 3 / 99;
+        flex-direction: column;
+        position: sticky; top: var(--space-sm);
+        align-self: start;
+        overflow-x: visible; overflow-y: auto;
+        max-height: calc(100vh - 2rem);
+        padding: var(--space-xs);
+        margin-bottom: 0;
+    }
+    .section-nav a { text-align: left; }
+}
+
 /* Scroll targets: offset for sticky nav */
 [id^="sec-"] { scroll-margin-top: 3rem; }
 

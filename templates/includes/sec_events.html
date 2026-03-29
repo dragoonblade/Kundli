@@ -1,0 +1,41 @@
+{% if event_periods %}
+<section class="card" id="sec-events">
+    <h2>Event Predictor</h2>
+    <div class="explainer" tabindex="0" onclick="this.classList.toggle('open')" onkeydown="if(event.key==='Enter')this.classList.toggle('open')">
+        <span class="explainer-toggle">ℹ How does this work? ▾</span>
+        <p class="explainer-text">The Event Predictor identifies dasha periods when the planets governing each life area are active. These are windows of opportunity, not guarantees. When a relevant planet's dasha or antardasha is running, that area of life gets extra energy and attention.</p>
+    </div>
+    <div class="life-areas-grid">
+        {% for ev in event_periods %}
+        <div class="la-card {% if ev.active %}la-active{% endif %}" tabindex="0" onclick="this.classList.toggle('la-open')" onkeydown="if(event.key==='Enter')this.classList.toggle('la-open')">
+            <div class="la-header">
+                <span class="la-icon">{{ ev.icon }}</span>
+                <div>
+                    <h3>{{ ev.label }}{% if ev.active %} <small style="color:var(--accent)">(active now)</small>{% endif %}</h3>
+                    <p class="la-desc">Key planets: {{ ev.lords|join(', ') }}</p>
+                </div>
+                <span class="la-chevron">▾</span>
+            </div>
+            <div class="la-body">
+                {% if ev.future %}
+                <div class="la-section">
+                    <span class="la-label">{% if ev.active %}Current and upcoming{% else %}Upcoming favorable windows{% endif %}</span>
+                    {% for f in ev.future %}
+                    <div class="la-item">{{ f.lord }} {{ f.level }}: {{ f.start.strftime('%b %Y') }} to {{ f.end.strftime('%b %Y') }}{% if loop.first and ev.active %} (now){% endif %}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% if ev.past %}
+                <div class="la-section">
+                    <span class="la-label">Past strong periods</span>
+                    {% for p in ev.past %}
+                    <div class="la-item" style="opacity:0.7">{{ p.lord }} {{ p.level }}: {{ p.start.strftime('%b %Y') }} to {{ p.end.strftime('%b %Y') }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
