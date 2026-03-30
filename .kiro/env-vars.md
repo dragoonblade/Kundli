@@ -4,21 +4,21 @@ All env vars are optional except `KUNDLI_SECRET_KEY` in production. The app degr
 
 ## Required for Production
 
-| Variable | Example | Purpose |
+| Variable | Value | Purpose |
 |----------|---------|---------|
-| `KUNDLI_SECRET_KEY` | `a7f2b9c1e4d8...` (any random string) | Flask session signing. Without it, uses an insecure fallback and logs a warning. Generate with: `python -c "import secrets; print(secrets.token_hex(32))"` |
+| `KUNDLI_SECRET_KEY` | `f952b849060e064e232ede9a49d2123869fd09489b6cc337104900e14e8f0911` (any random string) | Flask session signing. Without it, uses an insecure fallback and logs a warning. Generate with: `python -c "import secrets; print(secrets.token_hex(32))"` |
 
 ## Optional
 
-| Variable | Example | Default | Purpose |
+| Variable | Value | Default | Purpose |
 |----------|---------|---------|---------|
-| `GA4_ID` | `G-XXXXXXXXXX` | `""` (disabled) | Google Analytics 4 measurement ID. When set, loads GA4 script on all pages and enables event tracking. |
-| `BREVO_API_KEY` | `xkeysib-abc123...` | `""` (disabled) | Brevo (Sendinblue) API key for dasha change email alerts. When empty, email capture form still shows but alerts are not stored. |
-| `SITE_URL` | `https://yourdomain.com` | `https://kundli-2c3b.onrender.com` | Base URL for canonical links, OG tags, and share URLs in templates. Static files (sitemap, robots, llms.txt) still have hardcoded URLs. |
-| `REDIS_URL` | `redis://red-abc:6379` | `""` (file fallback) | Redis connection for ChartStore. When empty, uses file-based JSON store in /tmp. |
-| `LOG_FORMAT` | `json` | plain text | Set to `json` for structured JSON logging (useful for log aggregators). |
-| `PORT` | `8080` | `8080` | Server port for Flask/Gunicorn. |
-| `FLASK_DEBUG` | `1` | `0` | Enable Flask debug mode. Never set in production. |
+| `GA4_ID` | `G-R4HEFYX3L2` | Google Analytics 4 measurement ID. When set, loads GA4 script on all pages and enables event tracking. |
+| `BREVO_API_KEY` | `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` | Brevo (Sendinblue) API key for dasha change email alerts. When empty, email capture form still shows but alerts are not stored. |
+| `SITE_URL` | `https://kundli-2c3b.onrender.com` | Base URL for canonical links, OG tags, and share URLs in templates. Static files (sitemap, robots, llms.txt) still have hardcoded URLs. |
+| `REDIS_URL` | `redis://default:rrT33kSMsTH119N8YTNWQltnIbFR9uRP@redis-11837.crce199.us-west-2-2.ec2.cloud.redislabs.com:11837` | Redis connection for ChartStore. When empty, uses file-based JSON store in /tmp. |
+| `LOG_FORMAT` | `json` | Set to `json` for structured JSON logging (useful for log aggregators). |
+| `PORT` | `8080` | Server port for Flask/Gunicorn. |
+| `FLASK_DEBUG` | `0` | Enable Flask debug mode. Never set in production. |
 
 ## How to Get Each Value
 

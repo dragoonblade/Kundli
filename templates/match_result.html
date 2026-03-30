@@ -225,7 +225,7 @@
         </section>
 
         <div class="match-actions">
-            <a href="/match/pdf" class="btn-pdf">📄 Download PDF</a>
+            <a href="/match/pdf" class="btn-pdf" onclick="trackEvent('download_pdf', {type: 'match'})">📄 Download PDF</a>
             <a href="/?tab=match" class="btn-link">← New Match</a>
         </div>
     </div>
@@ -241,7 +241,7 @@
         navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
     }
     window.addEventListener('scroll', updateNav);
-    function toggleTheme() {
+    function toggleTheme() { trackEvent("theme_toggle");
         document.documentElement.classList.toggle('light');
         localStorage.setItem('kundli-theme', document.documentElement.classList.contains('light') ? 'light' : 'dark');
     }

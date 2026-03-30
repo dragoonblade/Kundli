@@ -140,7 +140,7 @@ function filterFAQ(query) {
         cat.style.display = visible > 0 ? '' : 'none';
     });
 }
-function toggleTheme() {
+function toggleTheme() { trackEvent("theme_toggle");
     document.documentElement.classList.toggle('light');
     localStorage.setItem('kundli-theme', document.documentElement.classList.contains('light') ? 'light' : 'dark');
 }

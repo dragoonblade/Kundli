@@ -60,13 +60,13 @@
         </section>
 
         <div class="match-actions">
-            <button class="btn-share" onclick="navigator.clipboard.writeText(window.location.href).then(()=>this.textContent='✓ Copied!')">🔗 Copy Share Link</button>
+            <button class="btn-share" onclick="trackEvent('copy_share_link');navigator.clipboard.writeText(window.location.href).then(()=>this.textContent='✓ Copied!')">🔗 Copy Share Link</button>
             <a href="/?tab=prashna" class="btn-link">← Ask Another Question</a>
             <a href="/" class="btn-link">Generate Full Kundli</a>
         </div>
     </div>
 <script>
-function toggleTheme() {
+function toggleTheme() { trackEvent("theme_toggle");
     document.documentElement.classList.toggle('light');
     localStorage.setItem('kundli-theme', document.documentElement.classList.contains('light') ? 'light' : 'dark');
 }
