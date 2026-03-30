@@ -464,7 +464,7 @@ class TestSeo:
 
     def test_keyword_title(self, client):
         body = client.get("/").data.decode()
-        assert "Free Kundli Generator" in body
+        assert "Drishti" in body and "Vedic" in body
 
 
 class TestUxFeatures:

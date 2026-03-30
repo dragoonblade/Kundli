@@ -1,10 +1,10 @@
-# Kundli — Vedic Birth Chart Generator
+# Drishti — Vedic Astrology
 
 > Free online Vedic astrology tool for generating birth charts (Kundli), marriage compatibility matching (Gun Milan), and personalized readings.
 
 ## What This App Does
 
-Kundli is a web application that generates Vedic birth charts using the Swiss Ephemeris for astronomical calculations. Users enter their birth date, time, and location to receive a complete astrological analysis.
+Drishti is a web application that generates Vedic birth charts using the Swiss Ephemeris for astronomical calculations. Users enter their birth date, time, and location to receive a complete astrological analysis.
 
 ## Features
 

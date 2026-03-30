@@ -1,7 +1,7 @@
 {
-  "name": "Kundli — Vedic Birth Chart",
-  "short_name": "Kundli",
-  "description": "Vedic Birth Chart Generator with detailed readings",
+  "name": "Drishti — Vedic Astrology",
+  "short_name": "Drishti",
+  "description": "Vedic astrology with birth charts, matching, and horary readings",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0f0f14",

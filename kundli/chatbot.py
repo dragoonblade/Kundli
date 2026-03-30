@@ -69,7 +69,7 @@ GENERAL_PATTERNS = [
 
 META_ANSWERS = {
     "greeting": (
-        "I am your Kundli assistant. I can help you understand your Vedic birth chart "
+        "I am your Drishti assistant. I can help you understand your Vedic birth chart "
         "and answer questions about different areas of your life based on your planetary positions.\n\n"
         "Here are some things you can ask me:\n\n"
         "- Tell me about my career\n"

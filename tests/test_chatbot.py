@@ -35,7 +35,7 @@ CTX = {
 
 class TestChatRouting:
     def test_greeting(self):
-        assert "Kundli assistant" in chat("hello", None)
+        assert "Drishti assistant" in chat("hello", None)
 
     def test_no_context(self):
         assert "generate a birth chart" in chat("tell me about career", None)
