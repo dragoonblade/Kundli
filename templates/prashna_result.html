@@ -22,7 +22,7 @@
             <div class="match-score">
                 <div class="match-score-num" style="font-size:2rem">{{ result.icon }} {{ result.category }}</div>
                 <div class="match-bar"><div class="match-fill {% if result.tendency == 'favorable' %}match-good{% elif result.tendency == 'mixed' %}match-avg{% else %}match-poor{% endif %}" style="width: {% if result.tendency == 'favorable' %}80{% elif result.tendency == 'mixed' %}50{% else %}30{% endif %}%"></div></div>
-                <div class="match-verdict {% if result.tendency == 'favorable' %}match-good{% elif result.tendency == 'mixed' %}match-avg{% else %}match-poor{% endif %}">{{ result.summary }}</div>
+                <div class="match-verdict {% if result.tendency == 'favorable' %}match-good{% elif result.tendency == 'mixed' %}match-avg{% else %}match-poor{% endif %}" style="font-size:1.1rem;padding:var(--space-sm) 0">{{ result.summary }}</div>
             </div>
             <div class="match-people" style="margin-top:var(--space-sm)">
                 <div class="match-person"><div class="match-person-name">Lagna: {{ result.lagna }}</div><div class="match-person-detail">Lord: {{ result.lagna_lord }}</div></div>
