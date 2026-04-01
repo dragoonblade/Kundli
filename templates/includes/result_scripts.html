@@ -1,7 +1,11 @@
 <script>
 function setView(view) {
     trackEvent('view_toggle', {view: view});
-    document.querySelectorAll('[data-view]').forEach(function(el) {
+    document.querySelectorAll('div[data-view]').forEach(function(el) {
+        el.style.display = el.getAttribute('data-view').split(' ').includes(view) ? '' : 'none';
+    });
+    // Show/hide nav links per view
+    document.querySelectorAll('.section-nav a[data-view]').forEach(function(el) {
         el.style.display = el.getAttribute('data-view').split(' ').includes(view) ? '' : 'none';
     });
     document.getElementById('btn-horoscope').classList.toggle('active', view === 'horoscope');
@@ -128,7 +132,7 @@ function updateNav() {
     let current = '';
     const offset = navBar ? navBar.offsetHeight + 80 : 80;
     for (const sec of sections) {
-        if (sec.getBoundingClientRect().top <= offset) current = sec.id;
+        if (sec.getBoundingClientRect().top <= offset && sec.offsetParent !== null) current = sec.id;
     }
     navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
 }
