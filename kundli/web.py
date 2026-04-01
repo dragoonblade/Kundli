@@ -469,8 +469,25 @@ def suggestions():
 @app.route("/api/suggestion", methods=["POST"])
 def api_suggestion():
     data = request.get_json()
-    if data:
-        logging.info(f"Suggestion: type={data.get('type')} name={data.get('name')} msg={data.get('message', '')[:200]}")
+    if not data:
+        return jsonify({"status": "error"}), 400
+    logging.info(f"Suggestion: type={data.get('type')} name={data.get('name')} msg={data.get('message', '')[:200]}")
+    # Post to Google Form for persistent storage
+    try:
+        import urllib.request
+        import urllib.parse
+        form_data = urllib.parse.urlencode({
+            "entry.615374053": data.get("name", "Anonymous"),
+            "entry.729824111": data.get("type", "other"),
+            "entry.1000646971": data.get("message", ""),
+        }).encode()
+        req = urllib.request.Request(
+            "https://docs.google.com/forms/d/1iABQG3wlMS1r9UGVetd9U-zrXm7_iGsoRCycrTU6KcE/formResponse",
+            data=form_data,
+        )
+        urllib.request.urlopen(req, timeout=5)
+    except Exception as e:
+        logging.warning(f"Google Form submission failed: {e}")
     return jsonify({"status": "ok"})
 
 
