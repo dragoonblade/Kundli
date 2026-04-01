@@ -77,10 +77,25 @@
         <div data-view="full">{% include 'includes/sec_ashtakavarga.html' %}</div>
 
         <footer>
-            <a href="/pdf" class="btn-pdf" onclick="trackEvent('download_pdf')">📄 Download PDF</a>
-            <button class="btn-share" onclick="trackEvent('save_offline');saveChartLocally()">💾 Save Offline</button>
-            <button class="btn-share" onclick="trackEvent('copy_share_link');navigator.clipboard.writeText(window.location.origin+'{{ share_url|safe }}').then(()=>this.textContent='✓ Copied!')">🔗 Copy Share Link</button>
-            <p>Calculations powered by Swiss Ephemeris · For educational purposes only</p>
+            <div class="footer-actions">
+                <a href="/pdf" class="footer-btn footer-btn-primary" onclick="trackEvent('download_pdf')">
+                    <span class="footer-btn-icon">📄</span>
+                    <span class="footer-btn-text">Download PDF</span>
+                </a>
+                <button class="footer-btn" onclick="trackEvent('save_offline');saveChartLocally()">
+                    <span class="footer-btn-icon">💾</span>
+                    <span class="footer-btn-text">Save Offline</span>
+                </button>
+                <button class="footer-btn" onclick="trackEvent('copy_share_link');navigator.clipboard.writeText(window.location.origin+'{{ share_url|safe }}').then(()=>{this.querySelector('.footer-btn-text').textContent='Copied!'})">
+                    <span class="footer-btn-icon">🔗</span>
+                    <span class="footer-btn-text">Share Link</span>
+                </button>
+                <a href="/?tab=match" class="footer-btn">
+                    <span class="footer-btn-icon">💑</span>
+                    <span class="footer-btn-text">Check Match</span>
+                </a>
+            </div>
+            <p class="footer-disclaimer">Calculations powered by Swiss Ephemeris. For educational purposes only.</p>
         </footer>
     </div>
 

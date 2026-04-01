@@ -122,9 +122,9 @@ class TestKundliGeneration:
 
     def test_has_footer_actions(self, client):
         body = client.post("/", data=KUNDLI_FORM).data.decode()
-        assert "btn-pdf" in body
-        assert "saveChartLocally" in body
-        assert "share_url" in body or "Copy Share Link" in body
+        assert "footer-btn" in body
+        assert "Download PDF" in body
+        assert "Save Offline" in body
 
     def test_has_dasha_chain_in_header(self, client):
         body = client.post("/", data=KUNDLI_FORM).data.decode()
