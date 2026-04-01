@@ -294,7 +294,7 @@ function openDB() {
         if (!offset) {
             offset = String(-new Date().getTimezoneOffset() / 60);
         }
-        document.querySelectorAll('select[name="tz"], select[name="tz1"], select[name="tz2"]').forEach(function(sel) {
+        document.querySelectorAll('select[name="tz"], select[name="tz1"], select[name="tz2"], select[name="prashna_tz"]').forEach(function(sel) {
             for (var i = 0; i < sel.options.length; i++) {
                 if (sel.options[i].value === offset) { sel.selectedIndex = i; break; }
             }
