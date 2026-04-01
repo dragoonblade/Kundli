@@ -8,7 +8,7 @@ from kundli.chatbot_builders import (
     _build_love_arranged_answer, _build_marriage_delay_answer,
     _build_foreign_settlement_answer, _build_business_vs_job_answer,
     _build_strengths, _build_challenges, _build_retrograde_answer,
-    _build_topic_timing, _build_explain_answer, _get_phm,
+    _build_topic_timing, _build_explain_answer,
 )
 
 # Topic keywords mapped to house numbers

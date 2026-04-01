@@ -1,7 +1,6 @@
 """Flask web UI for Kundli."""
 from flask import Flask, render_template, request, jsonify, session as flask_session
 from datetime import datetime, timedelta, timezone
-import json
 import os
 import time as _time
 import uuid
