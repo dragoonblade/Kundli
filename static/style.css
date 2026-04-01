@@ -1,24 +1,28 @@
-/* Kundli. Mobile-first design system */
+/* Drishti. Mobile-first design system with Hindu astrology aesthetic */
 
 :root {
-    --bg: #0c0c11;
-    --card: #16161f;
-    --card-hover: #1c1c28;
-    --border: #252535;
-    --text: #dcdce5;
-    --text-secondary: #a8a8bc;
+    --bg: #080810;
+    --card: #12121c;
+    --card-hover: #1a1a28;
+    --border: #2a2a3d;
+    --text: #e0dce8;
+    --text-secondary: #a8a4b8;
     --accent: #e8a020;
     --accent-dim: rgba(232, 160, 32, 0.12);
     --accent-hover: #d08818;
+    --accent-glow: rgba(232, 160, 32, 0.06);
     --active: #1a3028;
     --active-border: #44b870;
     --active-dim: rgba(56, 160, 96, 0.1);
     --planet: #6aacf0;
-    --tag-bg: #1e1e2c;
+    --tag-bg: #1a1a2a;
     --danger: #d04040;
+    --saffron: #e8a020;
+    --deep-purple: #2a1848;
+    --cosmic: #0d0818;
     --radius-sm: 6px;
-    --radius: 10px;
-    --radius-lg: 14px;
+    --radius: 12px;
+    --radius-lg: 16px;
     --space-xs: 0.25rem;
     --space-sm: 0.5rem;
     --space-md: 1rem;
@@ -27,28 +31,37 @@
 }
 
 :root.light {
-    --bg: #f5f5f8;
+    --bg: #faf8f5;
     --card: #ffffff;
-    --card-hover: #f0f0f5;
-    --border: #d8d8e0;
-    --text: #1a1a2e;
-    --text-secondary: #5a5a70;
+    --card-hover: #f5f0ea;
+    --border: #e0d8cc;
+    --text: #1a1520;
+    --text-secondary: #6a5a50;
     --accent: #c07010;
-    --accent-dim: rgba(192, 112, 16, 0.1);
+    --accent-dim: rgba(192, 112, 16, 0.08);
     --accent-hover: #a86010;
+    --accent-glow: rgba(192, 112, 16, 0.04);
     --active: #e8f5ee;
     --active-border: #2d8a50;
     --active-dim: rgba(45, 138, 80, 0.08);
     --planet: #2060b0;
-    --tag-bg: #eeeef4;
+    --tag-bg: #f0ebe4;
     --danger: #c03030;
+    --saffron: #c07010;
+    --deep-purple: #f0e8f8;
+    --cosmic: #faf8f5;
 }
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    font-family: 'Georgia', 'Times New Roman', serif;
     background: var(--bg);
+    background-image:
+        radial-gradient(ellipse at 20% 0%, rgba(120, 40, 180, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 0%, rgba(232, 160, 32, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 100%, rgba(40, 20, 80, 0.1) 0%, transparent 50%);
+    background-attachment: fixed;
     color: var(--text);
     line-height: 1.65;
     font-size: 15px;
@@ -56,6 +69,11 @@ body {
     -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
     overflow-x: hidden;
+}
+:root.light body {
+    background-image:
+        radial-gradient(ellipse at 20% 0%, rgba(192, 112, 16, 0.05) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 0%, rgba(160, 80, 200, 0.04) 0%, transparent 50%);
 }
 
 /* Layout */
@@ -77,17 +95,28 @@ body {
 header {
     text-align: center;
     margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-md);
 }
 header h1 {
-    font-size: 1.6rem;
+    font-size: 1.8rem;
     color: var(--accent);
-    letter-spacing: 0.03em;
+    letter-spacing: 0.08em;
     font-weight: 700;
+    text-shadow: 0 0 40px rgba(232, 160, 32, 0.2);
 }
 .subtitle {
     color: var(--text-secondary);
     font-size: 0.85rem;
     margin-top: var(--space-xs);
+    font-style: italic;
+    letter-spacing: 0.04em;
+}
+.header-ornament {
+    color: var(--accent);
+    font-size: 0.9rem;
+    margin-top: var(--space-sm);
+    opacity: 0.4;
+    letter-spacing: 0.3em;
 }
 .back-link {
     display: inline-block;
@@ -136,6 +165,20 @@ header h1 {
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     padding: var(--space-lg);
+    position: relative;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.2), 0 0 60px var(--accent-glow);
+}
+.form-card::before {
+    content: '✦';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg);
+    padding: 0 var(--space-sm);
+    color: var(--accent);
+    font-size: 1rem;
+    opacity: 0.5;
 }
 .form-grid {
     display: grid;
@@ -155,7 +198,12 @@ header h1 {
 .chip:hover { border-color: var(--accent); color: var(--accent); }
 
 /* Panchang Card */
-.panchang-card { padding: var(--space-sm) var(--space-md); margin-bottom: var(--space-md); }
+.panchang-card {
+    padding: var(--space-sm) var(--space-md);
+    margin-bottom: var(--space-md);
+    border-left: 3px solid var(--accent);
+    background: linear-gradient(135deg, var(--card) 0%, rgba(232,160,32,0.03) 100%);
+}
 .panchang-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm); font-weight: 600; }
 .panchang-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: var(--space-xs) var(--space-md); margin-bottom: var(--space-sm); }
 .panchang-grid .label { font-size: 0.7rem; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 0.05em; }
@@ -207,7 +255,7 @@ header h1 {
 button[type="submit"] {
     width: 100%;
     padding: 0.9rem;
-    background: var(--accent);
+    background: linear-gradient(135deg, var(--accent) 0%, #d08818 100%);
     border: none;
     border-radius: var(--radius);
     color: #000;
@@ -216,11 +264,12 @@ button[type="submit"] {
     font-family: inherit;
     cursor: pointer;
     min-height: 52px;
-    transition: all 0.15s ease;
-    letter-spacing: 0.02em;
+    transition: all 0.2s ease;
+    letter-spacing: 0.03em;
+    box-shadow: 0 4px 15px rgba(232, 160, 32, 0.25);
 }
-button[type="submit"]:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(232,160,32,0.3); }
-button[type="submit"]:active { transform: translateY(0); box-shadow: none; }
+button[type="submit"]:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(232,160,32,0.4); }
+button[type="submit"]:active { transform: translateY(0); box-shadow: 0 2px 10px rgba(232,160,32,0.2); }
 
 .error {
     background: rgba(208, 64, 64, 0.1);
@@ -239,17 +288,19 @@ button[type="submit"]:active { transform: translateY(0); box-shadow: none; }
     border-radius: var(--radius-lg);
     padding: var(--space-md);
     margin-bottom: var(--space-md);
+    box-shadow: 0 2px 20px rgba(0,0,0,0.15), 0 0 1px rgba(232,160,32,0.05);
 }
 @media (min-width: 600px) {
     .card { padding: var(--space-lg); margin-bottom: var(--space-lg); }
 }
 .card h2 {
     color: var(--accent);
-    font-size: 1.05rem;
-    font-weight: 600;
+    font-size: 1.1rem;
+    font-weight: 700;
     margin-bottom: var(--space-md);
     padding-bottom: var(--space-sm);
     border-bottom: 1px solid var(--border);
+    letter-spacing: 0.02em;
 }
 
 /* Info Card */
@@ -418,6 +469,7 @@ tr.highlight { background: var(--accent-dim); }
 .dasha-current {
     background: var(--active);
     border: 1px solid var(--active-border);
+    box-shadow: 0 0 15px rgba(68, 184, 112, 0.1);
 }
 .dasha-lord { color: var(--planet); font-weight: 600; }
 .dasha-dates { color: var(--text-secondary); font-size: 0.78rem; }
@@ -777,8 +829,8 @@ footer {
     transition: all 0.15s;
 }
 .footer-btn:hover { border-color: var(--accent); transform: translateY(-1px); }
-.footer-btn-primary { background: var(--accent); border-color: var(--accent); color: #000; font-weight: 600; }
-.footer-btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+.footer-btn-primary { background: linear-gradient(135deg, var(--accent) 0%, #d08818 100%); border-color: var(--accent); color: #000; font-weight: 600; box-shadow: 0 2px 12px rgba(232,160,32,0.2); }
+.footer-btn-primary:hover { background: linear-gradient(135deg, var(--accent-hover) 0%, #c07010 100%); border-color: var(--accent-hover); }
 .footer-btn-icon { font-size: 1.3rem; }
 .footer-btn-text { font-size: 0.78rem; }
 .footer-disclaimer { text-align: center; color: var(--text-secondary); font-size: 0.7rem; opacity: 0.7; }
