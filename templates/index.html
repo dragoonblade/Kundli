@@ -183,9 +183,9 @@
             <button type="submit">🔮 Ask the Stars</button>
         </form>
 
-        <div id="saved-charts" style="display:none">
-            <h3 style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:var(--space-sm)">💾 Saved Charts</h3>
-            <div id="saved-list"></div>
+        <div id="saved-charts" class="saved-section" style="display:none">
+            <h3 class="saved-heading">📂 Your Saved Charts</h3>
+            <div id="saved-list" class="saved-grid"></div>
         </div>
     </div>
 <script>
@@ -236,6 +236,14 @@ function toggleTheme() { trackEvent("theme_toggle");
 if(localStorage.getItem('kundli-theme') === 'light') document.documentElement.classList.add('light');
 
 // Load saved charts from IndexedDB
+function openDB() {
+    return new Promise(function(resolve, reject) {
+        var req = indexedDB.open('kundli-charts', 1);
+        req.onupgradeneeded = function(e) { e.target.result.createObjectStore('charts', {keyPath: 'id'}); };
+        req.onsuccess = function(e) { resolve(e.target.result); };
+        req.onerror = function() { reject(); };
+    });
+}
 (function() {
     var req = indexedDB.open('kundli-charts', 1);
     req.onupgradeneeded = function(e) { e.target.result.createObjectStore('charts', {keyPath: 'id'}); };
@@ -251,11 +259,27 @@ if(localStorage.getItem('kundli-theme') === 'light') document.documentElement.cl
             container.style.display = '';
             charts.sort(function(a, b) { return b.date.localeCompare(a.date); });
             charts.slice(0, 10).forEach(function(c) {
-                var a = document.createElement('a');
-                a.href = (c.url || c.id).replace(/&amp;/g, '&');
-                a.className = 'saved-item';
-                a.textContent = c.label;
-                list.appendChild(a);
+                var card = document.createElement('div');
+                card.className = 'saved-card';
+                var link = document.createElement('a');
+                link.href = (c.url || c.id).replace(/&amp;/g, '&');
+                link.className = 'saved-link';
+                link.innerHTML = '<span class="saved-label">🪐 ' + c.label + '</span><span class="saved-date">' + new Date(c.date).toLocaleDateString() + '</span>';
+                var del = document.createElement('button');
+                del.className = 'saved-del';
+                del.textContent = '✕';
+                del.title = 'Remove';
+                del.onclick = function(e) {
+                    e.stopPropagation();
+                    openDB().then(function(db2) {
+                        var tx2 = db2.transaction('charts', 'readwrite');
+                        tx2.objectStore('charts').delete(c.id);
+                        tx2.oncomplete = function() { card.remove(); if(!list.children.length) container.style.display='none'; };
+                    });
+                };
+                card.appendChild(link);
+                card.appendChild(del);
+                list.appendChild(card);
             });
         };
     };
