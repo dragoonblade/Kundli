@@ -783,6 +783,33 @@ footer {
 .footer-btn-text { font-size: 0.78rem; }
 .footer-disclaimer { text-align: center; color: var(--text-secondary); font-size: 0.7rem; opacity: 0.7; }
 
+/* Site Footer */
+.site-footer {
+    margin-top: var(--space-xl);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--border);
+}
+.site-footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-lg);
+}
+@media (max-width: 600px) {
+    .site-footer-grid { grid-template-columns: 1fr; gap: var(--space-md); }
+}
+.site-footer-col h4 { font-size: 0.85rem; color: var(--text); margin-bottom: var(--space-sm); }
+.site-footer-col p { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; }
+.site-footer-col a {
+    display: block; font-size: 0.8rem; color: var(--text-secondary);
+    text-decoration: none; padding: 3px 0; transition: color 0.15s;
+}
+.site-footer-col a:hover { color: var(--accent); }
+.site-footer-bottom {
+    text-align: center; padding-top: var(--space-sm);
+    border-top: 1px solid var(--border); font-size: 0.7rem; color: var(--text-secondary); opacity: 0.6;
+}
+
 /* Chat Widget */
 #chat-toggle {
     position: fixed;

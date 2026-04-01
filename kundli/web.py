@@ -461,6 +461,19 @@ def faq():
     return render_template("faq.html")
 
 
+@app.route("/suggestions")
+def suggestions():
+    return render_template("suggestions.html")
+
+
+@app.route("/api/suggestion", methods=["POST"])
+def api_suggestion():
+    data = request.get_json()
+    if data:
+        logging.info(f"Suggestion: type={data.get('type')} name={data.get('name')} msg={data.get('message', '')[:200]}")
+    return jsonify({"status": "ok"})
+
+
 @app.route("/sitemap.xml")
 def sitemap():
     return app.send_static_file("sitemap.xml")
