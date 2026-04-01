@@ -8,7 +8,8 @@
     <div class="dasha-timeline">
         {% for d in dashas %}
         {% set is_current = d.start <= now and now <= d.end %}
-        <div class="dasha-group {% if is_current %}dasha-current{% endif %}">
+        {% set is_past = d.end < now %}
+        <div class="dasha-group {% if is_current %}dasha-current{% endif %}{% if is_past %} dasha-past{% endif %}">
             <div class="dasha-item" tabindex="0" onclick="this.parentElement.classList.toggle('open')" onkeydown="if(event.key==='Enter')this.parentElement.classList.toggle('open')">
                 <div class="dasha-lord"><span class="dasha-level-tag">MD</span> <span class="t" data-h="{{ d.lord }}" data-e="{{ planet_names[d.lord] }}">{{ d.lord }}</span></div>
                 <div class="dasha-dates">{{ d.start.strftime('%d %b %Y') }} → {{ d.end.strftime('%d %b %Y') }}</div>
@@ -17,7 +18,7 @@
                 {% set elapsed = (now - d.start).days %}
                 {% set total = (d.end - d.start).days %}
                 <div class="dasha-bar"><div class="dasha-fill" style="width: {{ (elapsed/total*100)|int }}%"></div></div>
-                <div class="dasha-badge">◄ CURRENT</div>
+                <div class="dasha-badge">◄ CURRENT · {{ ((elapsed/total)*100)|int }}% complete</div>
                 {% endif %}
             </div>
             {% if d.antardasha %}

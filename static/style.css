@@ -458,48 +458,53 @@ tr.highlight { background: var(--accent-dim); }
 }
 .dasha-item {
     display: grid;
-    grid-template-columns: 70px 1fr 50px;
+    grid-template-columns: auto 1fr auto;
     align-items: center;
     gap: var(--space-sm);
     padding: var(--space-sm) var(--space-md);
     border-radius: var(--radius);
     background: var(--tag-bg);
-    font-size: 0.82rem;
+    font-size: 0.85rem;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
 }
 .dasha-current {
     background: var(--active);
     border: 1px solid var(--active-border);
-    box-shadow: 0 0 15px rgba(68, 184, 112, 0.1);
+    box-shadow: 0 0 20px rgba(68, 184, 112, 0.12);
 }
-.dasha-lord { color: var(--planet); font-weight: 600; }
+.dasha-current > .dasha-item { border-left-color: var(--active-border); background: transparent; }
+.dasha-lord { color: var(--planet); font-weight: 700; font-size: 0.95rem; }
 .dasha-dates { color: var(--text-secondary); font-size: 0.78rem; }
-.dasha-years { text-align: right; font-size: 0.82rem; }
+.dasha-years { text-align: right; font-size: 0.82rem; color: var(--text-secondary); }
 .dasha-bar {
     grid-column: 1 / -1;
-    height: 3px;
+    height: 4px;
     background: rgba(255,255,255,0.06);
-    border-radius: 2px;
+    border-radius: 3px;
     overflow: hidden;
 }
 .dasha-fill {
     height: 100%;
-    background: var(--active-border);
-    border-radius: 2px;
+    background: linear-gradient(90deg, var(--active-border), var(--accent));
+    border-radius: 3px;
     transition: width 0.3s ease;
 }
 .dasha-badge {
     grid-column: 1 / -1;
     color: var(--active-border);
     font-size: 0.72rem;
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.06em;
 }
-.dasha-group { border-radius: var(--radius); }
+.dasha-group { border-radius: var(--radius); overflow: hidden; }
+.dasha-group.dasha-past { opacity: 0.5; }
+.dasha-group.dasha-past:hover { opacity: 0.8; }
 .dasha-group .dasha-item { cursor: pointer; }
-.dasha-group .dasha-item:hover { background: var(--card-hover); }
-.dasha-group.dasha-current .dasha-item:hover { background: var(--active); }
-.dasha-sub, .dasha-prat { display: none; padding-left: var(--space-md); }
+.dasha-group .dasha-item:hover { background: var(--card-hover); border-left-color: var(--accent); }
+.dasha-group.dasha-current .dasha-item:hover { background: transparent; }
+.dasha-sub, .dasha-prat { display: none; padding-left: var(--space-md); border-left: 2px solid var(--border); margin-left: var(--space-md); }
 .dasha-group.open > .dasha-sub,
 .dasha-sub-group.open > .dasha-prat,
 .dasha-group.dasha-current > .dasha-sub { display: flex; flex-direction: column; gap: 2px; margin-top: 2px; }
@@ -507,18 +512,19 @@ tr.highlight { background: var(--accent-dim); }
     display: flex; align-items: center; gap: var(--space-sm);
     padding: var(--space-xs) var(--space-sm);
     border-radius: var(--radius-sm);
-    font-size: 0.75rem;
+    font-size: 0.78rem;
     color: var(--text-secondary);
     cursor: pointer;
+    transition: all 0.15s;
 }
 .dasha-sub-item:hover, .dasha-prat-item:hover { background: var(--card-hover); }
 .dasha-sub-group.dasha-current > .dasha-sub-item,
-.dasha-prat-item.dasha-current { background: var(--active); border: 1px solid var(--active-border); }
-.dasha-sub-lord { color: var(--planet); font-weight: 600; min-width: 50px; }
+.dasha-prat-item.dasha-current { background: var(--active); border: 1px solid var(--active-border); box-shadow: 0 0 10px rgba(68,184,112,0.08); }
+.dasha-sub-lord { color: var(--planet); font-weight: 600; min-width: 55px; }
 .dasha-sub-dates { flex: 1; font-size: 0.72rem; }
 .dasha-sub-years { font-size: 0.72rem; }
-.dasha-sub-badge { color: var(--active-border); font-size: 0.65rem; font-weight: 600; }
-.dasha-prat { padding-left: var(--space-lg); }
+.dasha-sub-badge { color: var(--active-border); font-size: 0.65rem; font-weight: 700; }
+.dasha-prat { padding-left: var(--space-lg); margin-left: var(--space-lg); }
 .dasha-sub-group.dasha-current > .dasha-prat { display: flex; flex-direction: column; gap: 2px; margin-top: 2px; }
 .dasha-note {
     background: var(--active);
@@ -1380,29 +1386,29 @@ footer {
 
 /* Dasha Hierarchy */
 .dasha-level-tag {
-    display: inline-block;
-    font-size: 0.6rem;
-    font-weight: 700;
-    padding: 1px 4px;
-    border-radius: 3px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 0.58rem;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
     background: var(--accent-dim);
     color: var(--accent);
     vertical-align: middle;
-    margin-right: 2px;
-    letter-spacing: 0.03em;
+    margin-right: 4px;
+    letter-spacing: 0.05em;
+    min-width: 24px;
 }
-.dasha-tag-ad { background: rgba(106,172,240,0.12); color: var(--planet); }
+.dasha-tag-ad { background: rgba(106,172,240,0.15); color: var(--planet); }
 .dasha-tag-pr { background: rgba(168,168,188,0.12); color: var(--text-secondary); }
 .dasha-level-label {
     font-size: 0.65rem;
     color: var(--text-secondary);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
     padding: var(--space-xs) 0;
     margin-bottom: 2px;
+    font-weight: 600;
 }
-.dasha-sub { border-left: 2px solid var(--accent-dim); margin-left: var(--space-sm); }
-.dasha-prat { border-left: 2px solid rgba(106,172,240,0.15); margin-left: var(--space-sm); }
 
 /* Install App Button */
 .btn-install {
