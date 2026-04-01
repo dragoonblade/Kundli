@@ -33,9 +33,21 @@
         </header>
 
         <div class="tab-bar">
-            <button class="tab-btn active" id="tab-kundli" onclick="switchTab('kundli')">🪐 Kundli</button>
-            <button class="tab-btn" id="tab-match" onclick="switchTab('match')">💑 Match</button>
-            <button class="tab-btn" id="tab-prashna" onclick="switchTab('prashna')">🔮 Prashna</button>
+            <button class="tab-btn active" id="tab-kundli" onclick="switchTab('kundli')">
+                <span class="tab-icon">🪐</span>
+                <span class="tab-label">Birth Chart</span>
+                <span class="tab-desc">Full Vedic Kundli from your birth details</span>
+            </button>
+            <button class="tab-btn" id="tab-match" onclick="switchTab('match')">
+                <span class="tab-icon">💑</span>
+                <span class="tab-label">Match</span>
+                <span class="tab-desc">Marriage compatibility between two people</span>
+            </button>
+            <button class="tab-btn" id="tab-prashna" onclick="switchTab('prashna')">
+                <span class="tab-icon">🔮</span>
+                <span class="tab-label">Quick Answer</span>
+                <span class="tab-desc">Ask a yes/no question, no birth time needed</span>
+            </button>
         </div>
 
         {% include 'includes/panchang_card.html' %}
@@ -51,6 +63,8 @@
         {% endif %}
 
         <form method="POST" action="/" class="form-card" id="form-kundli">
+            <h2 class="form-title">Enter your birth details</h2>
+            <p class="form-subtitle">We will calculate your planetary positions, dasha periods, yogas, and life readings.</p>
             <div class="form-grid">
                 <div class="form-group">
                     <label for="date">Birth Date</label>
@@ -70,11 +84,13 @@
                     {{ tz_select('tz', 'tz', prev_tz|default('5.5')) }}
                 </div>
             </div>
-            <button type="submit">Generate Kundli</button>
+            <button type="submit">✨ Generate My Birth Chart</button>
         </form>
 
         <form method="POST" action="/match" class="form-card" id="form-match" style="display:none">
-            <p class="form-hint" style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:var(--space-sm)">Enter birth details for both people. Person 1's Varna is compared against Person 2's in traditional scoring.</p>
+            <h2 class="form-title">Compare two birth charts</h2>
+            <p class="form-subtitle">Ashtakoota Gun Milan scores compatibility across 8 dimensions on a 36-point scale.</p>
+            <p class="form-hint" style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:var(--space-sm)">Person 1's Varna is compared against Person 2's in traditional scoring.</p>
             <div class="match-grid">
                 <fieldset class="person-fields">
                     <legend>Person 1</legend>
@@ -123,10 +139,12 @@
                     </div>
                 </fieldset>
             </div>
-            <button type="submit">Check Compatibility</button>
+            <button type="submit">💑 Check Compatibility</button>
         </form>
 
         <form method="POST" action="/prashna" class="form-card" id="form-prashna" style="display:none">
+            <h2 class="form-title">Ask a question about your life</h2>
+            <p class="form-subtitle">Pick a category, type your question, and we will read the current planetary positions for an answer.</p>
             <div class="form-grid">
                 <div class="form-group" style="grid-column:1/-1">
                     <label for="question">Your Question</label>
@@ -162,7 +180,7 @@
                 </div>
             </div>
             <p class="form-hint" style="color:var(--text-secondary);font-size:0.8rem;margin-bottom:var(--space-sm)">No birth time needed. The chart is cast for this exact moment to answer your question.</p>
-            <button type="submit">Ask the Stars</button>
+            <button type="submit">🔮 Ask the Stars</button>
         </form>
 
         <div id="saved-charts" style="display:none">

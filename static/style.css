@@ -901,27 +901,35 @@ footer {
 
 /* Tab Bar */
 .tab-bar {
-    display: flex;
-    gap: var(--space-xs);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-sm);
     margin-bottom: var(--space-md);
 }
 .tab-btn {
-    flex: 1;
-    padding: var(--space-sm) var(--space-md);
-    background: var(--tag-bg);
-    border: 1px solid var(--border);
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    padding: var(--space-sm) var(--space-xs);
+    background: var(--card);
+    border: 2px solid var(--border);
     border-radius: var(--radius);
     color: var(--text-secondary);
-    font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.15s ease;
+    text-align: center;
 }
+.tab-icon { font-size: 1.4rem; }
+.tab-label { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+.tab-desc { font-size: 0.7rem; color: var(--text-secondary); line-height: 1.3; }
 .tab-btn.active {
-    background: var(--accent-dim);
     border-color: var(--accent);
-    color: var(--accent);
-    font-weight: 600;
+    background: var(--accent-dim);
 }
+.tab-btn.active .tab-label { color: var(--accent); }
+.tab-btn:hover:not(.active) { border-color: var(--text-secondary); }
+
+/* Form titles */
+.form-title { font-size: 1.1rem; color: var(--text); margin-bottom: var(--space-xs); }
+.form-subtitle { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: var(--space-md); line-height: 1.4; }
 
 /* Match Form */
 .match-grid {
