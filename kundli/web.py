@@ -485,7 +485,7 @@ def api_suggestion():
             "https://docs.google.com/forms/d/1iABQG3wlMS1r9UGVetd9U-zrXm7_iGsoRCycrTU6KcE/formResponse",
             data=form_data,
         )
-        urllib.request.urlopen(req, timeout=5)
+        urllib.request.urlopen(req, timeout=5)  # nosec B310 - hardcoded HTTPS URL
     except Exception as e:
         logging.warning(f"Google Form submission failed: {e}")
     return jsonify({"status": "ok"})
