@@ -59,10 +59,19 @@
             <p>Prashna Kundli reads the planetary positions at the moment of asking. These are indicators and tendencies, not certainties. Your actions, effort, and choices always play the most important role.</p>
         </section>
 
-        <div class="match-actions">
-            <button class="btn-share" onclick="trackEvent('copy_share_link');navigator.clipboard.writeText(window.location.href).then(()=>this.textContent='✓ Copied!')">🔗 Copy Share Link</button>
-            <a href="/?tab=prashna" class="btn-link">← Ask Another Question</a>
-            <a href="/" class="btn-link">Generate Full Kundli</a>
+        <div class="footer-actions">
+            <button class="footer-btn" onclick="trackEvent('copy_share_link');navigator.clipboard.writeText(window.location.href).then(()=>{this.querySelector('.footer-btn-text').textContent='Copied!'})">
+                <span class="footer-btn-icon">🔗</span>
+                <span class="footer-btn-text">Share Link</span>
+            </button>
+            <a href="/?tab=prashna" class="footer-btn">
+                <span class="footer-btn-icon">🔮</span>
+                <span class="footer-btn-text">Ask Again</span>
+            </a>
+            <a href="/" class="footer-btn">
+                <span class="footer-btn-icon">🪐</span>
+                <span class="footer-btn-text">Birth Chart</span>
+            </a>
         </div>
     </div>
 <script>

@@ -766,7 +766,7 @@ footer {
     margin-bottom: var(--space-md);
 }
 @media (min-width: 600px) {
-    .footer-actions { grid-template-columns: repeat(4, 1fr); }
+    .footer-actions { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
 }
 .footer-btn {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
