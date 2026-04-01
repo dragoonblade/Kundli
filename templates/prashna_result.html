@@ -60,9 +60,9 @@
         </section>
 
         <div class="footer-actions">
-            <button class="footer-btn" onclick="trackEvent('copy_share_link');navigator.clipboard.writeText(window.location.href).then(()=>{this.querySelector('.footer-btn-text').textContent='Copied!'})">
+            <button class="footer-btn" onclick="trackEvent('copy_share_link');var t='🔮 Drishti Prashna: {{question|e}}\n{{result.icon}} {{result.category}}: {{result.summary}}\n\nTry it: '+window.location.origin+'/?tab=prashna';navigator.clipboard.writeText(t).then(()=>{this.querySelector('.footer-btn-text').textContent='Copied!'})">
                 <span class="footer-btn-icon">🔗</span>
-                <span class="footer-btn-text">Share Link</span>
+                <span class="footer-btn-text">Share Result</span>
             </button>
             <a href="/?tab=prashna" class="footer-btn">
                 <span class="footer-btn-icon">🔮</span>
