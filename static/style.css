@@ -74,13 +74,13 @@ body::before {
     z-index: -2;
     background:
         /* Nebula glow top-left (purple) */
-        radial-gradient(ellipse 600px 400px at 15% 10%, rgba(100, 40, 160, 0.2) 0%, transparent 70%),
+        radial-gradient(ellipse 600px 400px at 15% 10%, rgba(100, 40, 160, 0.3) 0%, transparent 70%),
         /* Saffron glow top-right */
-        radial-gradient(ellipse 500px 350px at 85% 5%, rgba(232, 160, 32, 0.15) 0%, transparent 70%),
+        radial-gradient(ellipse 500px 350px at 85% 5%, rgba(232, 160, 32, 0.22) 0%, transparent 70%),
         /* Deep purple center */
-        radial-gradient(ellipse 800px 600px at 50% 50%, rgba(60, 20, 100, 0.15) 0%, transparent 70%),
+        radial-gradient(ellipse 800px 600px at 50% 50%, rgba(60, 20, 100, 0.2) 0%, transparent 70%),
         /* Warm glow bottom */
-        radial-gradient(ellipse 600px 300px at 60% 95%, rgba(180, 80, 20, 0.12) 0%, transparent 70%);
+        radial-gradient(ellipse 600px 300px at 60% 95%, rgba(180, 80, 20, 0.18) 0%, transparent 70%);
 }
 
 /* Star field */
@@ -91,61 +91,56 @@ body::after {
     z-index: -1;
     background-image:
         /* Bright stars */
-        radial-gradient(2.5px 2.5px at 10% 15%, rgba(255,255,255,0.7) 50%, transparent 50%),
-        radial-gradient(3px 3px at 45% 8%, rgba(232,180,60,0.8) 50%, transparent 50%),
-        radial-gradient(2.5px 2.5px at 85% 25%, rgba(255,255,255,0.6) 50%, transparent 50%),
-        radial-gradient(3px 3px at 90% 70%, rgba(232,180,60,0.7) 50%, transparent 50%),
-        radial-gradient(2px 2px at 70% 45%, rgba(255,255,255,0.6) 50%, transparent 50%),
-        radial-gradient(2px 2px at 25% 60%, rgba(255,255,255,0.5) 50%, transparent 50%),
-        radial-gradient(2.5px 2.5px at 55% 85%, rgba(255,255,255,0.5) 50%, transparent 50%),
-        radial-gradient(2px 2px at 15% 90%, rgba(255,255,255,0.45) 50%, transparent 50%),
+        radial-gradient(3px 3px at 10% 15%, rgba(255,255,255,0.9) 50%, transparent 50%),
+        radial-gradient(3.5px 3.5px at 45% 8%, rgba(232,180,60,1) 50%, transparent 50%),
+        radial-gradient(3px 3px at 85% 25%, rgba(255,255,255,0.85) 50%, transparent 50%),
+        radial-gradient(3.5px 3.5px at 90% 70%, rgba(232,180,60,0.9) 50%, transparent 50%),
+        radial-gradient(2.5px 2.5px at 70% 45%, rgba(255,255,255,0.8) 50%, transparent 50%),
+        radial-gradient(2.5px 2.5px at 25% 60%, rgba(255,255,255,0.7) 50%, transparent 50%),
+        radial-gradient(3px 3px at 55% 85%, rgba(255,255,255,0.7) 50%, transparent 50%),
+        radial-gradient(2.5px 2.5px at 15% 90%, rgba(255,255,255,0.65) 50%, transparent 50%),
         /* Medium stars */
-        radial-gradient(1.5px 1.5px at 30% 20%, rgba(255,255,255,0.4) 50%, transparent 50%),
-        radial-gradient(1.5px 1.5px at 60% 30%, rgba(255,255,255,0.35) 50%, transparent 50%),
-        radial-gradient(1.5px 1.5px at 5% 45%, rgba(255,255,255,0.4) 50%, transparent 50%),
-        radial-gradient(1.5px 1.5px at 40% 55%, rgba(255,255,255,0.35) 50%, transparent 50%),
-        radial-gradient(1.5px 1.5px at 75% 65%, rgba(255,255,255,0.4) 50%, transparent 50%),
-        radial-gradient(1.5px 1.5px at 20% 75%, rgba(255,255,255,0.3) 50%, transparent 50%),
-        radial-gradient(1.5px 1.5px at 95% 40%, rgba(255,255,255,0.35) 50%, transparent 50%),
-        radial-gradient(1.5px 1.5px at 50% 95%, rgba(255,255,255,0.3) 50%, transparent 50%),
+        radial-gradient(2px 2px at 30% 20%, rgba(255,255,255,0.6) 50%, transparent 50%),
+        radial-gradient(2px 2px at 60% 30%, rgba(255,255,255,0.55) 50%, transparent 50%),
+        radial-gradient(2px 2px at 5% 45%, rgba(255,255,255,0.6) 50%, transparent 50%),
+        radial-gradient(2px 2px at 40% 55%, rgba(255,255,255,0.5) 50%, transparent 50%),
+        radial-gradient(2px 2px at 75% 65%, rgba(255,255,255,0.55) 50%, transparent 50%),
+        radial-gradient(2px 2px at 20% 75%, rgba(255,255,255,0.5) 50%, transparent 50%),
+        radial-gradient(2px 2px at 95% 40%, rgba(255,255,255,0.55) 50%, transparent 50%),
+        radial-gradient(2px 2px at 50% 95%, rgba(255,255,255,0.5) 50%, transparent 50%),
         /* Small dim stars */
-        radial-gradient(1px 1px at 3% 30%, rgba(255,255,255,0.25) 50%, transparent 50%),
-        radial-gradient(1px 1px at 35% 42%, rgba(255,255,255,0.2) 50%, transparent 50%),
-        radial-gradient(1px 1px at 65% 12%, rgba(255,255,255,0.25) 50%, transparent 50%),
-        radial-gradient(1px 1px at 82% 52%, rgba(255,255,255,0.2) 50%, transparent 50%),
-        radial-gradient(1px 1px at 48% 72%, rgba(255,255,255,0.2) 50%, transparent 50%),
-        radial-gradient(1px 1px at 12% 82%, rgba(255,255,255,0.2) 50%, transparent 50%);
+        radial-gradient(1.5px 1.5px at 3% 30%, rgba(255,255,255,0.4) 50%, transparent 50%),
+        radial-gradient(1.5px 1.5px at 35% 42%, rgba(255,255,255,0.35) 50%, transparent 50%),
+        radial-gradient(1.5px 1.5px at 65% 12%, rgba(255,255,255,0.4) 50%, transparent 50%),
+        radial-gradient(1.5px 1.5px at 82% 52%, rgba(255,255,255,0.35) 50%, transparent 50%),
+        radial-gradient(1.5px 1.5px at 48% 72%, rgba(255,255,255,0.35) 50%, transparent 50%),
+        radial-gradient(1.5px 1.5px at 12% 82%, rgba(255,255,255,0.3) 50%, transparent 50%);
     pointer-events: none;
 }
 
 /* Light mode: warm sacred parchment */
 :root.light body::after {
     background-image:
-        /* Visible saffron dots like rangoli */
-        radial-gradient(3px 3px at 10% 12%, rgba(192, 112, 16, 0.3) 50%, transparent 50%),
-        radial-gradient(2.5px 2.5px at 30% 28%, rgba(192, 112, 16, 0.25) 50%, transparent 50%),
-        radial-gradient(2px 2px at 50% 8%, rgba(192, 112, 16, 0.25) 50%, transparent 50%),
-        radial-gradient(3px 3px at 70% 35%, rgba(192, 112, 16, 0.2) 50%, transparent 50%),
-        radial-gradient(2px 2px at 90% 18%, rgba(192, 112, 16, 0.25) 50%, transparent 50%),
-        radial-gradient(2.5px 2.5px at 20% 50%, rgba(192, 112, 16, 0.2) 50%, transparent 50%),
-        radial-gradient(3px 3px at 60% 60%, rgba(192, 112, 16, 0.2) 50%, transparent 50%),
-        radial-gradient(2px 2px at 80% 75%, rgba(192, 112, 16, 0.2) 50%, transparent 50%),
-        radial-gradient(2.5px 2.5px at 40% 85%, rgba(192, 112, 16, 0.2) 50%, transparent 50%),
-        radial-gradient(2px 2px at 15% 70%, rgba(192, 112, 16, 0.18) 50%, transparent 50%),
-        radial-gradient(2px 2px at 95% 50%, rgba(140, 60, 120, 0.15) 50%, transparent 50%),
-        radial-gradient(2px 2px at 5% 35%, rgba(140, 60, 120, 0.12) 50%, transparent 50%);
+        radial-gradient(4px 4px at 10% 12%, rgba(180, 90, 10, 0.45) 50%, transparent 50%),
+        radial-gradient(3.5px 3.5px at 30% 28%, rgba(180, 90, 10, 0.4) 50%, transparent 50%),
+        radial-gradient(3px 3px at 50% 8%, rgba(180, 90, 10, 0.4) 50%, transparent 50%),
+        radial-gradient(4px 4px at 70% 35%, rgba(180, 90, 10, 0.35) 50%, transparent 50%),
+        radial-gradient(3px 3px at 90% 18%, rgba(180, 90, 10, 0.4) 50%, transparent 50%),
+        radial-gradient(3.5px 3.5px at 20% 50%, rgba(180, 90, 10, 0.35) 50%, transparent 50%),
+        radial-gradient(4px 4px at 60% 60%, rgba(180, 90, 10, 0.35) 50%, transparent 50%),
+        radial-gradient(3px 3px at 80% 75%, rgba(180, 90, 10, 0.35) 50%, transparent 50%),
+        radial-gradient(3.5px 3.5px at 40% 85%, rgba(180, 90, 10, 0.3) 50%, transparent 50%),
+        radial-gradient(3px 3px at 15% 70%, rgba(180, 90, 10, 0.3) 50%, transparent 50%),
+        radial-gradient(3.5px 3.5px at 95% 50%, rgba(130, 40, 90, 0.25) 50%, transparent 50%),
+        radial-gradient(3px 3px at 5% 35%, rgba(130, 40, 90, 0.22) 50%, transparent 50%);
     display: block;
 }
 :root.light body::before {
     background:
-        /* Warm saffron wash top */
-        radial-gradient(ellipse 700px 400px at 20% 0%, rgba(192, 112, 16, 0.12) 0%, transparent 70%),
-        /* Soft mauve accent */
-        radial-gradient(ellipse 500px 400px at 80% 10%, rgba(140, 60, 120, 0.07) 0%, transparent 70%),
-        /* Warm bottom glow */
-        radial-gradient(ellipse 800px 400px at 50% 100%, rgba(192, 140, 60, 0.08) 0%, transparent 70%),
-        /* Center warmth */
-        radial-gradient(ellipse 600px 600px at 50% 50%, rgba(255, 240, 220, 0.4) 0%, transparent 70%);
+        radial-gradient(ellipse 700px 400px at 20% 0%, rgba(192, 112, 16, 0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 500px 400px at 80% 10%, rgba(140, 60, 120, 0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 800px 400px at 50% 100%, rgba(192, 140, 60, 0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 600px 600px at 50% 50%, rgba(255, 240, 220, 0.5) 0%, transparent 70%);
 }
 
 /* Layout */
@@ -185,11 +180,12 @@ header h1 {
 }
 .header-ornament {
     color: var(--accent);
-    font-size: 0.9rem;
+    font-size: 1rem;
     margin-top: var(--space-sm);
-    opacity: 0.4;
+    opacity: 0.6;
     letter-spacing: 0.3em;
 }
+:root.light .header-ornament { color: #8a5010; opacity: 0.7; }
 
 /* Yantra mandala behind header */
 header {
