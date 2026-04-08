@@ -117,24 +117,14 @@ body::after {
 
 /* Light mode: warm sacred parchment */
 :root.light body::after {
-    background-image:
-        radial-gradient(3px 3px at 25px 20px, rgba(180, 90, 10, 0.35) 50%, transparent 50%),
-        radial-gradient(2.5px 2.5px at 80px 55px, rgba(180, 90, 10, 0.3) 50%, transparent 50%),
-        radial-gradient(3px 3px at 140px 30px, rgba(180, 90, 10, 0.3) 50%, transparent 50%),
-        radial-gradient(2.5px 2.5px at 50px 90px, rgba(180, 90, 10, 0.25) 50%, transparent 50%),
-        radial-gradient(3px 3px at 170px 75px, rgba(130, 40, 90, 0.2) 50%, transparent 50%),
-        radial-gradient(2px 2px at 15px 50px, rgba(180, 90, 10, 0.25) 50%, transparent 50%),
-        radial-gradient(2px 2px at 100px 15px, rgba(130, 40, 90, 0.18) 50%, transparent 50%),
-        radial-gradient(2.5px 2.5px at 60px 70px, rgba(180, 90, 10, 0.22) 50%, transparent 50%);
-    background-size: 200px 110px;
-    display: block;
+    display: none;
 }
 :root.light body::before {
     background:
-        radial-gradient(ellipse 700px 400px at 20% 0%, rgba(192, 112, 16, 0.18) 0%, transparent 70%),
-        radial-gradient(ellipse 500px 400px at 80% 10%, rgba(140, 60, 120, 0.12) 0%, transparent 70%),
-        radial-gradient(ellipse 800px 400px at 50% 100%, rgba(192, 140, 60, 0.12) 0%, transparent 70%),
-        radial-gradient(ellipse 600px 600px at 50% 50%, rgba(255, 240, 220, 0.5) 0%, transparent 70%);
+        radial-gradient(ellipse 800px 500px at 15% 5%, rgba(192, 120, 30, 0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 600px 500px at 85% 8%, rgba(150, 60, 120, 0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 900px 500px at 50% 95%, rgba(192, 140, 60, 0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 500px 500px at 50% 40%, rgba(255, 245, 230, 0.35) 0%, transparent 60%);
 }
 
 /* Layout */
