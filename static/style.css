@@ -111,13 +111,32 @@ body::after {
     pointer-events: none;
 }
 
-/* Light mode: subtle warm parchment texture instead of stars */
-:root.light body::after { display: none; }
+/* Light mode: warm sacred parchment */
+:root.light body::after {
+    background-image:
+        /* Subtle gold dots like rangoli */
+        radial-gradient(1.5px 1.5px at 10% 12%, rgba(192, 112, 16, 0.15) 50%, transparent 50%),
+        radial-gradient(1.5px 1.5px at 30% 28%, rgba(192, 112, 16, 0.1) 50%, transparent 50%),
+        radial-gradient(1px 1px at 50% 8%, rgba(192, 112, 16, 0.12) 50%, transparent 50%),
+        radial-gradient(1.5px 1.5px at 70% 35%, rgba(192, 112, 16, 0.1) 50%, transparent 50%),
+        radial-gradient(1px 1px at 90% 18%, rgba(192, 112, 16, 0.12) 50%, transparent 50%),
+        radial-gradient(1px 1px at 20% 50%, rgba(192, 112, 16, 0.08) 50%, transparent 50%),
+        radial-gradient(1.5px 1.5px at 60% 60%, rgba(192, 112, 16, 0.1) 50%, transparent 50%),
+        radial-gradient(1px 1px at 80% 75%, rgba(192, 112, 16, 0.08) 50%, transparent 50%),
+        radial-gradient(1px 1px at 40% 85%, rgba(192, 112, 16, 0.1) 50%, transparent 50%),
+        radial-gradient(1.5px 1.5px at 15% 70%, rgba(192, 112, 16, 0.08) 50%, transparent 50%);
+    display: block;
+}
 :root.light body::before {
     background:
-        radial-gradient(ellipse 600px 400px at 15% 10%, rgba(192, 112, 16, 0.04) 0%, transparent 70%),
-        radial-gradient(ellipse 500px 350px at 85% 5%, rgba(140, 60, 160, 0.03) 0%, transparent 70%),
-        radial-gradient(ellipse 800px 600px at 50% 90%, rgba(192, 140, 60, 0.03) 0%, transparent 70%);
+        /* Warm saffron wash top */
+        radial-gradient(ellipse 700px 400px at 20% 0%, rgba(192, 112, 16, 0.07) 0%, transparent 70%),
+        /* Soft mauve accent */
+        radial-gradient(ellipse 500px 400px at 80% 10%, rgba(140, 60, 120, 0.04) 0%, transparent 70%),
+        /* Warm bottom glow */
+        radial-gradient(ellipse 800px 400px at 50% 100%, rgba(192, 140, 60, 0.05) 0%, transparent 70%),
+        /* Center warmth */
+        radial-gradient(ellipse 600px 600px at 50% 50%, rgba(255, 240, 220, 0.3) 0%, transparent 70%);
 }
 
 /* Layout */
@@ -187,10 +206,13 @@ header::before {
     z-index: -1;
 }
 :root.light header::before {
-    border-color: rgba(192, 112, 16, 0.06);
+    border-color: rgba(192, 112, 16, 0.1);
     box-shadow:
-        0 0 0 60px rgba(192, 112, 16, 0.02),
-        0 0 0 120px rgba(140, 60, 160, 0.015);
+        0 0 0 30px transparent,
+        0 0 0 60px rgba(192, 112, 16, 0.04),
+        0 0 0 90px transparent,
+        0 0 0 120px rgba(140, 60, 120, 0.03),
+        0 0 0 150px transparent;
 }
 .back-link {
     display: inline-block;
