@@ -2,8 +2,8 @@
 
 :root {
     --bg: #080810;
-    --card: #12121c;
-    --card-hover: #1a1a28;
+    --card: rgba(18, 18, 28, 0.85);
+    --card-hover: rgba(26, 26, 40, 0.9);
     --border: #2a2a3d;
     --text: #e0dce8;
     --text-secondary: #a8a4b8;
@@ -57,11 +57,6 @@
 body {
     font-family: 'Georgia', 'Times New Roman', serif;
     background: var(--bg);
-    background-image:
-        radial-gradient(ellipse at 20% 0%, rgba(120, 40, 180, 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 0%, rgba(232, 160, 32, 0.06) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 100%, rgba(40, 20, 80, 0.1) 0%, transparent 50%);
-    background-attachment: fixed;
     color: var(--text);
     line-height: 1.65;
     font-size: 15px;
@@ -70,10 +65,59 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
 }
-:root.light body {
+
+/* Cosmic background layer */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background:
+        /* Nebula glow top-left (purple) */
+        radial-gradient(ellipse 600px 400px at 15% 10%, rgba(100, 40, 160, 0.12) 0%, transparent 70%),
+        /* Saffron glow top-right */
+        radial-gradient(ellipse 500px 350px at 85% 5%, rgba(232, 160, 32, 0.08) 0%, transparent 70%),
+        /* Deep purple center */
+        radial-gradient(ellipse 800px 600px at 50% 50%, rgba(40, 15, 80, 0.1) 0%, transparent 70%),
+        /* Warm glow bottom */
+        radial-gradient(ellipse 600px 300px at 60% 95%, rgba(180, 80, 20, 0.06) 0%, transparent 70%);
+}
+
+/* Star field */
+body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
     background-image:
-        radial-gradient(ellipse at 20% 0%, rgba(192, 112, 16, 0.05) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 0%, rgba(160, 80, 200, 0.04) 0%, transparent 50%);
+        /* Large stars */
+        radial-gradient(1.5px 1.5px at 10% 15%, rgba(255,255,255,0.4) 50%, transparent 50%),
+        radial-gradient(1.5px 1.5px at 85% 25%, rgba(255,255,255,0.3) 50%, transparent 50%),
+        radial-gradient(2px 2px at 45% 8%, rgba(232,160,32,0.5) 50%, transparent 50%),
+        radial-gradient(1.5px 1.5px at 70% 45%, rgba(255,255,255,0.35) 50%, transparent 50%),
+        radial-gradient(1px 1px at 25% 60%, rgba(255,255,255,0.3) 50%, transparent 50%),
+        radial-gradient(2px 2px at 90% 70%, rgba(232,160,32,0.4) 50%, transparent 50%),
+        radial-gradient(1.5px 1.5px at 55% 85%, rgba(255,255,255,0.3) 50%, transparent 50%),
+        radial-gradient(1px 1px at 15% 90%, rgba(255,255,255,0.25) 50%, transparent 50%),
+        /* Small stars scattered */
+        radial-gradient(1px 1px at 30% 20%, rgba(255,255,255,0.2) 50%, transparent 50%),
+        radial-gradient(1px 1px at 60% 30%, rgba(255,255,255,0.15) 50%, transparent 50%),
+        radial-gradient(1px 1px at 5% 45%, rgba(255,255,255,0.2) 50%, transparent 50%),
+        radial-gradient(1px 1px at 40% 55%, rgba(255,255,255,0.18) 50%, transparent 50%),
+        radial-gradient(1px 1px at 75% 65%, rgba(255,255,255,0.2) 50%, transparent 50%),
+        radial-gradient(1px 1px at 20% 75%, rgba(255,255,255,0.15) 50%, transparent 50%),
+        radial-gradient(1px 1px at 95% 40%, rgba(255,255,255,0.2) 50%, transparent 50%),
+        radial-gradient(1px 1px at 50% 95%, rgba(255,255,255,0.15) 50%, transparent 50%);
+    pointer-events: none;
+}
+
+/* Light mode: subtle warm parchment texture instead of stars */
+:root.light body::after { display: none; }
+:root.light body::before {
+    background:
+        radial-gradient(ellipse 600px 400px at 15% 10%, rgba(192, 112, 16, 0.04) 0%, transparent 70%),
+        radial-gradient(ellipse 500px 350px at 85% 5%, rgba(140, 60, 160, 0.03) 0%, transparent 70%),
+        radial-gradient(ellipse 800px 600px at 50% 90%, rgba(192, 140, 60, 0.03) 0%, transparent 70%);
 }
 
 /* Layout */
@@ -117,6 +161,36 @@ header h1 {
     margin-top: var(--space-sm);
     opacity: 0.4;
     letter-spacing: 0.3em;
+}
+
+/* Yantra mandala behind header */
+header {
+    position: relative;
+}
+header::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    border: 1px solid rgba(232, 160, 32, 0.06);
+    box-shadow:
+        0 0 0 30px transparent,
+        0 0 0 60px rgba(232, 160, 32, 0.03),
+        0 0 0 90px transparent,
+        0 0 0 120px rgba(100, 40, 160, 0.02),
+        0 0 0 150px transparent;
+    pointer-events: none;
+    z-index: -1;
+}
+:root.light header::before {
+    border-color: rgba(192, 112, 16, 0.06);
+    box-shadow:
+        0 0 0 60px rgba(192, 112, 16, 0.02),
+        0 0 0 120px rgba(140, 60, 160, 0.015);
 }
 .back-link {
     display: inline-block;
@@ -289,6 +363,8 @@ button[type="submit"]:active { transform: translateY(0); box-shadow: 0 2px 10px 
     padding: var(--space-md);
     margin-bottom: var(--space-md);
     box-shadow: 0 2px 20px rgba(0,0,0,0.15), 0 0 1px rgba(232,160,32,0.05);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
 @media (min-width: 600px) {
     .card { padding: var(--space-lg); margin-bottom: var(--space-lg); }
